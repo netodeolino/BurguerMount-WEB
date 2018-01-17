@@ -11,4 +11,5 @@ import com.hamburgueria.model.Sede;
 @Transactional
 public interface SedeRepository extends JpaRepository<Sede, Long> {
 
+	public Sede findByCidade(String cidade); 
 }
