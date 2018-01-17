@@ -22,6 +22,10 @@ public class SedeService {
 		return sedeRepository.findOne(id);
 	}
 	
+	public Sede buscar(String cidade) {
+		return sedeRepository.findByCidade(cidade);
+	}
+	
 	public void excluir(Long id) {
 		sedeRepository.delete(id);
 	}

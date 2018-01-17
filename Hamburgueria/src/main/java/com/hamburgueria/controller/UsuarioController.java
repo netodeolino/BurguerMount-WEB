@@ -1,5 +1,7 @@
 package com.hamburgueria.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
@@ -11,7 +13,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.hamburgueria.model.Papel;
+import com.hamburgueria.model.Sede;
 import com.hamburgueria.model.Usuario;
+import com.hamburgueria.service.SedeService;
 import com.hamburgueria.service.UsuarioService;
 
 @Controller
@@ -21,19 +26,33 @@ public class UsuarioController {
 	@Autowired
 	UsuarioService usuarioService;
 	
+	@Autowired
+	SedeService sedeService;
+	
 	@GetMapping(path="/cadastrar")
 	public ModelAndView cadastroUsuario(HttpServletRequest request) {
+		List<Sede> sedes = sedeService.listar();
+		
 		ModelAndView model = new ModelAndView("usuario/formCadastroUsuario");
 		model.addObject(new Usuario());
+		model.addObject("sedes", sedes);
 		return model;
 	}
 	
 	@PostMapping(path="/cadastrar")
 	public String salvarUsuario(@Valid Usuario usuario, BindingResult result) {
-		if (result.hasErrors()) return "formCadastroUsuario";
+		//if (result.hasErrors()) return "usuario/formCadastroUsuario";
 		
-		Usuario userBanco = usuarioService.salvar(usuario);
+		Sede sede = sedeService.buscar(usuario.getCidade());
 		
-		return "redirect:/";
+		if (sede != null) {
+			usuario.setSede(sede);
+		}
+		
+		usuario.setPapel(Papel.ADMINISTRADOR);
+		
+		usuarioService.salvar(usuario);
+		
+		return "redirect:/empresa/sedes";
 	}
 }

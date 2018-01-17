@@ -4,15 +4,18 @@
 <head>
 <title>Home</title>
 <link href="/webjars/materializecss/0.97.7/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection" />
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
+<meta name="_csrf" content="${_csrf.token}"/>
 </head>
 <body>
 	<div class="container">
 		<div class="row">
 			<div class="col s7">
-				<h3 class="box-title m-b-20">LOGO IAMGENS TEXTO ETC</h3>
+				<h3 class="box-title m-b-20">LOGO, TEXTO, ETC</h3>
 			</div>
 			<div class="col s5">
 				<form class="form-horizontal form-material" id="loginform" method="POST" th:object="${usuario}">
+				<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 					<h3 class="box-title m-b-20">Entrar</h3>
 					<div class="form-group ">
 						<div class="col-xs-12">
@@ -30,8 +33,6 @@
 								<input id="checkbox-signup" type="checkbox" />
 								<label for="checkbox-signup">Lembrar de mim</label>
 							</div>
-							<a th:href="@{/usuario/recuperarsenha}" id="to-recover" class="text-dark pull-right"><i class="fa fa-lock m-r-5"></i>
-								Esqueceu sua senha?</a>
 						</div>
 					</div>
 					<div class="form-group text-center m-t-20">
@@ -39,6 +40,8 @@
 							<button
 								class="btn btn-info btn-lg btn-block text-uppercase waves-effect waves-light" type="submit">Entrar</button>
 						</div>
+						<a th:href="@{/usuario/recuperarsenha}" id="to-recover" class="text-dark pull-right"><i class="fa fa-lock m-r-5"></i>
+								Esqueceu sua senha?</a>
 					</div>
 					<div class="form-group m-b-0">
 						<div class="col-sm-12 text-center">
@@ -47,6 +50,7 @@
 							</p>
 						</div>
 					</div>
+					<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 				</form>
 			</div>
 		</div>
