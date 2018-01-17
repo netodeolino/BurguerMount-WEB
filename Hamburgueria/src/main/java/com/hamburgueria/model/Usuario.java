@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -32,6 +33,7 @@ public class Usuario implements UserDetails {
 	@Column(unique = true)
 	private String email;
 	
+	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private Date dataNascimento;
 	private String senha;
 	private String cidade;

@@ -40,13 +40,14 @@ public class UsuarioController {
 	}
 	
 	@PostMapping(path="/cadastrar")
-	public String salvarUsuario(@Valid Usuario usuario, BindingResult result) {
+	public String salvarUsuario(@Valid Usuario usuario, BindingResult result, Long idsede) {
 		//if (result.hasErrors()) return "usuario/formCadastroUsuario";
 		
-		Sede sede = sedeService.buscar(usuario.getCidade());
+		Sede sede = sedeService.buscar(idsede);
 		
 		if (sede != null) {
 			usuario.setSede(sede);
+			usuario.setCidade(sede.getCidade());
 		}
 		
 		usuario.setPapel(Papel.ADMINISTRADOR);

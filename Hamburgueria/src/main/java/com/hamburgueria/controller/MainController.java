@@ -11,7 +11,7 @@ import com.hamburgueria.model.Usuario;
 @Controller
 @RequestMapping(path="/")
 public class MainController {
-
+	
 	@GetMapping(path="")
 	public ModelAndView loginUsuario() {
 		ModelAndView model = new ModelAndView("index");
