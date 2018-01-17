@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title>Cadastro Empresa</title>
+
+</head>
+<body>
+	<form id="cadastro_empresa" method="POST" th:object="${empresa}">
+		<label for="inputNome">Nome da Empresa</label> <br/><br/>
+		<input type="text" id="inputNome" placeholder="Nome"
+			th:field="*{nome}" required="true" autofocus="true" />
+			
+		<button type="submit">Cadastrar</button>
+	</form>
+</body>
+</html>
