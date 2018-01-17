@@ -21,6 +21,8 @@ public class Usuario {
 	private String telefone;
 	private String email;
 	private Date dataNascimento;
+	private String senha;
+	private String endereco;
 	
 	@ManyToOne
 	private Sede sede;
@@ -67,6 +69,22 @@ public class Usuario {
 
 	public void setDataNascimento(Date dataNascimento) {
 		this.dataNascimento = dataNascimento;
+	}
+	
+	public String getSenha() {
+		return senha;
+	}
+
+	public void setSenha(String senha) {
+		this.senha = senha;
+	}
+
+	public String getEndereco() {
+		return endereco;
+	}
+
+	public void setEndereco(String endereco) {
+		this.endereco = endereco;
 	}
 
 	public Sede getSede() {
