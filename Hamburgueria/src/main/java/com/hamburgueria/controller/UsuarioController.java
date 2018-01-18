@@ -30,7 +30,7 @@ public class UsuarioController {
 	SedeService sedeService;
 	
 	@GetMapping(path="/cadastrar")
-	public ModelAndView cadastroUsuario(HttpServletRequest request) {
+	public ModelAndView cadastrarUsuario(HttpServletRequest request) {
 		List<Sede> sedes = sedeService.listar();
 		
 		ModelAndView model = new ModelAndView("usuario/formCadastroUsuario");
@@ -40,7 +40,7 @@ public class UsuarioController {
 	}
 	
 	@PostMapping(path="/cadastrar")
-	public String salvarUsuario(@Valid Usuario usuario, BindingResult result, Long idsede) {
+	public String cadastrarUsuario(@Valid Usuario usuario, BindingResult result, Long idsede) {
 		//if (result.hasErrors()) return "usuario/formCadastroUsuario";
 		
 		Sede sede = sedeService.buscar(idsede);
