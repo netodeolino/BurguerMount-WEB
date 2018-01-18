@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 @Entity
@@ -18,9 +17,6 @@ public class Sede {
 	private Long id;
 	
 	private String cidade;
-	
-	@ManyToOne
-	private Empresa empresa;
 	
 	@OneToMany(cascade=CascadeType.ALL)
 	private List<Ingrediente> estoque;
@@ -52,14 +48,6 @@ public class Sede {
 
 	public void setCidade(String cidade) {
 		this.cidade = cidade;
-	}
-
-	public Empresa getEmpresa() {
-		return empresa;
-	}
-
-	public void setEmpresa(Empresa empresa) {
-		this.empresa = empresa;
 	}
 
 	public List<Ingrediente> getEstoque() {
