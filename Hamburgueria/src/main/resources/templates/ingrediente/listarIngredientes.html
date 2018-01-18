@@ -1,0 +1,42 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+	<title>Listar Ingredientes</title>
+	<meta name="_csrf_header" content="${_csrf.headerName}" />
+	<meta name="_csrf" content="${_csrf.token}" />
+	<link href="/webjars/materializecss/0.97.7/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection" />
+	<link href="/css/hamburgueria.css" type="text/css" rel="stylesheet" />
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="col s12">
+				<h5>Ingredientes</h5>
+				<table class="striped">
+				  <thead>
+				    <tr>
+					  <th>Nome</th>
+					  <th>Quantidade</th>
+					  <th>Valor Bruto</th>
+					  <th>Valor de Venda</th>
+				    </tr>
+				  </thead>
+				  <tbody>
+				    <tr th:each="ingrediente : ${ingredientes}">
+					  <td th:text="${ingrediente.nome}"></td>
+					  <td th:text="${ingrediente.qtd}"></td>
+					  <td th:text="${ingrediente.valorBruto}"></td>
+					  <td th:text="${ingrediente.valorDeVenda}"></td>
+					  <td><a class="waves-effect waves-teal btn-flat" th:href="@{${'/ingrediente/editar/'+ingrediente.id}}">Editar</a></td>
+					  <td><a class="waves-effect waves-teal btn-flat" th:href="@{${'/ingrediente/excluir/'+ingrediente.id}}">Excluir</a></td>
+				    </tr>
+				  </tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+<script type="text/javascript" src="/webjars/jquery/2.2.4/jquery.min.js"></script>
+<script src="/webjars/materializecss/0.97.7/js/materialize.min.js"></script>
+</body>
+</html>
