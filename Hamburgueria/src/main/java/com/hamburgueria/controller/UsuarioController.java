@@ -33,7 +33,7 @@ public class UsuarioController {
 	public ModelAndView cadastrarUsuario(HttpServletRequest request) {
 		List<Sede> sedes = sedeService.listar();
 		
-		ModelAndView model = new ModelAndView("usuario/formCadastroUsuario");
+		ModelAndView model = new ModelAndView("usuario/formCadastrarUsuario");
 		model.addObject(new Usuario());
 		model.addObject("sedes", sedes);
 		return model;
@@ -42,18 +42,19 @@ public class UsuarioController {
 	@PostMapping(path="/cadastrar")
 	public String cadastrarUsuario(@Valid Usuario usuario, BindingResult result, Long idsede) {
 		//if (result.hasErrors()) return "usuario/formCadastroUsuario";
-		
-		Sede sede = sedeService.buscar(idsede);
-		
-		if (sede != null) {
-			usuario.setSede(sede);
-			usuario.setCidade(sede.getCidade());
+		System.err.println("ENTROU");
+		if(idsede != null) {
+			Sede sede = sedeService.buscar(idsede);
+			if (sede != null) {
+				usuario.setSede(sede);
+				usuario.setCidade(sede.getCidade());
+			}
 		}
-		
+				
 		usuario.setPapel(Papel.ADMINISTRADOR);
 		
 		usuarioService.salvar(usuario);
 		
-		return "redirect:/empresa/sedes";
+		return "redirect:/";
 	}
 }
