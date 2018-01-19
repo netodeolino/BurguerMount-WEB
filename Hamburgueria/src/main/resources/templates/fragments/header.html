@@ -8,15 +8,27 @@
 	<div  th:fragment="header">
 		<ul id="dropdownCadastrar" class="dropdown-content">
 			<li><a th:href="@{/sede/cadastrar}">Sede</a></li>
+			<li><a th:href="@{/ingrediente/cadastrar}">Ingrediente</a></li>
+		</ul>
+		
+		<ul id="dropdownListar" class="dropdown-content">
+			<li><a th:href="@{/sede/listar}">Sedes</a></li>
+			<li><a th:href="@{/ingrediente/listar}">Ingredientes</a></li>
 		</ul>
 
 		<nav>
 			<div class="nav-wrapper teal lighten-2">
-				<a href="#" class="brand-logo"> Logo</a>
+				<a href="#" class="brand-logo">Hamburgueria</a>
 				<ul id="nav-mobile" class="right hide-on-med-and-down">
 					<li>
 						<a class="dropdown-button" href="#!" data-activates="dropdownCadastrar">
 							Cadastrar
+							<i class="material-icons right">arrow_drop_down</i>
+						</a>
+					</li>
+					<li>
+						<a class="dropdown-button" href="#!" data-activates="dropdownListar">
+							Listar
 							<i class="material-icons right">arrow_drop_down</i>
 						</a>
 					</li>

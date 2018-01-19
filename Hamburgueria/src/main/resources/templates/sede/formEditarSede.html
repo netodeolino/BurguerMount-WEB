@@ -2,48 +2,75 @@
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-	<title>Editar Sede</title>
-	<meta name="_csrf_header" content="${_csrf.headerName}"/>
-	<meta name="_csrf" content="${_csrf.token}"/>
-	<link href="/webjars/materializecss/0.97.7/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection" />
-	<link href="/css/hamburgueria.css" type="text/css" rel="stylesheet" />
+
+<title>Editar Sede</title>
+
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
+<meta name="_csrf" content="${_csrf.token}"/>
+<link href="/webjars/materializecss/0.97.7/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection" />
+<link href="/css/hamburgueria.css" type="text/css" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+<script type="text/javascript" src="/webjars/jquery/2.2.4/jquery.min.js"></script>
+<script src="/webjars/materializecss/0.97.7/js/materialize.min.js"></script>
+<link rel="icon" type="image/png" sizes="20x20"
+	th:href="@{/images/logo.png}" />
 </head>
 <body>
-	<div class="container">
+	<div th:replace="fragments/header :: header"></div>
+	
+	<div class="container" style="margin-top: 50px;">
 		<div class="row">
-			<div class="col-md-12">
-				<div class="white-box">
-					<form th:action="@{/sede/editar}" method="POST" th:object="${sede}">
+			<div class="col s3"></div>
+			<div class="col s6">
+				<div class="row">
+					<h4 th:text="${sede.cidade}"></h4>
+				</div>
+				<div class="row" align="center">
+					<img id="logoSede" class="profile-img-card"
+						src="/images/sedeLogo.png"  width="150" height="150"/>
+				</div>
+				<div class="row">
+					<form method="POST" th:object="${sede}" th:action="@{/sede/editar}">
 						<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-						
-						<div th:if="${#fields.hasAnyErrors()}">
-							<h3>Preencha todos os campos corretamente!</h3>
-						</div>
-						
 						<input th:field="*{id}" type="hidden" value="th:text=${sede.id}" />
 						<input th:field="*{estoque}" type="hidden" value="th:text=${sede.estoque}" />
 						<input th:field="*{pedidos}" type="hidden" value="th:text=${sede.pedidos}" />
 						<input th:field="*{produtos}" type="hidden" value="th:text=${sede.produtos}" />
 						<input th:field="*{clientes}" type="hidden" value="th:text=${sede.clientes}" />
-	
-						<div class="form-group">
-							<label for="cidade">Sede</label>
-							<div class="input-group">
-								<div class="input-group-addon">
-									<i class="fa fa-calendar-o"></i>
-								</div>
-								<input type="text" class="form-control" id="cidade"
-									th:field="*{cidade}" placeholder="Cidade" value="th:text=${sede.cidade}" />
-							</div>
+						<div th:if="${#fields.hasAnyErrors()}">
+							<h3>Preencha todos os campos corretamente!</h3>
 						</div>
-						<button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Editar</button>
-						<a class="btn btn-inverse" th:href="@{${'/sede/listar'}}">Cancelar</a>
+						<div class="row">
+							<div class="form-group">
+		                        <div class="input-field col s12">
+		                        	<i class="material-icons prefix">business</i>
+		                        	<input id="cidade" type="text" class="validate" th:field="*{cidade}"
+		                        		value="th:text=${sede.cidade}"/>
+		                        	<label for="cidade">Nome da Cidade</label>
+		                        </div>
+		                	</div>
+                    	</div>
+                    	<div class="row">
+                    		<div class="col s1"></div>
+                    		<div class="form-group">
+	                    		<button class="btn-large waves-effect waves-light col s4" type="submit" name="editar">
+	                    			<b>Editar</b>
+	    							<i class="material-icons right">send</i>
+	  							</button>
+	  							<div class="col s2"></div>
+	  							<a class="btn-large waves-effect red darken-3 col s4" name="cancelar" th:href="@{${'/sede/listar'}}">
+	                    			Cancelar
+	    							<i class="material-icons right">close</i>
+	  							</a>
+	  						</div>
+  							<div class="col s1"></div>
+                    	</div>                    	
 					</form>
 				</div>
 			</div>
-		</div>
+			<div class="col s3"></div>
+		</div>		
 	</div>
-<script type="text/javascript" src="/webjars/jquery/2.2.4/jquery.min.js"></script>
-<script src="/webjars/materializecss/0.97.7/js/materialize.min.js"></script>
+	<script type="text/javascript" src="/js/hamburgueria.js"></script>
 </body>
 </html>
