@@ -3,11 +3,14 @@ package com.hamburgueria.model;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+
+import com.hamburgueria.util.Constants;
 
 @Entity
 public class Sede {
@@ -17,6 +20,9 @@ public class Sede {
 	private Long id;
 	
 	private String cidade;
+	
+	@Column(columnDefinition = "text", length = Constants.TAM_MAX_IMG_64)
+	private String foto64;
 	
 	@OneToMany(cascade=CascadeType.ALL)
 	private List<Ingrediente> estoque;
@@ -48,6 +54,14 @@ public class Sede {
 
 	public void setCidade(String cidade) {
 		this.cidade = cidade;
+	}
+
+	public String getFoto64() {
+		return foto64;
+	}
+
+	public void setFoto64(String foto64) {
+		this.foto64 = foto64;
 	}
 
 	public List<Ingrediente> getEstoque() {

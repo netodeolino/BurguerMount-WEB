@@ -30,7 +30,7 @@
 						src="/images/sedeLogo.png"  width="150" height="150"/>
 				</div>
 				<div class="row">
-					<form method="POST" th:object="${sede}">
+					<form method="POST" th:object="${sede}" enctype="multipart/form-data">
 						<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 						<div class="row">
 							<div class="form-group">
@@ -40,6 +40,19 @@
 		                        	<label for="cidade">Nome da Cidade</label>
 		                        </div>
 		                	</div>
+                    	</div>
+                    	<div class="row">
+                    		<div class="form-group">
+                    			<div class="file-field input-field col s12">
+                    				<div class="btn">
+        								<span>Foto da Sede</span>
+        								<input type="file" name="imagem" />
+      								</div>
+      								<div class="file-path-wrapper">
+        								<input class="file-path validate" type="text" />
+      								</div>
+                    			</div>
+                    		</div>
                     	</div>
                     	<div class="row">
                     		<div class="col s4"></div>
