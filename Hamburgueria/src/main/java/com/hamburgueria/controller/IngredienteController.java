@@ -1,5 +1,6 @@
 package com.hamburgueria.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,10 +13,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.hamburgueria.model.Ingrediente;
 import com.hamburgueria.service.IngredienteService;
+import com.hamburgueria.util.Constants;
+import com.hamburgueria.util.Image;
 
 @Controller
 @RequestMapping(path="/ingrediente")
@@ -32,12 +37,19 @@ public class IngredienteController {
 	}
 	
 	@PostMapping(path="/cadastrar")
-	public String cadastrarIngrediente(@Valid Ingrediente ingrediente, BindingResult result) {
+	public String cadastrarIngrediente(@Valid Ingrediente ingrediente, BindingResult result, @RequestParam(value="imagem", required=false) MultipartFile imagem) throws IOException {
 		//if (result.hasErrors()) return "ingrediente/formCadastroIngrediente";
 		
 		/* FALTA INFORMAR A SEDE */
 		
-		ingredienteService.salvar(ingrediente);
+		Ingrediente salvo = ingredienteService.salvar(ingrediente);
+		
+		if (imagem != null && !imagem.isEmpty()) {
+			salvo.setFoto64(Image.imagemBase64(imagem));
+		} else {
+			salvo.setFoto64(Constants.IMAGE_DEFAULT_INGREDIENTE);
+		}
+		ingredienteService.salvar(salvo);
 		
 		return "redirect:/ingrediente/listar";
 	}

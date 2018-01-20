@@ -1,5 +1,6 @@
 package com.hamburgueria.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +12,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.hamburgueria.model.Papel;
@@ -18,6 +21,8 @@ import com.hamburgueria.model.Sede;
 import com.hamburgueria.model.Usuario;
 import com.hamburgueria.service.SedeService;
 import com.hamburgueria.service.UsuarioService;
+import com.hamburgueria.util.Constants;
+import com.hamburgueria.util.Image;
 
 @Controller
 @RequestMapping(path="/usuario")
@@ -40,9 +45,9 @@ public class UsuarioController {
 	}
 	
 	@PostMapping(path="/cadastrar")
-	public String cadastrarUsuario(@Valid Usuario usuario, BindingResult result, Long idsede) {
+	public String cadastrarUsuario(@Valid Usuario usuario, BindingResult result, Long idsede, @RequestParam(value="imagem", required=false) MultipartFile imagem) throws IOException {
 		//if (result.hasErrors()) return "usuario/formCadastroUsuario";
-		System.err.println("ENTROU");
+
 		if(idsede != null) {
 			Sede sede = sedeService.buscar(idsede);
 			if (sede != null) {
@@ -50,10 +55,15 @@ public class UsuarioController {
 				usuario.setCidade(sede.getCidade());
 			}
 		}
-				
 		usuario.setPapel(Papel.ADMINISTRADOR);
+		Usuario salvo = usuarioService.salvar(usuario);
 		
-		usuarioService.salvar(usuario);
+		if (imagem != null && !imagem.isEmpty()) {
+			salvo.setFoto64(Image.imagemBase64(imagem));
+		} else {
+			salvo.setFoto64(Constants.IMAGE_DEFAULT_USUARIO);
+		}
+		usuarioService.salvar(salvo);
 		
 		return "redirect:/";
 	}

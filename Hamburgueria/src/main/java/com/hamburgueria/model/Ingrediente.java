@@ -1,10 +1,13 @@
 package com.hamburgueria.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+
+import com.hamburgueria.util.Constants;
 
 @Entity
 public class Ingrediente {
@@ -17,6 +20,9 @@ public class Ingrediente {
 	private Integer qtd;
 	private Double valorDeVenda;
 	private Double valorBruto;
+	
+	@Column(columnDefinition = "text", length = Constants.TAM_MAX_IMG_64)
+	private String foto64;
 	
 	@ManyToOne
 	private Sede sede;
@@ -63,6 +69,14 @@ public class Ingrediente {
 
 	public void setValorBruto(Double valorBruto) {
 		this.valorBruto = valorBruto;
+	}
+
+	public String getFoto64() {
+		return foto64;
+	}
+
+	public void setFoto64(String foto64) {
+		this.foto64 = foto64;
 	}
 
 	public Sede getSede() {

@@ -18,6 +18,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.hamburgueria.util.Constants;
+
 @Entity
 public class Usuario implements UserDetails {
 
@@ -38,6 +40,9 @@ public class Usuario implements UserDetails {
 	private String senha;
 	private String cidade;
 	
+	@Column(columnDefinition = "text", length = Constants.TAM_MAX_IMG_64)
+	private String foto64;
+	
 	@ManyToOne
 	private Sede sede;
 	
@@ -54,12 +59,15 @@ public class Usuario implements UserDetails {
 	public Long getId() {
 		return id;
 	}
+	
 	public void setId(Long id) {
 		this.id = id;
 	}
+	
 	public String getNome() {
 		return nome;
 	}
+	
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
@@ -102,6 +110,14 @@ public class Usuario implements UserDetails {
 
 	public void setCidade(String cidade) {
 		this.cidade = cidade;
+	}
+
+	public String getFoto64() {
+		return foto64;
+	}
+
+	public void setFoto64(String foto64) {
+		this.foto64 = foto64;
 	}
 
 	public Sede getSede() {
