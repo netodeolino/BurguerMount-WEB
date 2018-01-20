@@ -58,4 +58,11 @@ public class UsuarioService {
 		Usuario usuarioLogado = this.buscar(email);
 		return usuarioLogado;
 	}
+	
+	public boolean compararSenha(String senhaCrip, String senhaLimpa) {
+		if (new BCryptPasswordEncoder().matches(senhaLimpa, senhaCrip)) {
+			return true;
+		}
+		return false;
+	}
 }

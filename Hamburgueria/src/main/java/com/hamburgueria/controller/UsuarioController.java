@@ -7,6 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -66,5 +69,57 @@ public class UsuarioController {
 		usuarioService.salvar(salvo);
 		
 		return "redirect:/";
+	}
+	
+	@GetMapping(path = "/editar")
+	public ModelAndView editarUsuario() {
+		List<Sede> sedes = sedeService.listar();
+		Usuario usuario = usuarioService.usuarioLogado();
+		
+		ModelAndView model = new ModelAndView("usuario/formEditarUsuario");
+		model.addObject("usuario", usuario);
+		model.addObject("sedes", sedes);
+		return model;
+	}
+	
+	@PostMapping(path = "/editar")
+	public String editarUsuario(Usuario usuario, @RequestParam String senhaAtual, Long idsede, @RequestParam(value="imagem", required=false) MultipartFile imagem) throws IOException {
+		Usuario usuarioLogado = usuarioService.usuarioLogado();
+		Usuario usuarioBanco = usuarioService.buscar(usuarioLogado.getEmail());
+		
+		if(imagem != null && !imagem.isEmpty()) {
+			usuarioBanco.setFoto64(Image.imagemBase64(imagem));
+		}
+		
+		if(!usuario.getNome().isEmpty()) {
+			usuarioBanco.setNome(usuario.getNome());
+		}
+		
+		if(!usuario.getEmail().isEmpty()) {
+			usuarioBanco.setEmail(usuario.getEmail());
+		}
+		
+		if(idsede != null) {
+			Sede sede = sedeService.buscar(idsede);
+			if (sede != null) {
+				usuarioBanco.setSede(sede);
+				usuarioBanco.setCidade(sede.getCidade());
+			}
+		}
+		
+		usuarioBanco.setPedidos(usuario.getPedidos());
+		usuarioBanco = usuarioService.salvar(usuarioBanco);
+		
+		if(senhaAtual != null && !senhaAtual.isEmpty()){
+			if(usuarioService.compararSenha(usuarioBanco.getSenha(), senhaAtual)){
+				usuarioBanco.setSenha(usuario.getSenha());
+				usuarioService.salvar(usuarioBanco);
+			}
+		}
+		
+		Authentication authentication = new UsernamePasswordAuthenticationToken(usuarioBanco, usuarioBanco.getSenha(), usuarioBanco.getAuthorities());
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+		
+		return "redirect:/usuario/editar";
 	}
 }
