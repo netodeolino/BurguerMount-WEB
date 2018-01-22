@@ -6,9 +6,9 @@
 <link href="/webjars/materializecss/0.97.7/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection" />
 <meta name="_csrf_header" content="${_csrf.headerName}"/>
 <meta name="_csrf" content="${_csrf.token}"/>
-
-<link rel="icon" type="image/png" sizes="20x20"
-	th:href="@{/images/logo.png}" />
+<script type="text/javascript" src="/webjars/jquery/2.2.4/jquery.min.js"></script>
+<script src="/webjars/materializecss/0.97.7/js/materialize.js"></script>
+<link rel="icon" type="image/png" sizes="20x20" th:href="@{/images/logo.png}" />
 </head>
 <body>
 	<div class="container" >
@@ -73,7 +73,5 @@
 		<br/>
 		<a th:href="@{/usuario/editar}" class="text-info m-l-5"><b>Editar Usuário</b></a>
 	</div>
-<script type="text/javascript" src="/webjars/jquery/2.2.4/jquery.min.js"></script>
-<script src="/webjars/materializecss/0.97.7/js/materialize.js"></script>
 </body>
 </html>

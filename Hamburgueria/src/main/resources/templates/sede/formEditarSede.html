@@ -30,7 +30,7 @@
 						src="/images/sedeLogo.png"  width="150" height="150"/>
 				</div>
 				<div class="row">
-					<form method="POST" th:object="${sede}" th:action="@{/sede/editar}">
+					<form method="POST" th:object="${sede}" th:action="@{/sede/editar}" enctype="multipart/form-data">
 						<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 						<input th:field="*{id}" type="hidden" value="th:text=${sede.id}" />
 						<input th:field="*{estoque}" type="hidden" value="th:text=${sede.estoque}" />
@@ -49,6 +49,20 @@
 		                        	<label for="cidade">Nome da Cidade</label>
 		                        </div>
 		                	</div>
+                    	</div>
+                    	<div class="row">
+                    		<div class="form-group">
+                    			<div class="file-field input-field col s12">
+                    				<div class="waves-effect waves-light btn green">
+                    				<i class="material-icons right">file_upload</i>
+        								<span>Foto da sede</span>
+        								<input type="file" name="imagem" />
+      								</div>
+      								<div class="file-path-wrapper">
+        								<input class="file-path validate" type="text" />
+      								</div>
+                    			</div>
+                    		</div>
                     	</div>
                     	<div class="row">
                     		<div class="col s1"></div>
