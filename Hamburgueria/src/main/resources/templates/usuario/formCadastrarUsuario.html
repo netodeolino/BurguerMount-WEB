@@ -61,8 +61,7 @@
                     		<div class="form-group">
 		                        <div class="input-field col s12">
 		                        	<i class="material-icons prefix">email</i>
-		                        	<input id="email" type="email" class="validate" 
-		                        		th:field="*{email}"/>
+		                        	<input id="email" type="email" class="validate" th:field="*{email}"/>
 		                        	<label for="email" data-error="Formato Inválido">Email</label>
 		                        </div>
 		                	</div>
@@ -81,7 +80,7 @@
                     		<div class="form-group">
 	                    		<div class="input-field col s12">
 	                    			<i class="material-icons prefix">location_on</i>
-									<select name="idsede" id="idsede">
+									<select th:field="*{sede.id}" name="idsede" id="idsede">
 										<option th:value="${null}" disabled="true" selected="true">Escolha uma das Sedes</option>
 										<option th:each="sede : ${sedes}"
 				            				th:value="${sede.id}"
