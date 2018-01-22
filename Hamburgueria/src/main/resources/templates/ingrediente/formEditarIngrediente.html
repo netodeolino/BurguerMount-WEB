@@ -30,7 +30,7 @@
 						src="/images/ingredienteLogo.png"  width="150" height="150"/>
 				</div>
 				<div class="row">
-					<form method="POST" th:object="${ingrediente}" th:action="@{/ingrediente/editar}">
+					<form method="POST" th:object="${ingrediente}" th:action="@{/ingrediente/editar}" enctype="multipart/form-data">
 						<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 						<input th:field="*{id}" type="hidden" value="th:text=${ingrediente.id}" />
 						<input th:field="*{sede}" type="hidden" value="th:text=${ingrediente.sede}" />
@@ -69,6 +69,20 @@
 		                        	<label for="valorVenda">Valor de Venda</label>
 		                        </div>
 		                	</div>
+                    	</div>
+                    	<div class="row">
+                    		<div class="form-group">
+                    			<div class="file-field input-field col s12">
+                    				<div class="waves-effect waves-light btn green">
+                    					<i class="material-icons right">file_upload</i>
+        								<span>Foto do ingrediente</span>
+        								<input type="file" name="imagem" />
+      								</div>
+      								<div class="file-path-wrapper">
+        								<input class="file-path validate" type="text" />
+      								</div>
+                    			</div>
+                    		</div>
                     	</div>
                     	<div class="row">
                     		<div class="col s1"></div>

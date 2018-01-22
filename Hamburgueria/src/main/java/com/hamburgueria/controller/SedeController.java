@@ -76,7 +76,10 @@ public class SedeController {
 	}
 	
 	@PostMapping(path="/editar")
-	public String atualizar(@Valid Sede sede, BindingResult result) { 
+	public String editarSede(@Valid Sede sede, BindingResult result, @RequestParam(value="imagem", required=false) MultipartFile imagem) throws IOException { 
+		if(imagem != null && !imagem.isEmpty()) {
+			sede.setFoto64(Image.imagemBase64(imagem));
+		}
 		sedeService.salvar(sede);
 		
 		return "redirect:/sede/listar";
