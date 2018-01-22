@@ -29,6 +29,20 @@
 				</a><br/><br/><br/><br/>
 				
 				<div class="row">
+					  <div class="card col s4">
+				        <div class="card-image">
+				          <img src="/images/ingredienteLogo.png" width="300" height="300"/>
+				          <a th:href="@{${'/ingrediente/listar'}}" title="Ingredientes"
+				          	class="btn-floating halfway-fab waves-effect waves-light blue">
+				          	<i class="material-icons" title="Ingredientes">visibility</i>
+				          </a>
+				        </div>
+				        <div class="card-content">
+				        	<strong>
+				        		<span class="card-title" style="font-family: inherit; color: blue;">Todos</span>
+				        	</strong>
+				        </div>
+				      </div>
 				      <div class="card col s4" th:each="tipoIngrediente : ${tipoIngredientes}">
 				        <div class="card-image">
 				          <img th:src="${tipoIngrediente.foto64}" width="300" height="300"/>
