@@ -27,6 +27,9 @@ public class Ingrediente {
 	@ManyToOne
 	private Sede sede;
 	
+	@ManyToOne
+	private TipoIngrediente tipoIngrediente;
+	
 	public Ingrediente() {
 		
 	}
@@ -86,5 +89,13 @@ public class Ingrediente {
 	public void setSede(Sede sede) {
 		this.sede = sede;
 	}
-		
+
+	public TipoIngrediente getTipoIngrediente() {
+		return tipoIngrediente;
+	}
+
+	public void setTipoIngrediente(TipoIngrediente tipoIngrediente) {
+		this.tipoIngrediente = tipoIngrediente;
+	}
+			
 }
