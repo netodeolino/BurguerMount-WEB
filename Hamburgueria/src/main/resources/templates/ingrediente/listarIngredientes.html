@@ -45,7 +45,9 @@
 			            <td>
 			            	<img src="/images/ingredienteLogo.png" width="50" height="50" />
 			            </td>
-			            <td th:text="${ingrediente.nome}"></td>
+			            <td>
+			            	<a th:text="${ingrediente.nome}" th:href="@{${'/ingrediente/' + ingrediente.id}}"></a>
+			            </td>
 			            <td th:text="${ingrediente.qtd}"></td>
 			            <td th:text="${ingrediente.valorBruto}"></td>
 			            <td th:text="${ingrediente.valorDeVenda}"></td>
