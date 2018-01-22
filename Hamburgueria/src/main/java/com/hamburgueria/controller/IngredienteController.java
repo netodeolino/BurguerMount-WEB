@@ -18,7 +18,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.hamburgueria.model.Ingrediente;
+import com.hamburgueria.model.TipoIngrediente;
 import com.hamburgueria.service.IngredienteService;
+import com.hamburgueria.service.TipoIngredienteService;
 import com.hamburgueria.util.Constants;
 import com.hamburgueria.util.Image;
 
@@ -29,20 +31,37 @@ public class IngredienteController {
 	@Autowired
 	IngredienteService ingredienteService;
 	
+	@Autowired
+	TipoIngredienteService tipoIngredienteService;
+	
 	@GetMapping(path="/cadastrar")
 	public ModelAndView cadastrarIngrediente(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView("ingrediente/formCadastroIngrediente");
 		model.addObject(new Ingrediente());
+		model.addObject("tipos", tipoIngredienteService.listar());
+		return model;
+	}
+	
+	@GetMapping(path="/{id_tipo}/cadastrar")
+	public ModelAndView cadastrarIngredienteComTipo(@PathVariable("id_tipo") Long id_tipo, HttpServletRequest request) {
+		TipoIngrediente tipo = tipoIngredienteService.buscar(id_tipo);
+		
+		Ingrediente ingrediente =  new Ingrediente();
+		ingrediente.setTipoIngrediente(tipo);
+		
+		ModelAndView model = new ModelAndView("ingrediente/formCadastroIngrediente");
+		model.addObject(ingrediente);
+		model.addObject("tipos", tipoIngredienteService.listar());
 		return model;
 	}
 	
 	@PostMapping(path="/cadastrar")
 	public String cadastrarIngrediente(@Valid Ingrediente ingrediente, BindingResult result, @RequestParam(value="imagem", required=false) MultipartFile imagem) throws IOException {
-		//if (result.hasErrors()) return "ingrediente/formCadastroIngrediente";
-		
-		/* FALTA INFORMAR A SEDE */
-		
 		Ingrediente salvo = ingredienteService.salvar(ingrediente);
+		
+		TipoIngrediente tipo = tipoIngredienteService.buscar(salvo.getTipoIngrediente().getId());
+		tipo = this.adicionarIngredienteTipo(salvo, tipo);
+		tipoIngredienteService.salvar(tipo);
 		
 		if (imagem != null && !imagem.isEmpty()) {
 			salvo.setFoto64(Image.imagemBase64(imagem));
@@ -51,13 +70,25 @@ public class IngredienteController {
 		}
 		ingredienteService.salvar(salvo);
 		
-		return "redirect:/ingrediente/listar";
+		return "redirect:/ingrediente/" + tipo.getId() + "/listar";
 	}
 	
 	@GetMapping(path="/listar")
 	public ModelAndView listarIngredientes(){
 		ModelAndView model = new ModelAndView("ingrediente/listarIngredientes");
 		List<Ingrediente> ingredientes = ingredienteService.listar();
+		model.addObject("ingredientes", ingredientes);		
+		return model;
+	}
+	
+	@GetMapping(path="/{id_tipo}/listar")
+	public ModelAndView listarIngredientesPorTipo(@PathVariable("id_tipo") Long id_tipo){
+		ModelAndView model = new ModelAndView("ingrediente/listarIngredientes");
+		
+		TipoIngrediente tipo = tipoIngredienteService.buscar(id_tipo);
+		List<Ingrediente> ingredientes = tipo.getIngredientes();
+		
+		model.addObject("tipo", tipo);
 		model.addObject("ingredientes", ingredientes);		
 		return model;
 	}
@@ -85,5 +116,13 @@ public class IngredienteController {
 		ingredienteService.salvar(ingrediente);
 		
 		return "redirect:/ingrediente/listar";
+	}
+	
+	public TipoIngrediente adicionarIngredienteTipo(Ingrediente ingrediente, TipoIngrediente tipo) {
+		List<Ingrediente> ingredientes = tipo.getIngredientes();
+		ingredientes.add(ingrediente);
+		
+		tipo.setIngredientes(ingredientes);
+		return tipo;
 	}
 }

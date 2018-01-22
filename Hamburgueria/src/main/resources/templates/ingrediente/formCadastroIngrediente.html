@@ -30,7 +30,7 @@
 						src="/images/ingredienteLogo.png"  width="150" height="150"/>
 				</div>
 				<div class="row">
-					<form method="POST" th:object="${ingrediente}" enctype="multipart/form-data">
+					<form method="POST" th:object="${ingrediente}" enctype="multipart/form-data" th:action="@{/ingrediente/cadastrar}">
 						<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 						<div class="row">
 							<div class="form-group">
@@ -61,6 +61,31 @@
 		                        	<label for="valorVenda">Valor de Venda</label>
 		                        </div>
 		                	</div>
+                    	</div>
+                    	<div class="row">
+                    		<div class="form-group">
+	                    		<div class="input-field col s12">
+	                    			<i class="material-icons prefix">location_on</i>
+									<select name="idtipo" id="idtipo" th:unless="${ingrediente.tipoIngrediente != null}"
+										th:field="*{tipoIngrediente}">
+										<option th:value="${null}" disabled="true" selected="true">Escolha um tipo de Ingrediente</option>
+										<option th:each="tipo : ${tipos}"
+				            				th:value="${tipo.id}"
+				            				th:text="${tipo.nome}">
+										</option>
+									</select>
+									<select name="idtipo" id="idtipo" th:if="${ingrediente.tipoIngrediente != null}"
+										th:field="*{tipoIngrediente}">
+										<option th:value="${ingrediente.tipoIngrediente.id}" disabled="true" 
+											selected="true" th:text="${ingrediente.tipoIngrediente.nome}"></option>
+										<option th:each="tipo : ${tipos}"
+				            				th:value="${tipo.id}"
+				            				th:text="${tipo.nome}">
+										</option>
+									</select>
+									<label>Tipo de Ingrediente</label>
+								</div>
+							</div>
                     	</div>
                     	<div class="row">
                     		<div class="form-group">
