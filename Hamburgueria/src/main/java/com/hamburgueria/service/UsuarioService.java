@@ -33,6 +33,10 @@ public class UsuarioService {
 		return usuarioRepository.save(usuario);
 	}
 	
+	public Usuario atualizar(Usuario usuario) {
+		return usuarioRepository.save(usuario);
+	}
+	
 	public Usuario buscar(Long id) {
 		return usuarioRepository.findOne(id);
 	}

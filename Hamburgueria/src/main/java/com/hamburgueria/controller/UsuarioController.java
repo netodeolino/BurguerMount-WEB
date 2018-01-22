@@ -66,7 +66,7 @@ public class UsuarioController {
 		} else {
 			salvo.setFoto64(Constants.IMAGE_DEFAULT_USUARIO);
 		}
-		usuarioService.salvar(salvo);
+		usuarioService.atualizar(salvo);
 		
 		return "redirect:/";
 	}
@@ -108,12 +108,12 @@ public class UsuarioController {
 		}
 		
 		usuarioBanco.setPedidos(usuario.getPedidos());
-		usuarioBanco = usuarioService.salvar(usuarioBanco);
+		usuarioBanco = usuarioService.atualizar(usuarioBanco);
 		
 		if(senhaAtual != null && !senhaAtual.isEmpty()){
 			if(usuarioService.compararSenha(usuarioBanco.getSenha(), senhaAtual)){
 				usuarioBanco.setSenha(usuario.getSenha());
-				usuarioService.salvar(usuarioBanco);
+				usuarioService.atualizar(usuarioBanco);
 			}
 		}
 		

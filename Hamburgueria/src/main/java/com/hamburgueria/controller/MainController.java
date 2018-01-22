@@ -36,9 +36,6 @@ public class MainController {
 	public ModelAndView gerenciar() {
 		Usuario usuarioLogado = usuarioService.usuarioLogado();
 		
-		System.out.println(usuarioLogado.getNome());
-		System.out.println("ENTROU AQUY");
-		
 		if (usuarioLogado.getPapel() == Papel.ADMINISTRADOR) {
 			ModelAndView model = new ModelAndView("admin");
 			model.addObject("usuario", usuarioLogado);
