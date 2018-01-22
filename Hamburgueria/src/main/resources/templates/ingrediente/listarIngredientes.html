@@ -55,16 +55,12 @@
 			            	<img th:src="${ingrediente.foto64}" width="50" height="50" />
 			            </td>
 			            <td>
-			            	<a th:text="${ingrediente.nome}" th:href="@{${'/ingrediente/' + ingrediente.id}}"></a>
+			            	<span th:text="${ingrediente.nome}"></span>
 			            </td>
 			            <td th:text="${ingrediente.qtd}"></td>
 			            <td th:text="${ingrediente.valorBruto}"></td>
 			            <td th:text="${ingrediente.valorDeVenda}"></td>
 			            <td>
-			            	<a th:href="@{${'/ingrediente/' + ingrediente.id}}" title="Detalhes"
-				          		class="btn-floating halfway-fab waves-effect waves-light blue">
-				          		<i class="material-icons" title="Detalhes">visibility</i>
-				          	</a>
 				          	<a th:href="@{${'/ingrediente/editar/' + ingrediente.id}}" title="Editar"
 				          		class="btn-floating halfway-fab waves-effect waves-light orange">
 				          		<i class="material-icons">mode_edit</i>

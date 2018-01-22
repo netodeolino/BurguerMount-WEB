@@ -65,8 +65,8 @@
                     	<div class="row">
                     		<div class="form-group">
 	                    		<div class="input-field col s12">
-	                    			<i class="material-icons prefix">location_on</i>
-									<select name="idtipo" id="idtipo" th:unless="${ingrediente.tipoIngrediente != null}"
+	                    			<i class="material-icons prefix">pie_chart</i>
+									<select class="icons" name="idtipo" id="idtipo" th:unless="${ingrediente.tipoIngrediente != null}"
 										th:field="*{tipoIngrediente}">
 										<option th:value="${null}" disabled="true" selected="true">Escolha um tipo de Ingrediente</option>
 										<option th:each="tipo : ${tipos}"
@@ -74,14 +74,11 @@
 				            				th:text="${tipo.nome}">
 										</option>
 									</select>
-									<select name="idtipo" id="idtipo" th:if="${ingrediente.tipoIngrediente != null}"
+									<select class="icons" name="idtipo" id="idtipo" th:if="${ingrediente.tipoIngrediente != null}"
 										th:field="*{tipoIngrediente}">
 										<option th:value="${ingrediente.tipoIngrediente.id}" disabled="true" 
-											selected="true" th:text="${ingrediente.tipoIngrediente.nome}"></option>
-										<option th:each="tipo : ${tipos}"
-				            				th:value="${tipo.id}"
-				            				th:text="${tipo.nome}">
-										</option>
+											selected="true" th:text="${ingrediente.tipoIngrediente.nome}" />
+										<option th:each="tipo : ${tipos}" th:value="${tipo.id}" th:text="${tipo.nome}" />
 									</select>
 									<label>Tipo de Ingrediente</label>
 								</div>

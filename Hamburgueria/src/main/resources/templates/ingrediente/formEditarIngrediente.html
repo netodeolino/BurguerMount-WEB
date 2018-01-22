@@ -27,13 +27,14 @@
 				</div>
 				<div class="row" align="center">
 					<img id="logoIngrediente" class="profile-img-card"
-						src="/images/ingredienteLogo.png"  width="150" height="150"/>
+						th:src="${ingrediente.foto64}"  width="150" height="150"/>
 				</div>
 				<div class="row">
 					<form method="POST" th:object="${ingrediente}" th:action="@{/ingrediente/editar}" enctype="multipart/form-data">
 						<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 						<input th:field="*{id}" type="hidden" value="th:text=${ingrediente.id}" />
 						<input th:field="*{sede}" type="hidden" value="th:text=${ingrediente.sede}" />
+						<input th:field="*{foto64}" type="hidden" value="th:text=${ingrediente.foto64}" />
 						
 						<div th:if="${#fields.hasAnyErrors()}">
 							<h3>Preencha todos os campos corretamente!</h3>
@@ -69,6 +70,19 @@
 		                        	<label for="valorVenda">Valor de Venda</label>
 		                        </div>
 		                	</div>
+                    	</div>
+                    	<div class="row">
+                    		<div class="form-group">
+	                    		<div class="input-field col s12">
+	                    			<i class="material-icons prefix">pie_chart</i>
+									<select class="icons" name="idtipo" id="idtipo"	th:field="*{tipoIngrediente}">
+										<option th:value="${ingrediente.tipoIngrediente.id}" disabled="true" 
+											selected="true" th:text="${ingrediente.tipoIngrediente.nome}" />
+										<option th:each="tipo : ${tipos}" th:value="${tipo.id}" th:text="${tipo.nome}" />
+									</select>
+									<label>Tipo de Ingrediente</label>
+								</div>
+							</div>
                     	</div>
                     	<div class="row">
                     		<div class="form-group">

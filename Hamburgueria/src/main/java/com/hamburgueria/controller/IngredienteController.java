@@ -95,8 +95,12 @@ public class IngredienteController {
 	
 	@GetMapping(path="/excluir/{id}")
 	public String excluirIngrediente(@PathVariable("id") Long id) {
-		ingredienteService.excluir(id);
+		Ingrediente ingrediente = ingredienteService.buscar(id);
+				
+		TipoIngrediente tipo = this.removerIngredienteTipo(ingrediente, ingrediente.getTipoIngrediente());
+		tipoIngredienteService.salvar(tipo);
 			
+		ingredienteService.excluir(id);
 		return "redirect:/ingrediente/listar";
 	}
 	
@@ -105,6 +109,7 @@ public class IngredienteController {
 		Ingrediente ingrediente = ingredienteService.buscar(id);
 		ModelAndView model = new ModelAndView("ingrediente/formEditarIngrediente");
 		model.addObject("ingrediente", ingrediente);
+		model.addObject("tipos", tipoIngredienteService.listar());
 		return model;
 	}
 	
@@ -112,6 +117,16 @@ public class IngredienteController {
 	public String editarIngrediente(@Valid Ingrediente ingrediente, BindingResult result, @RequestParam(value="imagem", required=false) MultipartFile imagem) throws IOException { 
 		if(imagem != null && !imagem.isEmpty()) {
 			ingrediente.setFoto64(Image.imagemBase64(imagem));
+		}
+		
+		Ingrediente antigo = ingredienteService.buscar(ingrediente.getId());
+		if(!antigo.getTipoIngrediente().equals(ingrediente.getTipoIngrediente())) {
+			TipoIngrediente tipo = this.removerIngredienteTipo(antigo, antigo.getTipoIngrediente());
+			tipoIngredienteService.salvar(tipo);
+			
+			tipo = tipoIngredienteService.buscar(ingrediente.getTipoIngrediente().getId());
+			tipo = this.adicionarIngredienteTipo(ingrediente, tipo);
+			tipoIngredienteService.salvar(tipo);
 		}
 		ingredienteService.salvar(ingrediente);
 		
@@ -121,6 +136,14 @@ public class IngredienteController {
 	public TipoIngrediente adicionarIngredienteTipo(Ingrediente ingrediente, TipoIngrediente tipo) {
 		List<Ingrediente> ingredientes = tipo.getIngredientes();
 		ingredientes.add(ingrediente);
+		
+		tipo.setIngredientes(ingredientes);
+		return tipo;
+	}
+	
+	public TipoIngrediente removerIngredienteTipo(Ingrediente ingrediente, TipoIngrediente tipo) {
+		List<Ingrediente> ingredientes = tipo.getIngredientes();
+		ingredientes.remove(ingrediente);
 		
 		tipo.setIngredientes(ingredientes);
 		return tipo;
