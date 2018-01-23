@@ -1,7 +1,8 @@
 package com.hamburgueria.model;
 
 public enum Papel {
-	USUARIO,
+	CLIENTE,
 	ADMINISTRADOR,
-	ATENDENTE
+	FUNCIONARIO,
+	MASTER
 }

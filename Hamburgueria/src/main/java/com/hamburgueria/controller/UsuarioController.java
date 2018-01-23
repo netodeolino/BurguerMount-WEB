@@ -58,7 +58,7 @@ public class UsuarioController {
 				usuario.setCidade(sede.getCidade());
 			}
 		}
-		usuario.setPapel(Papel.ADMINISTRADOR);
+		usuario.setPapel(Papel.FUNCIONARIO);
 		Usuario salvo = usuarioService.salvar(usuario);
 		
 		if (imagem != null && !imagem.isEmpty()) {
