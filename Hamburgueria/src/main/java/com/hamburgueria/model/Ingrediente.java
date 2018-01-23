@@ -1,11 +1,14 @@
 package com.hamburgueria.model;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import com.hamburgueria.util.Constants;
 
@@ -29,6 +32,9 @@ public class Ingrediente {
 	
 	@ManyToOne
 	private TipoIngrediente tipoIngrediente;
+	
+	@OneToMany
+	private List<ProdutoIngrediente> produtoIngredientes;
 	
 	public Ingrediente() {
 		
@@ -96,6 +102,14 @@ public class Ingrediente {
 
 	public void setTipoIngrediente(TipoIngrediente tipoIngrediente) {
 		this.tipoIngrediente = tipoIngrediente;
+	}
+
+	public List<ProdutoIngrediente> getProdutoIngredientes() {
+		return produtoIngredientes;
+	}
+
+	public void setProdutoIngredientes(List<ProdutoIngrediente> produtoIngredientes) {
+		this.produtoIngredientes = produtoIngredientes;
 	}
 			
 }

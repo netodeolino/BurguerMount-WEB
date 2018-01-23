@@ -23,8 +23,8 @@ public class Produto {
 	@ManyToOne
 	private Sede sede;
 	
-	@OneToMany 
-	private List<Ingrediente> ingredientes;
+	@OneToMany
+	private List<ProdutoIngrediente> produtoIngredientes; 
 	
 	public Produto() {
 		
@@ -70,12 +70,12 @@ public class Produto {
 		this.sede = sede;
 	}
 
-	public List<Ingrediente> getIngredientes() {
-		return ingredientes;
+	public List<ProdutoIngrediente> getProdutoIngredientes() {
+		return produtoIngredientes;
 	}
 
-	public void setIngredientes(List<Ingrediente> ingredientes) {
-		this.ingredientes = ingredientes;
+	public void setProdutoIngredientes(List<ProdutoIngrediente> produtoIngredientes) {
+		this.produtoIngredientes = produtoIngredientes;
 	}
 	
 }

@@ -28,7 +28,6 @@ public class MainController {
 	@RequestMapping(path="erroLogin")
 	public String loginErrorUsuario(RedirectAttributes attributes) {
 		attributes.addFlashAttribute("mensagem", "Email ou senha incorretos!");
-		System.out.println("Email ou senha incorretos!");
 		return "redirect:/";
 	}
 	
