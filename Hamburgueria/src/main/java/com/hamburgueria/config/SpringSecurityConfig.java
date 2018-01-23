@@ -17,6 +17,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private AuthenticationProviderHamburgueria authProvider;
 	
+	@Autowired
+	private LoginSuccessHandler loginSuccessHandler;
+	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.authenticationProvider(authProvider);
@@ -26,11 +29,11 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http
         .authorizeRequests()
-        	.antMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/**").permitAll()
+        	.antMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
             .antMatchers("/usuario/cadastrar", "/usuario/starter", "/usuario/recuperarsenha",
             		"/usuario/alterarsenha/**", "/usuario/novasenha").permitAll()
+            .antMatchers("/sede/**").hasRole("MASTER")
             .anyRequest().authenticated()
-
             .and()
         .exceptionHandling()
             .accessDeniedPage("/negado")
@@ -39,7 +42,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
             .loginPage("/")
             .usernameParameter("email")
             .passwordParameter("senha")
-            .defaultSuccessUrl("/gerenciar")
+            .successHandler(loginSuccessHandler).permitAll()
             .failureUrl("/erroLogin")
             .permitAll()
             .and()

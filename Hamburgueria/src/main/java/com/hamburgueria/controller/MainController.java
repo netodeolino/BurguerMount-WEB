@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.hamburgueria.model.Papel;
 import com.hamburgueria.model.Usuario;
 import com.hamburgueria.service.UsuarioService;
 
@@ -31,24 +30,4 @@ public class MainController {
 		return "redirect:/";
 	}
 	
-	@GetMapping(path="gerenciar")
-	public ModelAndView gerenciar() {
-		Usuario usuarioLogado = usuarioService.usuarioLogado();
-		
-		if (usuarioLogado.getPapel() == Papel.ADMINISTRADOR) {
-			ModelAndView model = new ModelAndView("admin");
-			model.addObject("usuario", usuarioLogado);
-			return model;
-		}
-		
-		if (usuarioLogado.getPapel() == Papel.ATENDENTE) {
-			ModelAndView model = new ModelAndView("atendente");
-			model.addObject("usuario", usuarioLogado);
-			return model;
-		}
-		
-		ModelAndView model = new ModelAndView("index");
-		model.addObject("usuario", new Usuario());
-		return model;
-	}
 }
