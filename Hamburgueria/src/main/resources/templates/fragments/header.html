@@ -1,27 +1,35 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 	
 <body>
 
 	<div  th:fragment="header">
 		<ul id="dropdownCadastrar" class="dropdown-content">
-			<li><a th:href="@{/sede/cadastrar}">Sede</a></li>
+			<li th:if="${#authentication.getPrincipal().getPapel() == T(com.hamburgueria.model.Papel).MASTER}" >
+				<a th:href="@{/sede/cadastrar}">Sede</a>
+			</li>
 			<li><a th:href="@{/ingrediente/cadastrar}">Ingrediente</a></li>
 			<li><a th:href="@{/produto/cadastrar}">Produto</a></li>
 			<li><a th:href="@{/tipo_ingrediente/cadastrar}">Tipo Ingrediente</a></li>
 		</ul>
 		
 		<ul id="dropdownListar" class="dropdown-content">
-			<li><a th:href="@{/sede/listar}">Sedes</a></li>
+			<li th:if="${#authentication.getPrincipal().getPapel() == T(com.hamburgueria.model.Papel).MASTER}">
+				<a th:href="@{/sede/listar}">Sedes</a>
+			</li>
 			<li><a th:href="@{/tipo_ingrediente/listar}">Ingredientes</a></li>
 			<li><a th:href="@{/produto/listar}">Produtos</a></li>
 		</ul>
 
 		<nav>
 			<div class="nav-wrapper teal lighten-2">
-				<a href="#" class="brand-logo">Hamburgueria</a>
+				<a href="#" class="brand-logo left">
+					<img class="right" src="/images/logo.png" width="50" height="50" />
+					<span>Hamburgueria</span>
+				</a>
 				<ul id="nav-mobile" class="right hide-on-med-and-down">
 					<li>
 						<a class="dropdown-button" href="#!" data-activates="dropdownCadastrar">
@@ -35,6 +43,10 @@
 							<i class="material-icons right">arrow_drop_down</i>
 						</a>
 					</li>
+					<li>
+						<a title="Suas Informações" th:text="${#authentication.getPrincipal().getNome() + ', ' + #authentication.getPrincipal().getPapel() }"></a>
+					</li>
+					<li><a th:href="@{/usuario/logout}" title="Sair">Logout</a></li>
 				</ul>
 			</div>
 		</nav>
