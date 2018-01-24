@@ -44,7 +44,8 @@
 						</a>
 					</li>
 					<li>
-						<a title="Suas Informações" th:text="${#authentication.getPrincipal().getNome() + ', ' + #authentication.getPrincipal().getPapel() }"></a>
+						<a title="Suas Informações" th:href="@{/usuario/meu_perfil}"
+							th:text="${#authentication.getPrincipal().getNome() + ', ' + #authentication.getPrincipal().getPapel() }"></a>
 					</li>
 					<li><a th:href="@{/usuario/logout}" title="Sair">Logout</a></li>
 				</ul>
