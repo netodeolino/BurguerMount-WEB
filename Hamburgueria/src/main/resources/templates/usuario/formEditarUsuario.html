@@ -41,7 +41,7 @@
 							<div class="form-group">
 		                        <div class="input-field col s12">
 		                        	<i class="material-icons prefix">account_circle</i>
-		                        	<input id="nome" type="text" class="validate" th:field="*{nome}" th:value="${usuario.nome}"/>
+		                        	<input id="nome" type="text" class="validate" th:field="*{nome}" th:value="${usuario.nome}" required="true"/>
 		                        	<label for="nome" class="active">Nome Completo</label>
 		                        </div>
 		                	</div>
@@ -51,7 +51,7 @@
 		                        <div class="input-field col s6">
 		                        	<i class="material-icons prefix">phone</i>
 		                        	<input id="telefone" type="text" class="validate" 
-		                        		th:field="*{telefone}" th:value="${usuario.telefone}"/>
+		                        		th:field="*{telefone}" th:value="${usuario.telefone}" required="true"/>
 		                        	<label for="telefone" class="active">Telefone</label>
 		                        </div>
 		                	</div>
@@ -59,7 +59,7 @@
 		                        <div class="input-field col s6">
 		                        	<i class="material-icons prefix">date_range</i>
 		                        	<input id="dataNascimento" type="text" class="datepicker" 
-		                        		th:field="*{dataNascimento}" th:value="${usuario.dataNascimento}"/>
+		                        		th:field="*{dataNascimento}" th:value="${usuario.dataNascimento}" required="true"/>
 		                        	<label for="dataNascimento" class="active">Data de Nascimento</label>
 		                        </div>
 		                	</div>
@@ -69,7 +69,7 @@
 		                        <div class="input-field col s12">
 		                        	<i class="material-icons prefix">email</i>
 		                        	<input id="email" type="email" class="validate" 
-		                        		th:field="*{email}" th:value="${usuario.email}"/>
+		                        		th:field="*{email}" th:value="${usuario.email}" required="true"/>
 		                        	<label for="email" data-error="Formato Inválido" class="active">Email</label>
 		                        </div>
 		                	</div>
@@ -78,7 +78,7 @@
                     		<div class="form-group">
 	                    		<div class="input-field col s12">
 	                    			<i class="material-icons prefix">location_on</i>
-									<select name="idsede" id="idsede" th:field="*{sede}">
+									<select name="idsede" id="idsede" th:field="*{sede}" required="true">
 										
 										<option th:each="sede : ${sedes}"
 				            				th:value="${sede.id}"
