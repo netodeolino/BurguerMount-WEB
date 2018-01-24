@@ -111,7 +111,7 @@ public class UsuarioController {
 			sedeService.salvar(sede);
 			usuario.setCidade(sede.getCidade());
 		}
-		usuarioService.salvar(usuario);
+		usuarioService.atualizar(usuario);
 		
 		return "redirect:/usuario/meu_perfil";
 	}
@@ -129,7 +129,6 @@ public class UsuarioController {
 	public String alterarSenha(Usuario usuario, @RequestParam String senhaAtual) throws IOException {
 		Usuario usuarioLogado = usuarioService.usuarioLogado();
 		Usuario usuarioBanco = usuarioService.buscar(usuarioLogado.getEmail());
-		
 		if(senhaAtual != null && !senhaAtual.isEmpty()){
 			if(usuarioService.compararSenha(senhaAtual, usuarioBanco.getSenha())){
 				usuarioBanco.setSenha(usuario.getSenha());
@@ -137,7 +136,6 @@ public class UsuarioController {
 				
 				Authentication authentication = new UsernamePasswordAuthenticationToken(usuarioBanco, usuarioBanco.getSenha(), usuarioBanco.getAuthorities());
 				SecurityContextHolder.getContext().setAuthentication(authentication);
-				
 				return "redirect:/usuario/meu_perfil";
 			}
 		}
