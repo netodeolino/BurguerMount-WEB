@@ -34,7 +34,7 @@
 							<div class="form-group">
 		                        <div class="input-field col s12">
 		                        	<i class="material-icons prefix">account_circle</i>
-		                        	<input id="nome" type="text" class="validate" th:field="*{nome}"/>
+		                        	<input id="nome" type="text" class="validate" th:field="*{nome}" required="true"/>
 		                        	<label for="nome">Nome Completo</label>
 		                        </div>
 		                	</div>
@@ -44,7 +44,7 @@
 		                        <div class="input-field col s6">
 		                        	<i class="material-icons prefix">phone</i>
 		                        	<input id="telefone" type="text" class="validate" nome="telefone" size="20" maxlength="15"
-		                        		th:field="*{telefone}" onkeypress="mascara(this)"/>
+		                        		th:field="*{telefone}" onkeypress="mascara(this)" required="true"/>
 		                        	<label for="telefone">Telefone</label>
 		                        </div>
 		                	</div>
@@ -52,7 +52,7 @@
 		                        <div class="input-field col s6">
 		                        	<i class="material-icons prefix">date_range</i>
 		                        	<input id="dataNascimento" type="text" class="datepicker" 
-		                        		th:field="*{dataNascimento}"/>
+		                        		th:field="*{dataNascimento}" required="true"/>
 		                        	<label for="dataNascimento">Data de Nascimento</label>
 		                        </div>
 		                	</div>
@@ -61,7 +61,7 @@
                     		<div class="form-group">
 		                        <div class="input-field col s12">
 		                        	<i class="material-icons prefix">email</i>
-		                        	<input id="email" type="email" class="validate" th:field="*{email}"/>
+		                        	<input id="email" type="email" class="validate" th:field="*{email}" required="true"/>
 		                        	<label for="email" data-error="Formato Inválido">Email</label>
 		                        </div>
 		                	</div>
@@ -70,7 +70,7 @@
                     		<div class="form-group">
 		                        <div class="input-field col s12">
 		                        	<i class="material-icons prefix">lock</i>
-		                        	<input id="senha" type="password" class="validate" th:field="*{senha}"/>
+		                        	<input id="senha" type="password" class="validate" th:field="*{senha}" required="true"/>
 		                        	<label for="senha">Senha</label>
 		                        </div>
 		                	</div>
@@ -80,7 +80,7 @@
                     		<div class="form-group">
 	                    		<div class="input-field col s12">
 	                    			<i class="material-icons prefix">location_on</i>
-									<select th:field="*{sede}"  id="sede">
+									<select th:field="*{sede}"  id="sede" required="true">
 										<option th:value="${null}" disabled="true">Escolha uma das Sedes</option>
 										<option th:each="sede : ${sedes}"
 				            				th:value="${sede.id}"

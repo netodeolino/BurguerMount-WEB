@@ -46,7 +46,7 @@
 							<div class="form-group">
 		                        <div class="input-field col s12">
 		                        	<i class="material-icons prefix">lock</i>
-		                        	<input id="senhaAtual" type="password" class="validate" name="senhaAtual"/>
+		                        	<input id="senhaAtual" type="password" class="validate" name="senhaAtual" required="true"/>
 		                        	<label for="nome">Senha Atual</label>
 		                        </div>
 		                	</div>
@@ -55,7 +55,7 @@
 							<div class="form-group">
 		                        <div class="input-field col s12">
 		                        	<i class="material-icons prefix">account_circle</i>
-		                        	<input id="novaSenha" type="password" class="validate" th:field="*{senha}"/>
+		                        	<input id="novaSenha" type="password" class="validate" th:field="*{senha}" required="true"/>
 		                        	<label for="novaSenha">Nova Senha</label>
 		                        </div>
 		                	</div>
