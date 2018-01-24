@@ -127,27 +127,18 @@ public class UsuarioController {
 	
 	@PostMapping(path = "/alterar_senha")
 	public String alterarSenha(Usuario usuario, @RequestParam String senhaAtual) throws IOException {
-		System.err.println("1");
 		Usuario usuarioLogado = usuarioService.usuarioLogado();
-		System.err.println("1");
 		Usuario usuarioBanco = usuarioService.buscar(usuarioLogado.getEmail());
-		System.err.println("1");
 		if(senhaAtual != null && !senhaAtual.isEmpty()){
-			System.err.println("1");
 			if(usuarioService.compararSenha(senhaAtual, usuarioBanco.getSenha())){
-				System.err.println("1");
 				usuarioBanco.setSenha(usuario.getSenha());
-				System.err.println("1");
 				usuarioService.salvar(usuarioBanco);
-				System.err.println("1");
 				
 				Authentication authentication = new UsernamePasswordAuthenticationToken(usuarioBanco, usuarioBanco.getSenha(), usuarioBanco.getAuthorities());
 				SecurityContextHolder.getContext().setAuthentication(authentication);
-				System.err.println("1");
 				return "redirect:/usuario/meu_perfil";
 			}
 		}
-		System.err.println("1");
 		return "redirect:/usuario/alterar_senha";
 	}
 	
