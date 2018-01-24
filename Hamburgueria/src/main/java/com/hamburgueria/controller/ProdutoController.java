@@ -46,6 +46,7 @@ public class ProdutoController {
 		model.addObject(new ProdutoIngrediente());
 		model.addObject("ingredientes", ingredientes);
 		model.addObject("produtoIngredientes", ingredientesDoProduto);
+		
 		return model;
 	}
 	
@@ -70,6 +71,7 @@ public class ProdutoController {
 	
 	@GetMapping(path="/listar")
 	public ModelAndView listarProdutos(){
+		this.ingredientesDoProduto.clear();
 		ModelAndView model = new ModelAndView("produto/listarProdutos");
 		List<Produto> produtos = produtoService.listar();
 		model.addObject("produtos", produtos);		
@@ -78,6 +80,15 @@ public class ProdutoController {
 	
 	@GetMapping(path="/excluir/{id}")
 	public String excluirProduto(@PathVariable("id") Long id) {
+		Produto produto = produtoService.buscar(id);
+		List<ProdutoIngrediente> ingredientesDoProdutoLocal = produtoIngredienteService.listar(produto);
+		produto.setProdutoIngredientes(null);
+		produtoService.salvar(produto);
+		
+		for (ProdutoIngrediente produtoIngrediente : ingredientesDoProdutoLocal) {
+			produtoIngredienteService.excluir(produtoIngrediente.getId());
+		}
+		
 		produtoService.excluir(id);
 			
 		return "redirect:/produto/listar";
@@ -85,15 +96,44 @@ public class ProdutoController {
 	
 	@GetMapping(path="/editar/{id}")
 	public ModelAndView editarProduto(@PathVariable("id") Long id) {
+		List<Ingrediente> ingredientes = ingredienteService.listar();
 		Produto produto = produtoService.buscar(id);
+		
+		if (this.ingredientesDoProduto.size() == 0) {
+			this.ingredientesDoProduto = produto.getProdutoIngredientes();
+		}
+		
 		ModelAndView model = new ModelAndView("produto/formEditarProduto");
 		model.addObject("produto", produto);
+		model.addObject("ingredientes", ingredientes);
+		model.addObject("produtoIngredientes", ingredientesDoProduto);
+		model.addObject("idProduto", produto.getId());
+		model.addObject(new ProdutoIngrediente());
 		return model;
 	}
 	
 	@PostMapping(path="/editar")
-	public String editarProduto(@Valid Produto produto, BindingResult result) { 
-		produtoService.salvar(produto);
+	public String editarProduto(@Valid Produto produto, BindingResult result) {
+		Produto produtoBanco = produtoService.buscar(produto.getId());
+		List<ProdutoIngrediente> ingredientesDoProdutoLocal = produtoIngredienteService.listar(produtoBanco);
+		
+		produtoBanco.setProdutoIngredientes(null);
+		produtoService.salvar(produtoBanco);
+		
+		for (ProdutoIngrediente produtoIngrediente : ingredientesDoProdutoLocal) {
+			produtoIngredienteService.excluir(produtoIngrediente.getId());
+		}
+		
+		for (ProdutoIngrediente produtoIngrediente : this.ingredientesDoProduto) {
+			produtoIngrediente.setProduto(produtoBanco);
+			produtoIngredienteService.salvar(produtoIngrediente);
+		}
+		this.ingredientesDoProduto.clear();
+		
+		List<ProdutoIngrediente> ingredientesDoProdutoLocal2 = produtoIngredienteService.listar(produtoBanco);
+		produtoBanco.setProdutoIngredientes(ingredientesDoProdutoLocal2);
+		
+		produtoService.salvar(produtoBanco);
 		
 		return "redirect:/produto/listar";
 	}
@@ -122,6 +162,34 @@ public class ProdutoController {
 		}
 		
 		return "redirect:/produto/cadastrar";
+	}
+	
+	@PostMapping(path="/adicionar_ingrediente_editar")
+	public String adicionarIngredientesEditar(@Valid ProdutoIngrediente produtoIngrediente, Long id_ingrediente, Long idProduto) {
+		Ingrediente ingredienteBanco = ingredienteService.buscar(id_ingrediente);
+
+		produtoIngrediente.setIngrediente(ingredienteBanco);
+		this.ingredientesDoProduto.add(produtoIngrediente);
+		
+		return "redirect:/produto/editar/"+idProduto;
+	}
+	
+	@GetMapping(path="/remover_ingrediente_editar/{id}")
+	public String removerIngredientesEditar(@PathVariable("id") Long id) {
+		int index = -1;
+		Long idProduto = -1L;
+		for (ProdutoIngrediente produtoIngrediente : this.ingredientesDoProduto) {
+			if (produtoIngrediente.getIngrediente().getId() == id) {
+				index = this.ingredientesDoProduto.indexOf(produtoIngrediente);
+				idProduto = produtoIngrediente.getProduto().getId();
+			}
+		}
+		
+		if (index != -1) {
+			this.ingredientesDoProduto.remove(index);
+		}
+		
+		return "redirect:/produto/editar/"+idProduto;
 	}
 
 }
