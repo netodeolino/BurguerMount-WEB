@@ -71,6 +71,7 @@ public class ProdutoController {
 	
 	@GetMapping(path="/listar")
 	public ModelAndView listarProdutos(){
+		this.ingredientesDoProduto.clear();
 		ModelAndView model = new ModelAndView("produto/listarProdutos");
 		List<Produto> produtos = produtoService.listar();
 		model.addObject("produtos", produtos);		
@@ -80,8 +81,11 @@ public class ProdutoController {
 	@GetMapping(path="/excluir/{id}")
 	public String excluirProduto(@PathVariable("id") Long id) {
 		Produto produto = produtoService.buscar(id);
+		List<ProdutoIngrediente> ingredientesDoProdutoLocal = produtoIngredienteService.listar(produto);
+		produto.setProdutoIngredientes(null);
+		produtoService.salvar(produto);
 		
-		for (ProdutoIngrediente produtoIngrediente : produto.getProdutoIngredientes()) {
+		for (ProdutoIngrediente produtoIngrediente : ingredientesDoProdutoLocal) {
 			produtoIngredienteService.excluir(produtoIngrediente.getId());
 		}
 		
@@ -109,11 +113,27 @@ public class ProdutoController {
 	}
 	
 	@PostMapping(path="/editar")
-	public String editarProduto(@Valid Produto produto, BindingResult result) { 
-		produto.setProdutoIngredientes(this.ingredientesDoProduto);
-		produtoService.salvar(produto);
+	public String editarProduto(@Valid Produto produto, BindingResult result) {
+		Produto produtoBanco = produtoService.buscar(produto.getId());
+		List<ProdutoIngrediente> ingredientesDoProdutoLocal = produtoIngredienteService.listar(produtoBanco);
 		
+		produtoBanco.setProdutoIngredientes(null);
+		produtoService.salvar(produtoBanco);
+		
+		for (ProdutoIngrediente produtoIngrediente : ingredientesDoProdutoLocal) {
+			produtoIngredienteService.excluir(produtoIngrediente.getId());
+		}
+		
+		for (ProdutoIngrediente produtoIngrediente : this.ingredientesDoProduto) {
+			produtoIngrediente.setProduto(produtoBanco);
+			produtoIngredienteService.salvar(produtoIngrediente);
+		}
 		this.ingredientesDoProduto.clear();
+		
+		List<ProdutoIngrediente> ingredientesDoProdutoLocal2 = produtoIngredienteService.listar(produtoBanco);
+		produtoBanco.setProdutoIngredientes(ingredientesDoProdutoLocal2);
+		
+		produtoService.salvar(produtoBanco);
 		
 		return "redirect:/produto/listar";
 	}
