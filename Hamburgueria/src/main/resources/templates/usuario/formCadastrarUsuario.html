@@ -43,15 +43,15 @@
                     		<div class="form-group">
 		                        <div class="input-field col s6">
 		                        	<i class="material-icons prefix">phone</i>
-		                        	<input id="telefone" type="text" class="validate" 
-		                        		th:field="*{telefone}"/>
+		                        	<input id="telefone" type="text" class="validate" nome="telefone" size="20" maxlength="15"
+		                        		th:field="*{telefone}" onkeypress="mascara(this)"/>
 		                        	<label for="telefone">Telefone</label>
 		                        </div>
 		                	</div>
 		                	<div class="form-group">
 		                        <div class="input-field col s6">
 		                        	<i class="material-icons prefix">date_range</i>
-		                        	<input id="dataNascimento" type="text" class="validate datepicker" 
+		                        	<input id="dataNascimento" type="text" class="datepicker" 
 		                        		th:field="*{dataNascimento}"/>
 		                        	<label for="dataNascimento">Data de Nascimento</label>
 		                        </div>
@@ -80,8 +80,8 @@
                     		<div class="form-group">
 	                    		<div class="input-field col s12">
 	                    			<i class="material-icons prefix">location_on</i>
-									<select th:field="*{sede.id}" name="idsede" id="idsede">
-										<option th:value="${null}" disabled="true" selected="true">Escolha uma das Sedes</option>
+									<select th:field="*{sede}"  id="sede">
+										<option th:value="${null}" disabled="true">Escolha uma das Sedes</option>
 										<option th:each="sede : ${sedes}"
 				            				th:value="${sede.id}"
 				            				th:text="${sede.cidade}">

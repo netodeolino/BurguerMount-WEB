@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.hamburgueria.model.Ingrediente;
 import com.hamburgueria.model.Papel;
 import com.hamburgueria.model.Sede;
+import com.hamburgueria.model.TipoIngrediente;
 import com.hamburgueria.model.Usuario;
 import com.hamburgueria.service.SedeService;
 import com.hamburgueria.service.UsuarioService;
@@ -48,16 +50,8 @@ public class UsuarioController {
 	}
 	
 	@PostMapping(path="/cadastrar")
-	public String cadastrarUsuario(@Valid Usuario usuario, BindingResult result, Long idsede, @RequestParam(value="imagem", required=false) MultipartFile imagem) throws IOException {
-		//if (result.hasErrors()) return "usuario/formCadastroUsuario";
-
-		if(idsede != null) {
-			Sede sede = sedeService.buscar(idsede);
-			if (sede != null) {
-				usuario.setSede(sede);
-				usuario.setCidade(sede.getCidade());
-			}
-		}
+	public String cadastrarUsuario(@Valid Usuario usuario, BindingResult result, @RequestParam(value="imagem", required=false) MultipartFile imagem) throws IOException {
+			
 		usuario.setPapel(Papel.FUNCIONARIO);
 		Usuario salvo = usuarioService.salvar(usuario);
 		
@@ -66,9 +60,28 @@ public class UsuarioController {
 		} else {
 			salvo.setFoto64(Constants.IMAGE_DEFAULT_USUARIO);
 		}
+		
+		if(usuario.getSede() != null) {
+			Sede sede = sedeService.buscar(usuario.getSede().getId());
+			usuario.setSede(sede);
+			usuario.setCidade(sede.getCidade());
+			
+			Sede novaSede = this.adicionarUsuarioSede(usuario, sede);
+			sedeService.salvar(novaSede);
+		}
+		
 		usuarioService.atualizar(salvo);
 		
 		return "redirect:/";
+	}
+	
+	@GetMapping(path = "/meu_perfil")
+	public ModelAndView visualizarUsuario() {
+		Usuario usuario = usuarioService.usuarioLogado();
+		
+		ModelAndView model = new ModelAndView("usuario/detalhesUsuario");
+		model.addObject("usuario", usuario);
+		return model;
 	}
 	
 	@GetMapping(path = "/editar")
@@ -82,44 +95,76 @@ public class UsuarioController {
 		return model;
 	}
 	
-	@PostMapping(path = "/editar")
-	public String editarUsuario(Usuario usuario, @RequestParam String senhaAtual, Long idsede, @RequestParam(value="imagem", required=false) MultipartFile imagem) throws IOException {
+	@PostMapping(path="/editar")
+	public String editarUsuario(@Valid Usuario usuario, BindingResult result, @RequestParam(value="imagem", required=false) MultipartFile imagem) throws IOException { 
+		if(imagem != null && !imagem.isEmpty()) {
+			usuario.setFoto64(Image.imagemBase64(imagem));
+			System.err.println("1");
+		}
+
+		Usuario antigo = usuarioService.buscar(usuario.getId());
+
+		if(!antigo.getSede().equals(usuario.getSede())) {
+			Sede sede = this.removerUsuarioSede(antigo, antigo.getSede());
+			sedeService.salvar(sede);
+			
+			sede = this.adicionarUsuarioSede(usuario, usuario.getSede());
+			sedeService.salvar(sede);
+			usuario.setCidade(sede.getCidade());
+		}
+		usuarioService.salvar(usuario);
+		
+		return "redirect:/usuario/meu_perfil";
+	}
+	
+	@GetMapping(path="/alterar_senha")
+	public ModelAndView alterarSenha() {
+		Usuario usuario = usuarioService.usuarioLogado();
+		
+		ModelAndView model = new ModelAndView("usuario/formAlterarSenha");
+		model.addObject("usuario", usuario);
+		return model;
+	}
+	
+	@PostMapping(path = "/alterar_senha")
+	public String alterarSenha(Usuario usuario, @RequestParam String senhaAtual) throws IOException {
 		Usuario usuarioLogado = usuarioService.usuarioLogado();
 		Usuario usuarioBanco = usuarioService.buscar(usuarioLogado.getEmail());
 		
-		if(imagem != null && !imagem.isEmpty()) {
-			usuarioBanco.setFoto64(Image.imagemBase64(imagem));
-		}
-		
-		if(!usuario.getNome().isEmpty()) {
-			usuarioBanco.setNome(usuario.getNome());
-		}
-		
-		if(!usuario.getEmail().isEmpty()) {
-			usuarioBanco.setEmail(usuario.getEmail());
-		}
-		
-		if(idsede != null) {
-			Sede sede = sedeService.buscar(idsede);
-			if (sede != null) {
-				usuarioBanco.setSede(sede);
-				usuarioBanco.setCidade(sede.getCidade());
-			}
-		}
-		
-		usuarioBanco.setPedidos(usuario.getPedidos());
-		usuarioBanco = usuarioService.atualizar(usuarioBanco);
-		
 		if(senhaAtual != null && !senhaAtual.isEmpty()){
-			if(usuarioService.compararSenha(usuarioBanco.getSenha(), senhaAtual)){
+			System.err.println("1");
+			if(usuarioService.compararSenha(senhaAtual, usuarioBanco.getSenha())){
+				System.err.println("2");
 				usuarioBanco.setSenha(usuario.getSenha());
-				usuarioService.atualizar(usuarioBanco);
+				usuarioService.salvar(usuarioBanco);
+				System.err.println("3");
+				
+				Authentication authentication = new UsernamePasswordAuthenticationToken(usuarioBanco, usuarioBanco.getSenha(), usuarioBanco.getAuthorities());
+				SecurityContextHolder.getContext().setAuthentication(authentication);
+				
+				System.err.println("4");
+				
+				return "redirect:/usuario/meu_perfil";
 			}
 		}
-		
-		Authentication authentication = new UsernamePasswordAuthenticationToken(usuarioBanco, usuarioBanco.getSenha(), usuarioBanco.getAuthorities());
-		SecurityContextHolder.getContext().setAuthentication(authentication);
-		
-		return "redirect:/usuario/editar";
+		System.err.println("5");
+		return "redirect:/usuario/alterar_senha";
 	}
+	
+	public Sede removerUsuarioSede(Usuario usuario, Sede sede) {
+		List<Usuario> clientes = sede.getClientes();
+		clientes.remove(usuario);
+		
+		sede.setClientes(clientes);
+		return sede;
+	}
+	
+	public Sede adicionarUsuarioSede(Usuario usuario, Sede sede) {
+		List<Usuario> clientes = sede.getClientes();
+		clientes.add(usuario);
+		
+		sede.setClientes(clientes);
+		return sede;
+	}
+	
 }
