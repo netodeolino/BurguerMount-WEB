@@ -99,7 +99,6 @@ public class UsuarioController {
 	public String editarUsuario(@Valid Usuario usuario, BindingResult result, @RequestParam(value="imagem", required=false) MultipartFile imagem) throws IOException { 
 		if(imagem != null && !imagem.isEmpty()) {
 			usuario.setFoto64(Image.imagemBase64(imagem));
-			System.err.println("1");
 		}
 
 		Usuario antigo = usuarioService.buscar(usuario.getId());
@@ -132,22 +131,16 @@ public class UsuarioController {
 		Usuario usuarioBanco = usuarioService.buscar(usuarioLogado.getEmail());
 		
 		if(senhaAtual != null && !senhaAtual.isEmpty()){
-			System.err.println("1");
 			if(usuarioService.compararSenha(senhaAtual, usuarioBanco.getSenha())){
-				System.err.println("2");
 				usuarioBanco.setSenha(usuario.getSenha());
 				usuarioService.salvar(usuarioBanco);
-				System.err.println("3");
 				
 				Authentication authentication = new UsernamePasswordAuthenticationToken(usuarioBanco, usuarioBanco.getSenha(), usuarioBanco.getAuthorities());
 				SecurityContextHolder.getContext().setAuthentication(authentication);
 				
-				System.err.println("4");
-				
 				return "redirect:/usuario/meu_perfil";
 			}
 		}
-		System.err.println("5");
 		return "redirect:/usuario/alterar_senha";
 	}
 	
