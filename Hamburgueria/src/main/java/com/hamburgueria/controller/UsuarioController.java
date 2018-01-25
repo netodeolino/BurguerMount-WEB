@@ -100,7 +100,7 @@ public class UsuarioController {
 
 		Usuario antigo = usuarioService.buscar(usuario.getId());
 
-		if(!antigo.getSede().equals(usuario.getSede())) {
+		if(antigo.getSede()!= null && !antigo.getSede().equals(usuario.getSede())) {
 			Sede sede = this.removerUsuarioSede(antigo, antigo.getSede());
 			sedeService.salvar(sede);
 			

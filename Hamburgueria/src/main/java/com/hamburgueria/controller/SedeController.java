@@ -17,8 +17,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.hamburgueria.model.Papel;
 import com.hamburgueria.model.Sede;
+import com.hamburgueria.model.Usuario;
 import com.hamburgueria.service.SedeService;
+import com.hamburgueria.service.UsuarioService;
 import com.hamburgueria.util.Constants;
 import com.hamburgueria.util.Image;
 
@@ -28,6 +31,9 @@ public class SedeController {
 
 	@Autowired
 	SedeService sedeService;
+	
+	@Autowired
+	UsuarioService usuarioService;
 	
 	@GetMapping(path="/cadastrar")
 	public ModelAndView cadastrarSede(HttpServletRequest request) {
@@ -62,8 +68,11 @@ public class SedeController {
 	
 	@GetMapping(path="/excluir/{id}")
 	public String excluirSede(@PathVariable("id") Long id) {
+		Sede sede = sedeService.buscar(id);
+		
+		this.removerSedeUsuarios(sede);
 		sedeService.excluir(id);
-			
+		
 		return "redirect:/sede/listar";
 	}
 	
@@ -84,4 +93,14 @@ public class SedeController {
 		
 		return "redirect:/sede/listar";
 	}
+	
+	public void removerSedeUsuarios(Sede sede) {
+		for (Usuario cliente : sede.getClientes()) {
+			if(!cliente.getPapel().equals(Papel.CLIENTE) || !cliente.getPapel().equals(Papel.MASTER))
+				cliente.setPapel(Papel.CLIENTE);
+			cliente.setSede(null);
+			usuarioService.atualizar(cliente);
+		}
+	}
+
 }
