@@ -75,10 +75,13 @@ public class TipoIngredienteController {
 	}
 	
 	@PostMapping(path="/editar")
-	public String editarTipoIngrediente(@Valid TipoIngrediente tipoIngrediente, BindingResult result) { 
+	public String editarTipoIngrediente(@Valid TipoIngrediente tipoIngrediente, BindingResult result, @RequestParam(value="imagem", required=false) MultipartFile imagem) throws IOException { 
+		if(imagem != null && !imagem.isEmpty()) {
+			tipoIngrediente.setFoto64(Image.imagemBase64(imagem));
+		}
 		tipoIngredienteService.salvar(tipoIngrediente);
 		
-		return "redirect:/ingrediente/listar";
+		return "redirect:/tipo_ingrediente/listar";
 	}
 	
 
