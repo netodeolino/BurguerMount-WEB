@@ -19,10 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.hamburgueria.model.Ingrediente;
 import com.hamburgueria.model.Papel;
 import com.hamburgueria.model.Sede;
-import com.hamburgueria.model.TipoIngrediente;
 import com.hamburgueria.model.Usuario;
 import com.hamburgueria.service.SedeService;
 import com.hamburgueria.service.UsuarioService;
@@ -64,7 +62,6 @@ public class UsuarioController {
 		if(usuario.getSede() != null) {
 			Sede sede = sedeService.buscar(usuario.getSede().getId());
 			usuario.setSede(sede);
-			usuario.setCidade(sede.getCidade());
 			
 			Sede novaSede = this.adicionarUsuarioSede(usuario, sede);
 			sedeService.salvar(novaSede);
@@ -109,7 +106,6 @@ public class UsuarioController {
 			
 			sede = this.adicionarUsuarioSede(usuario, usuario.getSede());
 			sedeService.salvar(sede);
-			usuario.setCidade(sede.getCidade());
 		}
 		usuarioService.atualizar(usuario);
 		
