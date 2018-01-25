@@ -39,7 +39,6 @@ public class Usuario implements UserDetails {
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private Date dataNascimento;
 	private String senha;
-	private String cidade;
 	
 	@Column(columnDefinition = "text", length = Constants.TAM_MAX_IMG_64)
 	private String foto64;
@@ -103,14 +102,6 @@ public class Usuario implements UserDetails {
 
 	public void setSenha(String senha) {
 		this.senha = senha;
-	}
-
-	public String getCidade() {
-		return cidade;
-	}
-
-	public void setCidade(String cidade) {
-		this.cidade = cidade;
 	}
 
 	public String getFoto64() {
