@@ -168,4 +168,13 @@ public class IngredienteController {
 		tipo.setIngredientes(ingredientes);
 		return tipo;
 	}
+	
+	@GetMapping(path="/detalhes_ingrediente/{id}")
+	public ModelAndView detalhesIngrediente(@PathVariable("id") Long id) {
+		Ingrediente ingrediente = ingredienteService.buscar(id);
+		
+		ModelAndView model = new ModelAndView("ingrediente/detalhesIngrediente");
+		model.addObject("ingrediente", ingrediente);
+		return model;
+	}
 }
