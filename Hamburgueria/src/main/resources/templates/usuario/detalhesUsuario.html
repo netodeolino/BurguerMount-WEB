@@ -73,7 +73,9 @@
                     		<div class="form-group">
 	                    		<div class="input-field col s12">
 	                    			<i class="material-icons prefix">location_on</i>
-									<input id="sede" type="text" class="validate" disabled="true"
+	                    			<input th:if="${usuario.sede == null}" id="sede" type="text" class="validate" disabled="true"
+		                        		value="Você não possui nenhuma sede no momento."/>
+									<input th:unless="${usuario.sede == null}" id="sede" type="text" class="validate" disabled="true"
 		                        		th:field="*{sede.cidade}"/>
 		                        	<label for="sede" class="active">Cidade</label>
 								</div>

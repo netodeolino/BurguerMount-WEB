@@ -27,7 +27,7 @@ public class Sede {
 	@OneToMany(cascade=CascadeType.ALL)
 	private List<Ingrediente> estoque;
 	
-	@OneToMany(cascade=CascadeType.ALL)
+	@OneToMany
 	private List<Pedido> pedidos;
 	
 	@OneToMany(cascade=CascadeType.ALL)
