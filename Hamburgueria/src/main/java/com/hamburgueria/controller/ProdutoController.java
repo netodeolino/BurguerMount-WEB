@@ -191,5 +191,14 @@ public class ProdutoController {
 		
 		return "redirect:/produto/editar/"+idProduto;
 	}
+	
+	@GetMapping(path="/detalhes_produto/{id}")
+	public ModelAndView detalhesProduto(@PathVariable("id") Long id) {
+		Produto produto = produtoService.buscar(id);
+		
+		ModelAndView model = new ModelAndView("produto/detalhesProduto");
+		model.addObject("produto", produto);
+		return model;
+	}
 
 }
