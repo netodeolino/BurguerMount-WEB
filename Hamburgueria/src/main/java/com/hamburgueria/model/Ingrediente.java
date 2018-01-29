@@ -34,7 +34,7 @@ public class Ingrediente {
 	private TipoIngrediente tipoIngrediente;
 	
 	@OneToMany
-	private List<ProdutoIngrediente> produtoIngredientes;
+	private List<Produto> produtos;
 	
 	public Ingrediente() {
 		
@@ -104,12 +104,11 @@ public class Ingrediente {
 		this.tipoIngrediente = tipoIngrediente;
 	}
 
-	public List<ProdutoIngrediente> getProdutoIngredientes() {
-		return produtoIngredientes;
+	public List<Produto> getProdutos() {
+		return produtos;
 	}
 
-	public void setProdutoIngredientes(List<ProdutoIngrediente> produtoIngredientes) {
-		this.produtoIngredientes = produtoIngredientes;
-	}
-			
+	public void setProdutos(List<Produto> produtos) {
+		this.produtos = produtos;
+	}	
 }

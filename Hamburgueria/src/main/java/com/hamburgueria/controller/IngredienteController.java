@@ -18,11 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.hamburgueria.model.Ingrediente;
-import com.hamburgueria.model.Produto;
-import com.hamburgueria.model.ProdutoIngrediente;
 import com.hamburgueria.model.TipoIngrediente;
 import com.hamburgueria.service.IngredienteService;
-import com.hamburgueria.service.ProdutoIngredienteService;
 import com.hamburgueria.service.ProdutoService;
 import com.hamburgueria.service.TipoIngredienteService;
 import com.hamburgueria.util.Constants;
@@ -37,9 +34,6 @@ public class IngredienteController {
 	
 	@Autowired
 	TipoIngredienteService tipoIngredienteService;
-	
-	@Autowired
-	ProdutoIngredienteService produtoIngredienteService;
 	
 	@Autowired
 	ProdutoService produtoService;
@@ -109,16 +103,6 @@ public class IngredienteController {
 				
 		TipoIngrediente tipo = this.removerIngredienteTipo(ingrediente, ingrediente.getTipoIngrediente());
 		tipoIngredienteService.salvar(tipo);
-		
-		for (ProdutoIngrediente produtoIngrediente : produtoIngredienteService.listar()) {
-			if (produtoIngrediente.getIngrediente().getId() == ingrediente.getId()) {
-				Produto produto = produtoIngrediente.getProduto();
-				produto.setProdutoIngredientes(null);
-				produtoService.salvar(produto);
-				
-				produtoIngredienteService.excluir(produtoIngrediente.getId());
-			}
-		}
 			
 		ingredienteService.excluir(id);
 		return "redirect:/ingrediente/listar";
