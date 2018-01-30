@@ -1,17 +1,19 @@
 package com.hamburgueria.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.hamburgueria.model.Ingrediente;
@@ -30,12 +32,30 @@ public class ProdutoController {
 	IngredienteService ingredienteService;
 	
 	@GetMapping(path="/cadastrar")
-	public ModelAndView cadastrarProduto(HttpServletRequest request) {
+	public ModelAndView cadastrarProduto(
+				@RequestParam(value="ingredientesCarrinho", required=false) List<Ingrediente> ingredientesCarrinho,
+				@RequestParam(value="ingredientesCarrinhoAntigo", required=false) List<Ingrediente> ingredientesCarrinhoAntigo
+										) {
+		
 		List<Ingrediente> ingredientes = ingredienteService.listar();
+		List<Ingrediente> ingredientesCarrinhoPage = new ArrayList<>();
+		
+		if (ingredientesCarrinhoAntigo != null) {
+			ingredientesCarrinhoPage = ingredientesCarrinhoAntigo;
+		}
+		
+		if (ingredientesCarrinho != null) {
+			ingredientesCarrinhoPage.addAll(ingredientesCarrinho);
+		}
+		
+		System.out.println("Carrinho antigo: "+ingredientesCarrinhoAntigo);
+		System.out.println("Carrinho para adicionar: "+ingredientesCarrinho);
+		System.out.println("Carrinho Page: "+ingredientesCarrinhoPage);
 		
 		ModelAndView model = new ModelAndView("produto/formCadastroProduto");
 		model.addObject(new Produto());
 		model.addObject("ingredientes", ingredientes);
+		model.addObject("ingredientesCarrinho", ingredientesCarrinhoPage);
 		
 		return model;
 	}
@@ -96,6 +116,21 @@ public class ProdutoController {
 		ModelAndView model = new ModelAndView("produto/detalhesProduto");
 		model.addObject("produto", produto);
 		return model;
+	}
+	
+	@PostMapping(path="/adicionar_ingrediente")
+ 	public ModelAndView adicionarIngredientes(Long id_ingrediente, Integer quantidade, @ModelAttribute(value="ingredientesCarrinho") ArrayList<Ingrediente> ingredientesCarrinho) {
+ 		Ingrediente ingrediente = ingredienteService.buscar(id_ingrediente);
+		List<Ingrediente> ingrs = new ArrayList<Ingrediente>();
+ 		
+ 		for(int i = 0; i < quantidade; i++) {
+ 			ingrs.add(ingrediente);
+ 		}
+ 		
+ 		System.out.println("Ingredientes adicionados: "+ingrs);
+ 		System.out.println("Ingredientes do carrinho: "+ingredientesCarrinho);
+ 		
+ 		return cadastrarProduto(ingrs, ingredientesCarrinho);
 	}
 
 }
