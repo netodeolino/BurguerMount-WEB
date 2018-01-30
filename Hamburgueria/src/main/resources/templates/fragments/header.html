@@ -5,7 +5,6 @@
 	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 	
 <body>
-
 	<div  th:fragment="header">
 		<ul id="dropdownCadastrar" class="dropdown-content">
 			<li th:if="${#authentication.getPrincipal().getPapel() == T(com.hamburgueria.model.Papel).MASTER}" >
@@ -52,8 +51,6 @@
 			</div>
 		</nav>
 	</div>
-
-	
 </body>
 
 </html>
