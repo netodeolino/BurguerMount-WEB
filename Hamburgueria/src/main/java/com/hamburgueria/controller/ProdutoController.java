@@ -119,16 +119,16 @@ public class ProdutoController {
 	}
 	
 	@PostMapping(path="/adicionar_ingrediente")
- 	public ModelAndView adicionarIngredientes(Long id_ingrediente, Integer quantidade, @PathVariable("ingredientesCarrinho") ArrayList<Ingrediente> ingredientesCarrinho) {
- 		Ingrediente ingrediente = ingredienteService.buscar(id_ingrediente);
+ 	public ModelAndView adicionarIngredientes(@Valid ArrayList<Ingrediente> ingredientesCarrinho, Long id_ingrediente, Integer quantidade) {
+		Ingrediente ingrediente = ingredienteService.buscar(id_ingrediente);
 		List<Ingrediente> ingrs = new ArrayList<Ingrediente>();
  		
  		for(int i = 0; i < quantidade; i++) {
  			ingrs.add(ingrediente);
  		}
  		
- 		System.out.println("Ingredientes adicionados: "+ingrs);
- 		System.out.println("Ingredientes do carrinho: "+ingredientesCarrinho);
+ 		System.err.println("Ingredientes adicionados: "+ingrs);
+ 		System.err.println("Ingredientes do carrinho: "+ingredientesCarrinho);
  		
  		return cadastrarProduto(ingrs, ingredientesCarrinho);
 	}

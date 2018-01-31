@@ -75,7 +75,7 @@
                     		<div class="form-group">
 	                    		<div class="input-field col s12">
 	                    			<i class="material-icons prefix">pie_chart</i>
-									<select class="icons" name="idtipo" id="idtipo"	th:field="*{tipoIngrediente}">
+									<select class="icons" name="idtipo" id="idtipo"	th:field="*{tipoIngrediente}" required="true">
 										<option th:value="${ingrediente.tipoIngrediente.id}" disabled="true" 
 											selected="true" th:text="${ingrediente.tipoIngrediente.nome}" />
 										<option th:each="tipo : ${tipos}" th:value="${tipo.id}" th:text="${tipo.nome}" />
