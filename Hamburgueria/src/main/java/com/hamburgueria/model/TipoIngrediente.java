@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.hamburgueria.util.Constants;
@@ -25,6 +26,9 @@ public class TipoIngrediente {
 	
 	@OneToMany(cascade=CascadeType.ALL)
 	private List<Ingrediente> ingredientes;
+	
+	@ManyToOne
+	private Sede sede;
 	
 	public TipoIngrediente() {
 		
@@ -60,6 +64,14 @@ public class TipoIngrediente {
 
 	public void setIngredientes(List<Ingrediente> ingredientes) {
 		this.ingredientes = ingredientes;
+	}
+
+	public Sede getSede() {
+		return sede;
+	}
+
+	public void setSede(Sede sede) {
+		this.sede = sede;
 	}
 		
 }

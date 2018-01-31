@@ -25,6 +25,9 @@ public class Sede {
 	private String foto64;
 	
 	@OneToMany(cascade=CascadeType.ALL)
+	private List<TipoIngrediente> tipoIngredientes;
+	
+	@OneToMany(cascade=CascadeType.ALL)
 	private List<Ingrediente> estoque;
 	
 	@OneToMany
@@ -94,6 +97,14 @@ public class Sede {
 
 	public void setClientes(List<Usuario> clientes) {
 		this.clientes = clientes;
+	}
+
+	public List<TipoIngrediente> getTipoIngredientes() {
+		return tipoIngredientes;
+	}
+
+	public void setTipoIngredientes(List<TipoIngrediente> tipoIngredientes) {
+		this.tipoIngredientes = tipoIngredientes;
 	}
 	
 }
