@@ -2,6 +2,7 @@ package com.hamburgueria.model;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -35,7 +36,7 @@ public class Ingrediente {
 	@ManyToOne
 	private TipoIngrediente tipoIngrediente;
 	
-	@ManyToMany
+	@ManyToMany(cascade=CascadeType.ALL)
 	private List<Produto> produtos;
 	
 	public Ingrediente() {

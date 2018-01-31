@@ -22,6 +22,7 @@ import com.hamburgueria.model.TipoIngrediente;
 import com.hamburgueria.service.IngredienteService;
 import com.hamburgueria.service.ProdutoService;
 import com.hamburgueria.service.TipoIngredienteService;
+import com.hamburgueria.service.UsuarioService;
 import com.hamburgueria.util.Constants;
 import com.hamburgueria.util.Image;
 
@@ -38,11 +39,14 @@ public class IngredienteController {
 	@Autowired
 	ProdutoService produtoService;
 	
+	@Autowired
+	UsuarioService usuarioService;
+	
 	@GetMapping(path="/cadastrar")
 	public ModelAndView cadastrarIngrediente(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView("ingrediente/formCadastroIngrediente");
 		model.addObject(new Ingrediente());
-		model.addObject("tipos", tipoIngredienteService.listar());
+		model.addObject("tipos", tipoIngredienteService.listar(usuarioService.usuarioLogado().getSede().getId()));
 		return model;
 	}
 	
@@ -55,7 +59,7 @@ public class IngredienteController {
 		
 		ModelAndView model = new ModelAndView("ingrediente/formCadastroIngrediente");
 		model.addObject(ingrediente);
-		model.addObject("tipos", tipoIngredienteService.listar());
+		model.addObject("tipos", tipoIngredienteService.listar(usuarioService.usuarioLogado().getSede().getId()));
 		return model;
 	}
 	
@@ -113,7 +117,7 @@ public class IngredienteController {
 		Ingrediente ingrediente = ingredienteService.buscar(id);
 		ModelAndView model = new ModelAndView("ingrediente/formEditarIngrediente");
 		model.addObject("ingrediente", ingrediente);
-		model.addObject("tipos", tipoIngredienteService.listar());
+		model.addObject("tipos", tipoIngredienteService.listar(usuarioService.usuarioLogado().getSede().getId()));
 		return model;
 	}
 	

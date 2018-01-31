@@ -26,8 +26,8 @@ public class TipoIngredienteService {
 		tipoIngredienteRepository.delete(id);
 	}
 	
-	public List<TipoIngrediente> listar(){
-		return tipoIngredienteRepository.findAll();
+	public List<TipoIngrediente> listar(Long sede_id){
+		return tipoIngredienteRepository.listar(sede_id);
 	}
 	
 }

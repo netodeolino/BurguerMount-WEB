@@ -17,8 +17,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.hamburgueria.model.Sede;
 import com.hamburgueria.model.TipoIngrediente;
+import com.hamburgueria.service.SedeService;
 import com.hamburgueria.service.TipoIngredienteService;
+import com.hamburgueria.service.UsuarioService;
 import com.hamburgueria.util.Constants;
 import com.hamburgueria.util.Image;
 
@@ -28,7 +31,13 @@ public class TipoIngredienteController {
 	
 	@Autowired
 	TipoIngredienteService tipoIngredienteService;
+	
+	@Autowired
+	UsuarioService usuarioService;
 
+	@Autowired
+	SedeService sedeService;
+	
 	@GetMapping(path="/cadastrar")
 	public ModelAndView cadastrarTipoIngrediente(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView("tipoIngrediente/formCadastroTipoIngrediente");
@@ -46,6 +55,11 @@ public class TipoIngredienteController {
 		} else {
 			salvo.setFoto64(Constants.IMAGE_DEFAULT_INGREDIENTE);
 		}
+		
+		salvo.setSede(usuarioService.usuarioLogado().getSede());
+		Sede sede = this.adicionarTipoIngredienteSede(tipoIngrediente, usuarioService.usuarioLogado().getSede());
+		sedeService.salvar(sede);
+		
 		tipoIngredienteService.salvar(salvo);
 		
 		return "redirect:/tipo_ingrediente/listar";
@@ -54,13 +68,23 @@ public class TipoIngredienteController {
 	@GetMapping(path="/listar")
 	public ModelAndView listarTipoIngredientes(){
 		ModelAndView model = new ModelAndView("tipoIngrediente/listarTipoIngredientes");
-		List<TipoIngrediente> tipoIngredientes = tipoIngredienteService.listar();
-		model.addObject("tipoIngredientes", tipoIngredientes);		
+		List<TipoIngrediente> tipoIngredientes = tipoIngredienteService.listar(usuarioService.usuarioLogado().getSede().getId());
+		model.addObject("tipoIngredientes", tipoIngredientes);
 		return model;
 	}
 	
 	@GetMapping(path="/excluir/{id}")
 	public String excluirTipoIngrediente(@PathVariable("id") Long id) {
+		TipoIngrediente tipoIngrediente = tipoIngredienteService.buscar(id);
+		if(tipoIngrediente == null)
+			return "redirect:/tipo_ingrediente/listar";
+		
+		if(!tipoIngrediente.getSede().equals(usuarioService.usuarioLogado().getSede()))
+			return "redirect:/tipo_ingrediente/listar";
+		
+		Sede sede = this.removerTipoIngredienteSede(tipoIngrediente, tipoIngrediente.getSede());
+		sedeService.salvar(sede);
+		
 		tipoIngredienteService.excluir(id);
 			
 		return "redirect:/tipo_ingrediente/listar";
@@ -69,6 +93,19 @@ public class TipoIngredienteController {
 	@GetMapping(path="/editar/{id}")
 	public ModelAndView editarTipoIngrediente(@PathVariable("id") Long id) {
 		TipoIngrediente tipoIngrediente = tipoIngredienteService.buscar(id);
+		if(tipoIngrediente == null) {
+			ModelAndView model = new ModelAndView("erros/erro");
+			model.addObject("mensagem", "Tipo Ingrediente não encontrado");
+			return model;
+		}
+		
+		if(!tipoIngrediente.getSede().equals(usuarioService.usuarioLogado().getSede())) {
+			ModelAndView model = new ModelAndView("erros/erro");
+			model.addObject("mensagem", "Tipo Ingrediente não é da sua Sede");
+			return model;
+		}
+			
+		
 		ModelAndView model = new ModelAndView("tipoIngrediente/formEditarTipoIngrediente");
 		model.addObject("tipoIngrediente", tipoIngrediente);
 		return model;
@@ -82,6 +119,22 @@ public class TipoIngredienteController {
 		tipoIngredienteService.salvar(tipoIngrediente);
 		
 		return "redirect:/tipo_ingrediente/listar";
+	}
+	
+	public Sede adicionarTipoIngredienteSede(TipoIngrediente tipoIngrediente, Sede sede) {
+		List<TipoIngrediente> tipos = sede.getTipoIngredientes();
+		tipos.add(tipoIngrediente);
+		sede.setTipoIngredientes(tipos);
+		
+		return sede;
+	}
+	
+	public Sede removerTipoIngredienteSede(TipoIngrediente tipoIngrediente, Sede sede) {
+		List<TipoIngrediente> tipos = sede.getTipoIngredientes();
+		tipos.remove(tipoIngrediente);
+		sede.setTipoIngredientes(tipos);
+		
+		return sede;
 	}
 	
 
