@@ -75,7 +75,7 @@
 										</option>
 									</select>
 									<select class="icons" name="idtipo" id="idtipo" th:if="${ingrediente.tipoIngrediente != null}"
-										th:field="*{tipoIngrediente}">
+										th:field="*{tipoIngrediente}" required="true">
 										<option th:value="${ingrediente.tipoIngrediente.id}" disabled="true" 
 											selected="true" th:text="${ingrediente.tipoIngrediente.nome}" />
 										<option th:each="tipo : ${tipos}" th:value="${tipo.id}" th:text="${tipo.nome}" />

@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 
 import com.hamburgueria.util.Constants;
 
@@ -30,6 +31,7 @@ public class Ingrediente {
 	@ManyToOne
 	private Sede sede;
 	
+	@NotNull
 	@ManyToOne
 	private TipoIngrediente tipoIngrediente;
 	
