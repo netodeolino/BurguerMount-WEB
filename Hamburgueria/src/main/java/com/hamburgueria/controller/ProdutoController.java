@@ -38,7 +38,7 @@ public class ProdutoController {
 										) {
 		
 		List<Ingrediente> ingredientes = ingredienteService.listar();
-		List<Ingrediente> ingredientesCarrinhoPage = new ArrayList<>();
+		List<Ingrediente> ingredientesCarrinhoPage = new ArrayList<Ingrediente>();
 		
 		if (ingredientesCarrinhoAntigo != null) {
 			ingredientesCarrinhoPage = ingredientesCarrinhoAntigo;
@@ -119,7 +119,7 @@ public class ProdutoController {
 	}
 	
 	@PostMapping(path="/adicionar_ingrediente")
- 	public ModelAndView adicionarIngredientes(Long id_ingrediente, Integer quantidade, @ModelAttribute(value="ingredientesCarrinho") ArrayList<Ingrediente> ingredientesCarrinho) {
+ 	public ModelAndView adicionarIngredientes(Long id_ingrediente, Integer quantidade, @PathVariable("ingredientesCarrinho") ArrayList<Ingrediente> ingredientesCarrinho) {
  		Ingrediente ingrediente = ingredienteService.buscar(id_ingrediente);
 		List<Ingrediente> ingrs = new ArrayList<Ingrediente>();
  		
