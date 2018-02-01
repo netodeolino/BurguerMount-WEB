@@ -130,7 +130,6 @@ public class ProdutoController {
 	
 	@GetMapping(path="/{id_produto}/remover_ingrediente/{id_ingrediente}")
  	public ModelAndView removerIngredientes(@PathVariable("id_produto") Long id_produto, @PathVariable("id_ingrediente") Long id_ingrediente) {
-		System.err.println("TESTE");
  		Produto produto = produtoService.buscar(id_produto);
  		Ingrediente ingrediente = ingredienteService.buscar(id_ingrediente);
  		
