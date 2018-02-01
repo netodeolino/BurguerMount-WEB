@@ -18,8 +18,8 @@ public class TipoIngredienteService {
 		return tipoIngredienteRepository.save(tipoIngrediente);
 	}
 	
-	public TipoIngrediente buscar(Long id) {
-		return tipoIngredienteRepository.findOne(id);
+	public TipoIngrediente buscar(Long id_tipo, Long id_sede) {
+		return tipoIngredienteRepository.buscar(id_tipo, id_sede);
 	}
 	
 	public void excluir(Long id) {
