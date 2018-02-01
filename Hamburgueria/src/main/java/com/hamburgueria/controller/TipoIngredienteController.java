@@ -53,7 +53,7 @@ public class TipoIngredienteController {
 		if (imagem != null && !imagem.isEmpty()) {
 			salvo.setFoto64(Image.imagemBase64(imagem));
 		} else {
-			salvo.setFoto64(Constants.IMAGE_DEFAULT_INGREDIENTE);
+			salvo.setFoto64(Constants.IMAGE_DEFAULT_TIPO_INGREDIENTE);
 		}
 		
 		salvo.setSede(usuarioService.usuarioLogado().getSede());
