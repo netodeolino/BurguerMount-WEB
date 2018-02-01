@@ -1,5 +1,6 @@
 package com.hamburgueria.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.hamburgueria.model.Ingrediente;
@@ -19,6 +22,8 @@ import com.hamburgueria.model.Produto;
 import com.hamburgueria.service.IngredienteService;
 import com.hamburgueria.service.ProdutoService;
 import com.hamburgueria.service.UsuarioService;
+import com.hamburgueria.util.Constants;
+import com.hamburgueria.util.Image;
 
 @Controller
 @RequestMapping(path="/produto")
@@ -36,13 +41,32 @@ public class ProdutoController {
 	@GetMapping(path="/cadastrar")
 	public ModelAndView cadastrarProduto() {		
 		ModelAndView model = new ModelAndView("produto/formCadastroProduto");
-		model.addObject(new Produto());
+		model.addObject(new Produto(0.0, 0.0, true));
 
 		return model;
 	}
 	
 	@PostMapping(path="/cadastrar")
-	public ModelAndView cadastrarProduto(@Valid Produto produto) {
+	public ModelAndView cadastrarProduto(@Valid Produto produto, @RequestParam(value="imagem", required=false) MultipartFile imagem) throws IOException {
+		produto.setSede(usuarioService.usuarioLogado().getSede());
+		Produto produtoBanco = produtoService.salvar(produto);
+		
+		if (imagem != null && !imagem.isEmpty()) {
+			produtoBanco.setFoto64(Image.imagemBase64(imagem));
+		} else {
+			produtoBanco.setFoto64(Constants.IMAGE_DEFAULT_PRODUTO);
+		}
+		
+		List<Ingrediente> ingredientes = ingredienteService.listar();
+		
+		ModelAndView model = new ModelAndView("produto/formAdicionarIngredientes");
+		model.addObject("produto", produtoBanco);
+		model.addObject("ingredientes", ingredientes);
+		
+		return model;
+	}
+	
+	public ModelAndView cadastrarProduto(Produto produto) {
 		produto.setSede(usuarioService.usuarioLogado().getSede());
 		Produto produtoBanco = produtoService.salvar(produto);
 		
@@ -106,10 +130,13 @@ public class ProdutoController {
 	@PostMapping(path="/{id}/selecionar_ingredientes")
  	public ModelAndView adicionarIngredientes(@PathVariable("id") Long id, Long id_ingrediente, Integer quantidade) {
 		Produto produto = produtoService.buscar(id);
-		
 		Ingrediente ingrediente = ingredienteService.buscar(id_ingrediente);
+		
+		if (!(ingrediente.isDisponivel())) {
+			produto.setDisponivel(false);
+		}
+		
 		List<Ingrediente> ingrs = new ArrayList<Ingrediente>();
- 		
  		for(int i = 0; i < quantidade; i++) {
  			ingrs.add(ingrediente);
  		}
@@ -118,19 +145,16 @@ public class ProdutoController {
  		ingredientesJaSalvos.addAll(ingrs);
  		
  		produto.setIngredientes(ingredientesJaSalvos);
+ 		produto.setValorBruto(produto.getValorBruto() + (ingrediente.getValorBruto() * quantidade));
+ 		produto.setValorDeVenda(produto.getValorDeVenda() + (ingrediente.getValorDeVenda() * quantidade));
+ 		
  		Produto produtoAtualizado = produtoService.salvar(produto);
 		
  		return cadastrarProduto(produtoAtualizado);
 	}
 	
-	@GetMapping(path="/finalizar_produto")
- 	public String adicionarIngredientes() {
- 		return "redirect:/produto/listar";
-	}
-	
 	@GetMapping(path="/{id_produto}/remover_ingrediente/{id_ingrediente}")
  	public ModelAndView removerIngredientes(@PathVariable("id_produto") Long id_produto, @PathVariable("id_ingrediente") Long id_ingrediente) {
-		System.err.println("TESTE");
  		Produto produto = produtoService.buscar(id_produto);
  		Ingrediente ingrediente = ingredienteService.buscar(id_ingrediente);
  		
@@ -138,9 +162,16 @@ public class ProdutoController {
  		ingredientesDoProduto.remove(ingrediente);
  		
  		produto.setIngredientes(ingredientesDoProduto);
+ 		produto.setValorBruto(produto.getValorBruto() - ingrediente.getValorBruto());
+ 		produto.setValorDeVenda(produto.getValorDeVenda() - ingrediente.getValorDeVenda());
+ 		
  		Produto produtoAtualizado = produtoService.salvar(produto);
  		
  		return cadastrarProduto(produtoAtualizado);
 	}
-
+	
+	@GetMapping(path="/finalizar_produto")
+ 	public String adicionarIngredientes() {
+ 		return "redirect:/produto/listar";
+	}
 }
