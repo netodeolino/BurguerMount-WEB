@@ -52,7 +52,7 @@ public class IngredienteController {
 	
 	@GetMapping(path="/{id_tipo}/cadastrar")
 	public ModelAndView cadastrarIngredienteComTipo(@PathVariable("id_tipo") Long id_tipo, HttpServletRequest request) {
-		TipoIngrediente tipo = tipoIngredienteService.buscar(id_tipo);
+		TipoIngrediente tipo = tipoIngredienteService.buscar(id_tipo, usuarioService.usuarioLogado().getSede().getId());
 		
 		Ingrediente ingrediente =  new Ingrediente();
 		ingrediente.setTipoIngrediente(tipo);
@@ -67,7 +67,7 @@ public class IngredienteController {
 	public String cadastrarIngrediente(@Valid Ingrediente ingrediente, BindingResult result, @RequestParam(value="imagem", required=false) MultipartFile imagem) throws IOException {
 		Ingrediente salvo = ingredienteService.salvar(ingrediente);
 		
-		TipoIngrediente tipo = tipoIngredienteService.buscar(salvo.getTipoIngrediente().getId());
+		TipoIngrediente tipo = tipoIngredienteService.buscar(salvo.getTipoIngrediente().getId(), usuarioService.usuarioLogado().getSede().getId());
 		tipo = this.adicionarIngredienteTipo(salvo, tipo);
 		tipoIngredienteService.salvar(tipo);
 		
@@ -93,7 +93,7 @@ public class IngredienteController {
 	public ModelAndView listarIngredientesPorTipo(@PathVariable("id_tipo") Long id_tipo){
 		ModelAndView model = new ModelAndView("ingrediente/listarIngredientes");
 		
-		TipoIngrediente tipo = tipoIngredienteService.buscar(id_tipo);
+		TipoIngrediente tipo = tipoIngredienteService.buscar(id_tipo, usuarioService.usuarioLogado().getSede().getId());
 		List<Ingrediente> ingredientes = tipo.getIngredientes();
 		
 		model.addObject("tipo", tipo);
@@ -132,7 +132,7 @@ public class IngredienteController {
 			TipoIngrediente tipo = this.removerIngredienteTipo(antigo, antigo.getTipoIngrediente());
 			tipoIngredienteService.salvar(tipo);
 			
-			tipo = tipoIngredienteService.buscar(ingrediente.getTipoIngrediente().getId());
+			tipo = tipoIngredienteService.buscar(ingrediente.getTipoIngrediente().getId(), usuarioService.usuarioLogado().getSede().getId());
 			tipo = this.adicionarIngredienteTipo(ingrediente, tipo);
 			tipoIngredienteService.salvar(tipo);
 		}
