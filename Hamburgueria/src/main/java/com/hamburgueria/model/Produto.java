@@ -36,8 +36,12 @@ public class Produto {
 	@ManyToMany
 	private List<Ingrediente> ingredientes; 
 	
-	public Produto() {
-		
+	public Produto() {}
+	
+	public Produto(Double valorDeVenda, Double valorButo, boolean disponivel) {
+		this.valorDeVenda = valorDeVenda;
+		this.valorBruto = valorButo;
+		this.disponivel = disponivel;
 	}
 
 	public Long getId() {
