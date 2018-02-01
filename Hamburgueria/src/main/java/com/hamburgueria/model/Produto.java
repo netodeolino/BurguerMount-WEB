@@ -2,12 +2,16 @@ package com.hamburgueria.model;
 
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
+
+import com.hamburgueria.util.Constants;
 
 @Entity
 public class Produto {
@@ -19,6 +23,12 @@ public class Produto {
 	private String nome;
 	private Double valorDeVenda;
 	private Double valorBruto;
+	
+	@NotNull
+	private boolean disponivel;
+	
+	@Column(columnDefinition = "text", length = Constants.TAM_MAX_IMG_64)
+	private String foto64;
 	
 	@ManyToOne
 	private Sede sede;
@@ -60,6 +70,22 @@ public class Produto {
 
 	public void setValorBruto(Double valorBruto) {
 		this.valorBruto = valorBruto;
+	}
+
+	public boolean isDisponivel() {
+		return disponivel;
+	}
+
+	public void setDisponivel(boolean disponivel) {
+		this.disponivel = disponivel;
+	}
+
+	public String getFoto64() {
+		return foto64;
+	}
+
+	public void setFoto64(String foto64) {
+		this.foto64 = foto64;
 	}
 
 	public Sede getSede() {

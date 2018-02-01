@@ -26,6 +26,9 @@ public class Ingrediente {
 	private Double valorDeVenda;
 	private Double valorBruto;
 	
+	@NotNull
+	private boolean disponivel;
+	
 	@Column(columnDefinition = "text", length = Constants.TAM_MAX_IMG_64)
 	private String foto64;
 	
@@ -89,6 +92,14 @@ public class Ingrediente {
 
 	public void setFoto64(String foto64) {
 		this.foto64 = foto64;
+	}
+
+	public boolean isDisponivel() {
+		return disponivel;
+	}
+
+	public void setDisponivel(boolean disponivel) {
+		this.disponivel = disponivel;
 	}
 
 	public Sede getSede() {
