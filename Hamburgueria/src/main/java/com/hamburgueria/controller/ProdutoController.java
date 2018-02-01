@@ -51,7 +51,6 @@ public class ProdutoController {
 		ModelAndView model = new ModelAndView("produto/formAdicionarIngredientes");
 		model.addObject("produto", produtoBanco);
 		model.addObject("ingredientes", ingredientes);
-		model.addObject("ingredientesCarrinho", produtoBanco.getIngredientes());
 		
 		return model;
 	}
@@ -129,9 +128,10 @@ public class ProdutoController {
  		return "redirect:/produto/listar";
 	}
 	
-	@PostMapping(path="/produto/{id}/remover_ingrediente/")
- 	public ModelAndView removerIngredientes(@PathVariable("id") Long id, Long id_ingrediente) {
- 		Produto produto = produtoService.buscar(id);
+	@GetMapping(path="/{id_produto}/remover_ingrediente/{id_ingrediente}")
+ 	public ModelAndView removerIngredientes(@PathVariable("id_produto") Long id_produto, @PathVariable("id_ingrediente") Long id_ingrediente) {
+		System.err.println("TESTE");
+ 		Produto produto = produtoService.buscar(id_produto);
  		Ingrediente ingrediente = ingredienteService.buscar(id_ingrediente);
  		
  		List<Ingrediente> ingredientesDoProduto = produto.getIngredientes();

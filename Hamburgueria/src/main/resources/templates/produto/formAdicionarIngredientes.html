@@ -78,19 +78,15 @@
 				          </tr>
 				        </thead>
 				        <tbody>
-				          <tr th:each="ingrediente : ${ingredientesCarrinho}">
+				          <tr th:each="ingrediente : ${produto.ingredientes}">
 				            <td>
 				            	<span th:text="${ingrediente.nome}"></span>
 				            </td>
 				            <td>
-					          	<form method="POST" th:action="@{${'/produto/'+produto.id+'/remover_ingrediente/'}}">
-					          		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-					          		<input name="id_ingrediente" id="id_ingrediente" th:value="${ingrediente.id}"/>
-					          		<button class="btn-floating halfway-fab waves-effect waves-light red" type="submit" name="Adicionar">
-		                    			<b>Remover</b>
+					          		<a class="btn-floating halfway-fab waves-effect waves-light red" name="Remover"
+					          			th:href="@{${'/produto/'+produto.id+'/remover_ingrediente/'+ingrediente.id}}">
 		    							<i class="material-icons">remove</i>
-		  							</button>
-					          	</form>
+		  							</a>
 				            </td>
 				          </tr>
 				        </tbody>
