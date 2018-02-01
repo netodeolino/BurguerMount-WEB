@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.hamburgueria.model.Ingrediente;
 import com.hamburgueria.model.Sede;
 import com.hamburgueria.model.TipoIngrediente;
 import com.hamburgueria.service.SedeService;
@@ -37,6 +38,9 @@ public class TipoIngredienteController {
 
 	@Autowired
 	SedeService sedeService;
+	
+	@Autowired
+	IngredienteController ingredienteController;
 	
 	@GetMapping(path="/cadastrar")
 	public ModelAndView cadastrarTipoIngrediente(HttpServletRequest request) {
@@ -78,9 +82,13 @@ public class TipoIngredienteController {
 		TipoIngrediente tipoIngrediente = tipoIngredienteService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
 		if(tipoIngrediente == null)
 			return "redirect:/tipo_ingrediente/listar";
-		
+
 		Sede sede = this.removerTipoIngredienteSede(tipoIngrediente, tipoIngrediente.getSede());
 		sedeService.salvar(sede);
+		
+		for (Ingrediente ingrediente : tipoIngrediente.getIngredientes()) {)
+			ingredienteController.excluirIngrediente(ingrediente.getId());
+		}
 		
 		tipoIngredienteService.excluir(id);
 			

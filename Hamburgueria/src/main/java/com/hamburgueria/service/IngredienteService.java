@@ -18,15 +18,23 @@ public class IngredienteService {
 		return ingredienteRepository.save(ingrediente);
 	}
 	
-	public Ingrediente buscar(Long id) {
-		return ingredienteRepository.findOne(id);
+	public Ingrediente buscar(Long id_ingrediente, Long id_sede) {
+		return ingredienteRepository.buscar(id_ingrediente, id_sede);
 	}
 	
 	public void excluir(Long id) {
 		ingredienteRepository.delete(id);
 	}
 	
-	public List<Ingrediente> listar(){
-		return ingredienteRepository.findAll();
+	public List<Ingrediente> listarTodos(Long id_sede){
+		return ingredienteRepository.listarTodos(id_sede);
+	}
+	
+	public List<Ingrediente> listarDisponiveis(Long id_sede){
+		return ingredienteRepository.listarDisponiveis(id_sede);
+	}
+	
+	public List<Ingrediente> listarIndisponiveis(Long id_sede){
+		return ingredienteRepository.listarIndisponiveis(id_sede);
 	}
 }

@@ -24,7 +24,7 @@ public class TipoIngrediente {
 	@Column(columnDefinition = "text", length = Constants.TAM_MAX_IMG_64)
 	private String foto64;
 	
-	@OneToMany(cascade=CascadeType.ALL)
+	@OneToMany
 	private List<Ingrediente> ingredientes;
 	
 	@ManyToOne

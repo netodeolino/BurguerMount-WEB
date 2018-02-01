@@ -35,6 +35,7 @@
 						<input th:field="*{id}" type="hidden" value="th:text=${ingrediente.id}" />
 						<input th:field="*{sede}" type="hidden" value="th:text=${ingrediente.sede}" />
 						<input th:field="*{foto64}" type="hidden" value="th:text=${ingrediente.foto64}" />
+						<input th:field="*{disponivel}" type="hidden" value="th:text=${ingrediente.disponivel}" />
 						
 						<div th:if="${#fields.hasAnyErrors()}">
 							<h3>Preencha todos os campos corretamente!</h3>
@@ -50,7 +51,7 @@
 		                        <div class="input-field col s6">
 		                        	<i class="material-icons prefix">poll</i>
 		                        	<input id="quantidade" type="number" class="validate" th:field="*{qtd}"
-		                        		value="th:text=${ingrediente.qtd}"/>
+		                        		value="th:text=${ingrediente.qtd}" min="0"/>
 		                        	<label for="quantidade" class="active">Quantidade</label>
 		                        </div>
 		                	</div>
