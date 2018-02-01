@@ -75,11 +75,8 @@ public class TipoIngredienteController {
 	
 	@GetMapping(path="/excluir/{id}")
 	public String excluirTipoIngrediente(@PathVariable("id") Long id) {
-		TipoIngrediente tipoIngrediente = tipoIngredienteService.buscar(id);
+		TipoIngrediente tipoIngrediente = tipoIngredienteService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
 		if(tipoIngrediente == null)
-			return "redirect:/tipo_ingrediente/listar";
-		
-		if(!tipoIngrediente.getSede().equals(usuarioService.usuarioLogado().getSede()))
 			return "redirect:/tipo_ingrediente/listar";
 		
 		Sede sede = this.removerTipoIngredienteSede(tipoIngrediente, tipoIngrediente.getSede());
@@ -92,19 +89,12 @@ public class TipoIngredienteController {
 	
 	@GetMapping(path="/editar/{id}")
 	public ModelAndView editarTipoIngrediente(@PathVariable("id") Long id) {
-		TipoIngrediente tipoIngrediente = tipoIngredienteService.buscar(id);
+		TipoIngrediente tipoIngrediente = tipoIngredienteService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
 		if(tipoIngrediente == null) {
 			ModelAndView model = new ModelAndView("erros/erro");
 			model.addObject("mensagem", "Tipo Ingrediente não encontrado");
 			return model;
-		}
-		
-		if(!tipoIngrediente.getSede().equals(usuarioService.usuarioLogado().getSede())) {
-			ModelAndView model = new ModelAndView("erros/erro");
-			model.addObject("mensagem", "Tipo Ingrediente não é da sua Sede");
-			return model;
-		}
-			
+		}			
 		
 		ModelAndView model = new ModelAndView("tipoIngrediente/formEditarTipoIngrediente");
 		model.addObject("tipoIngrediente", tipoIngrediente);

@@ -18,4 +18,8 @@ public interface TipoIngredienteRepository extends JpaRepository<TipoIngrediente
 			+ "WHERE sede_id = ?1", nativeQuery=true)
 	public List<TipoIngrediente> listar(Long id_sede);
 	
+	@Query(value = "SELECT * FROM TIPO_INGREDIENTE "
+			+ "WHERE id = ?1 AND sede_id = ?2", nativeQuery=true)
+	public TipoIngrediente buscar(Long id_tipo, Long id_sede);
+	
 }
