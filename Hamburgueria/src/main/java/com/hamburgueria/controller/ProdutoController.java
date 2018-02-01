@@ -9,17 +9,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.hamburgueria.model.Ingrediente;
 import com.hamburgueria.model.Produto;
 import com.hamburgueria.service.IngredienteService;
 import com.hamburgueria.service.ProdutoService;
+import com.hamburgueria.service.UsuarioService;
 
 @Controller
 @RequestMapping(path="/produto")
@@ -31,43 +30,30 @@ public class ProdutoController {
 	@Autowired
 	IngredienteService ingredienteService;
 	
+	@Autowired
+	UsuarioService usuarioService;
+	
 	@GetMapping(path="/cadastrar")
-	public ModelAndView cadastrarProduto(
-				@RequestParam(value="ingredientesCarrinho", required=false) List<Ingrediente> ingredientesCarrinho,
-				@RequestParam(value="ingredientesCarrinhoAntigo", required=false) List<Ingrediente> ingredientesCarrinhoAntigo
-										) {
-		
-		List<Ingrediente> ingredientes = ingredienteService.listar();
-		List<Ingrediente> ingredientesCarrinhoPage = new ArrayList<Ingrediente>();
-		
-		if (ingredientesCarrinhoAntigo != null) {
-			ingredientesCarrinhoPage = ingredientesCarrinhoAntigo;
-		}
-		
-		if (ingredientesCarrinho != null) {
-			ingredientesCarrinhoPage.addAll(ingredientesCarrinho);
-		}
-		
-		System.out.println("Carrinho antigo: "+ingredientesCarrinhoAntigo);
-		System.out.println("Carrinho para adicionar: "+ingredientesCarrinho);
-		System.out.println("Carrinho Page: "+ingredientesCarrinhoPage);
-		
+	public ModelAndView cadastrarProduto() {		
 		ModelAndView model = new ModelAndView("produto/formCadastroProduto");
 		model.addObject(new Produto());
-		model.addObject("ingredientes", ingredientes);
-		model.addObject("ingredientesCarrinho", ingredientesCarrinhoPage);
-		
+
 		return model;
 	}
 	
 	@PostMapping(path="/cadastrar")
-	public String cadastrarProduto(@Valid Produto produto, BindingResult result) {
-		
+	public ModelAndView cadastrarProduto(@Valid Produto produto) {
+		produto.setSede(usuarioService.usuarioLogado().getSede());
 		Produto produtoBanco = produtoService.salvar(produto);
 		
-		produtoService.salvar(produtoBanco);
+		List<Ingrediente> ingredientes = ingredienteService.listar();
 		
-		return "redirect:/produto/listar";
+		ModelAndView model = new ModelAndView("produto/formAdicionarIngredientes");
+		model.addObject("produto", produtoBanco);
+		model.addObject("ingredientes", ingredientes);
+		model.addObject("ingredientesCarrinho", produtoBanco.getIngredientes());
+		
+		return model;
 	}
 	
 	@GetMapping(path="/listar")
@@ -118,8 +104,10 @@ public class ProdutoController {
 		return model;
 	}
 	
-	@PostMapping(path="/adicionar_ingrediente")
- 	public ModelAndView adicionarIngredientes(@Valid ArrayList<Ingrediente> ingredientesCarrinho, Long id_ingrediente, Integer quantidade) {
+	@PostMapping(path="/{id}/selecionar_ingredientes")
+ 	public ModelAndView adicionarIngredientes(@PathVariable("id") Long id, Long id_ingrediente, Integer quantidade) {
+		Produto produto = produtoService.buscar(id);
+		
 		Ingrediente ingrediente = ingredienteService.buscar(id_ingrediente);
 		List<Ingrediente> ingrs = new ArrayList<Ingrediente>();
  		
@@ -127,10 +115,32 @@ public class ProdutoController {
  			ingrs.add(ingrediente);
  		}
  		
- 		System.err.println("Ingredientes adicionados: "+ingrs);
- 		System.err.println("Ingredientes do carrinho: "+ingredientesCarrinho);
+ 		List<Ingrediente> ingredientesJaSalvos = produto.getIngredientes();
+ 		ingredientesJaSalvos.addAll(ingrs);
  		
- 		return cadastrarProduto(ingrs, ingredientesCarrinho);
+ 		produto.setIngredientes(ingredientesJaSalvos);
+ 		Produto produtoAtualizado = produtoService.salvar(produto);
+		
+ 		return cadastrarProduto(produtoAtualizado);
+	}
+	
+	@GetMapping(path="/finalizar_produto")
+ 	public String adicionarIngredientes() {
+ 		return "redirect:/produto/listar";
+	}
+	
+	@PostMapping(path="/produto/{id}/remover_ingrediente/")
+ 	public ModelAndView removerIngredientes(@PathVariable("id") Long id, Long id_ingrediente) {
+ 		Produto produto = produtoService.buscar(id);
+ 		Ingrediente ingrediente = ingredienteService.buscar(id_ingrediente);
+ 		
+ 		List<Ingrediente> ingredientesDoProduto = produto.getIngredientes();
+ 		ingredientesDoProduto.remove(ingrediente);
+ 		
+ 		produto.setIngredientes(ingredientesDoProduto);
+ 		Produto produtoAtualizado = produtoService.salvar(produto);
+ 		
+ 		return cadastrarProduto(produtoAtualizado);
 	}
 
 }
