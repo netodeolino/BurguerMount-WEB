@@ -8,7 +8,6 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,13 +48,13 @@ public class ProdutoController {
 	@PostMapping(path="/cadastrar")
 	public ModelAndView cadastrarProduto(@Valid Produto produto, @RequestParam(value="imagem", required=false) MultipartFile imagem) throws IOException {
 		produto.setSede(usuarioService.usuarioLogado().getSede());
-		Produto produtoBanco = produtoService.salvar(produto);
 		
 		if (imagem != null && !imagem.isEmpty()) {
-			produtoBanco.setFoto64(Image.imagemBase64(imagem));
+			produto.setFoto64(Image.imagemBase64(imagem));
 		} else {
-			produtoBanco.setFoto64(Constants.IMAGE_DEFAULT_PRODUTO);
+			produto.setFoto64(Constants.IMAGE_DEFAULT_PRODUTO);
 		}
+		Produto produtoBanco = produtoService.salvar(produto);
 		
 		List<Ingrediente> ingredientes = ingredienteService.listar();
 		
@@ -68,7 +67,7 @@ public class ProdutoController {
 	
 	public ModelAndView cadastrarProduto(Produto produto) {
 		produto.setSede(usuarioService.usuarioLogado().getSede());
-		Produto produtoBanco = produtoService.salvar(produto);
+		Produto produtoBanco = produtoService.buscar(produto.getId());
 		
 		List<Ingrediente> ingredientes = ingredienteService.listar();
 		
@@ -99,23 +98,44 @@ public class ProdutoController {
 	
 	@GetMapping(path="/editar/{id}")
 	public ModelAndView editarProduto(@PathVariable("id") Long id) {
-		List<Ingrediente> ingredientes = ingredienteService.listar();
+		
 		Produto produto = produtoService.buscar(id);
 		
 		ModelAndView model = new ModelAndView("produto/formEditarProduto");
 		model.addObject("produto", produto);
-		model.addObject("ingredientes", ingredientes);
-		model.addObject("idProduto", produto.getId());
 		return model;
 	}
 	
 	@PostMapping(path="/editar")
-	public String editarProduto(@Valid Produto produto, BindingResult result) {
+	public ModelAndView editarProduto(@Valid Produto produto, @RequestParam(value="imagem", required=false) MultipartFile imagem) throws IOException {
 		Produto produtoBanco = produtoService.buscar(produto.getId());
 		
-		produtoService.salvar(produtoBanco);
+		if (imagem != null && !imagem.isEmpty()) {
+			produtoBanco.setFoto64(Image.imagemBase64(imagem));
+		}
+		produtoBanco.setNome(produto.getNome());
 		
-		return "redirect:/produto/listar";
+		produtoBanco = produtoService.salvar(produtoBanco);
+		
+		List<Ingrediente> ingredientes = ingredienteService.listar();
+		
+		ModelAndView model = new ModelAndView("produto/formEditarAdicionarIngredientes");
+		model.addObject("produto", produtoBanco);
+		model.addObject("ingredientes", ingredientes);
+		
+		return model;
+	}
+	
+	public ModelAndView editarProduto(Produto produto) {
+		Produto produtoBanco = produtoService.buscar(produto.getId());
+		
+		List<Ingrediente> ingredientes = ingredienteService.listar();
+		
+		ModelAndView model = new ModelAndView("produto/formEditarAdicionarIngredientes");
+		model.addObject("produto", produtoBanco);
+		model.addObject("ingredientes", ingredientes);
+		
+		return model;
 	}
 	
 	@GetMapping(path="/detalhes_produto/{id}")
@@ -173,5 +193,48 @@ public class ProdutoController {
 	@GetMapping(path="/finalizar_produto")
  	public String adicionarIngredientes() {
  		return "redirect:/produto/listar";
+	}
+	
+	@PostMapping(path="/{id}/selecionar_ingredientes/editar")
+ 	public ModelAndView adicionarIngredientesEditar(@PathVariable("id") Long id, Long id_ingrediente, Integer quantidade) {
+		Produto produto = produtoService.buscar(id);
+		Ingrediente ingrediente = ingredienteService.buscar(id_ingrediente);
+		
+		if (!(ingrediente.isDisponivel())) {
+			produto.setDisponivel(false);
+		}
+		
+		List<Ingrediente> ingrs = new ArrayList<Ingrediente>();
+ 		for(int i = 0; i < quantidade; i++) {
+ 			ingrs.add(ingrediente);
+ 		}
+ 		
+ 		List<Ingrediente> ingredientesJaSalvos = produto.getIngredientes();
+ 		ingredientesJaSalvos.addAll(ingrs);
+ 		
+ 		produto.setIngredientes(ingredientesJaSalvos);
+ 		produto.setValorBruto(produto.getValorBruto() + (ingrediente.getValorBruto() * quantidade));
+ 		produto.setValorDeVenda(produto.getValorDeVenda() + (ingrediente.getValorDeVenda() * quantidade));
+ 		
+ 		Produto produtoAtualizado = produtoService.salvar(produto);
+		
+ 		return editarProduto(produtoAtualizado);
+	}
+	
+	@GetMapping(path="/{id_produto}/remover_ingrediente/{id_ingrediente}/editar")
+ 	public ModelAndView removerIngredientesEditar(@PathVariable("id_produto") Long id_produto, @PathVariable("id_ingrediente") Long id_ingrediente) {
+ 		Produto produto = produtoService.buscar(id_produto);
+ 		Ingrediente ingrediente = ingredienteService.buscar(id_ingrediente);
+ 		
+ 		List<Ingrediente> ingredientesDoProduto = produto.getIngredientes();
+ 		ingredientesDoProduto.remove(ingrediente);
+ 		
+ 		produto.setIngredientes(ingredientesDoProduto);
+ 		produto.setValorBruto(produto.getValorBruto() - ingrediente.getValorBruto());
+ 		produto.setValorDeVenda(produto.getValorDeVenda() - ingrediente.getValorDeVenda());
+ 		
+ 		Produto produtoAtualizado = produtoService.salvar(produto);
+ 		
+ 		return editarProduto(produtoAtualizado);
 	}
 }
