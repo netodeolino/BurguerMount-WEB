@@ -42,6 +42,9 @@ public class TipoIngredienteController {
 	@Autowired
 	IngredienteController ingredienteController;
 	
+	/*Função de cadastro simples.
+	 *Manda para a página "formCadastroTipoIngrediente" um tipo ingrediente vazio
+	 * */
 	@GetMapping(path="/cadastrar")
 	public ModelAndView cadastrarTipoIngrediente(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView("tipoIngrediente/formCadastroTipoIngrediente");
@@ -49,26 +52,31 @@ public class TipoIngredienteController {
 		return model;
 	}
 	
+	/*Função que salva o tipo ingrediente cadastrado.
+	 *Recebe um tipo ingrediente e uma possível imagem.
+	 */
 	@PostMapping(path="/cadastrar")
 	public String cadastrarTipoIngrediente(@Valid TipoIngrediente tipoIngrediente, BindingResult result, @RequestParam(value="imagem", required=false) MultipartFile imagem) throws IOException {
 		
 		TipoIngrediente salvo = tipoIngredienteService.salvar(tipoIngrediente);
 		
+		//Verifica se a quantidade do ingrediente e coloca a disponibilidade do mesmo.
 		if (imagem != null && !imagem.isEmpty()) {
 			salvo.setFoto64(Image.imagemBase64(imagem));
 		} else {
 			salvo.setFoto64(Constants.IMAGE_DEFAULT_INGREDIENTE);
 		}
 		
+		//Adiciona o tipo ingrediente a lista de tipo ingredientes da sede do usuário logado.
 		salvo.setSede(usuarioService.usuarioLogado().getSede());
-		Sede sede = this.adicionarTipoIngredienteSede(tipoIngrediente, usuarioService.usuarioLogado().getSede());
-		sedeService.salvar(sede);
+		this.adicionarTipoIngredienteSede(tipoIngrediente, usuarioService.usuarioLogado().getSede());
 		
 		tipoIngredienteService.salvar(salvo);
 		
 		return "redirect:/tipo_ingrediente/listar";
 	}
 	
+	//Função que lista todos tipo ingredientes do banco (todos da sede do usuário logado).
 	@GetMapping(path="/listar")
 	public ModelAndView listarTipoIngredientes(){
 		ModelAndView model = new ModelAndView("tipoIngrediente/listarTipoIngredientes");
@@ -77,17 +85,19 @@ public class TipoIngredienteController {
 		return model;
 	}
 	
+	//Função que exclui um determinado tipo ingrediente.
 	@GetMapping(path="/excluir/{id}")
 	public String excluirTipoIngrediente(@PathVariable("id") Long id) {
 		TipoIngrediente tipoIngrediente = tipoIngredienteService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
 		if(tipoIngrediente == null)
 			return "redirect:/tipo_ingrediente/listar";
-
-		Sede sede = this.removerTipoIngredienteSede(tipoIngrediente, tipoIngrediente.getSede());
-		sedeService.salvar(sede);
+		//Remove o tipo ingrediente que será excluido da lista de tipo ingredientes da sua sede, e atualiza  a sede.
+		this.removerTipoIngredienteSede(tipoIngrediente, tipoIngrediente.getSede());
 		
-		for (Ingrediente ingrediente : tipoIngrediente.getIngredientes()) {)
-			ingredienteController.excluirIngrediente(ingrediente.getId());
+		//Remove todos ingredientes do tipo ingrediente que será excluido 
+		//da lista de ingredientes da sua sede, e atualiza  a sede.
+		for (Ingrediente ingrediente : tipoIngrediente.getIngredientes()) {
+			ingredienteController.removerIngredienteSede(ingrediente, tipoIngrediente.getSede());
 		}
 		
 		tipoIngredienteService.excluir(id);
@@ -95,9 +105,13 @@ public class TipoIngredienteController {
 		return "redirect:/tipo_ingrediente/listar";
 	}
 	
+	/*Função de edição.
+	 *Manda para a página "formEditarTipoIngrediente" um tipo ingrediente informado pela URL.
+	 **/
 	@GetMapping(path="/editar/{id}")
 	public ModelAndView editarTipoIngrediente(@PathVariable("id") Long id) {
 		TipoIngrediente tipoIngrediente = tipoIngredienteService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
+		//Verifica se o tipo ingrediente informado existe, caso não exista o usuário é redirecionado para uma página de erro.
 		if(tipoIngrediente == null) {
 			ModelAndView model = new ModelAndView("erros/erro");
 			model.addObject("mensagem", "Tipo Ingrediente não encontrado");
@@ -109,30 +123,37 @@ public class TipoIngredienteController {
 		return model;
 	}
 	
+	/*Função que salva o tipo ingrediente modificado.
+	 *Recebe um tipo ingrediente e uma possível imagem.
+	 */
 	@PostMapping(path="/editar")
 	public String editarTipoIngrediente(@Valid TipoIngrediente tipoIngrediente, BindingResult result, @RequestParam(value="imagem", required=false) MultipartFile imagem) throws IOException { 
+		//Verifica se foi informada uma imagem, e altera ela para base64.
 		if(imagem != null && !imagem.isEmpty()) {
 			tipoIngrediente.setFoto64(Image.imagemBase64(imagem));
 		}
+		
 		tipoIngredienteService.salvar(tipoIngrediente);
 		
 		return "redirect:/tipo_ingrediente/listar";
 	}
 	
-	public Sede adicionarTipoIngredienteSede(TipoIngrediente tipoIngrediente, Sede sede) {
+	//Adiciona o tipo ingrediente na lista de tipo ingredientes da sede e salva a sede.
+	public void adicionarTipoIngredienteSede(TipoIngrediente tipoIngrediente, Sede sede) {
 		List<TipoIngrediente> tipos = sede.getTipoIngredientes();
 		tipos.add(tipoIngrediente);
 		sede.setTipoIngredientes(tipos);
 		
-		return sede;
+		sedeService.salvar(sede);
 	}
 	
-	public Sede removerTipoIngredienteSede(TipoIngrediente tipoIngrediente, Sede sede) {
+	//Remove o tipo ingrediente da lista de tipo ingredientes da sede e salva a sede.
+	public void removerTipoIngredienteSede(TipoIngrediente tipoIngrediente, Sede sede) {
 		List<TipoIngrediente> tipos = sede.getTipoIngredientes();
 		tipos.remove(tipoIngrediente);
 		sede.setTipoIngredientes(tipos);
 		
-		return sede;
+		sedeService.salvar(sede);
 	}
 	
 

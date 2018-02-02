@@ -15,18 +15,22 @@ import com.hamburgueria.model.TipoIngrediente;
 @Transactional
 public interface IngredienteRepository extends JpaRepository<Ingrediente, Long> {
 	
+	//Lista todos ingredientes de uma determinada sede
 	@Query(value = "SELECT * FROM INGREDIENTE "
 			+ "WHERE sede_id = ?1", nativeQuery=true)
 	public List<Ingrediente> listarTodos(Long id_sede);
 	
+	//Lista todos ingredientes disponiveis (qtd > 0) de uma determinada sede
 	@Query(value = "SELECT * FROM INGREDIENTE "
 			+ "WHERE sede_id = ?1 AND disponivel = true", nativeQuery=true)
 	public List<Ingrediente> listarDisponiveis(Long id_sede);
 	
+	//Lista todos ingredientes indisponiveis (qtd == 0) de uma determinada sede
 	@Query(value = "SELECT * FROM INGREDIENTE "
 			+ "WHERE sede_id = ?1 AND disponivel = false", nativeQuery=true)
 	public List<Ingrediente> listarIndisponiveis(Long id_sede);
 	
+	//Busca um determinado ingrediente de uma determinada sede
 	@Query(value = "SELECT * FROM INGREDIENTE "
 			+ "WHERE id = ?1 AND sede_id = ?2", nativeQuery=true)
 	public Ingrediente buscar(Long id_tipo, Long id_sede);
