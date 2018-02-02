@@ -28,37 +28,50 @@ public class UsuarioService {
 		bCryptPasswordEncoder = new BCryptPasswordEncoder();
 	}
 	
+	//Função que salva um usuário, antes de salvar ele criptografa a senha.
 	public Usuario salvar(Usuario usuario) {
 		usuario.setSenha(bCryptPasswordEncoder.encode(usuario.getSenha()));
 		return usuarioRepository.save(usuario);
 	}
 	
+	//Função que salva um usuário.
 	public Usuario atualizar(Usuario usuario) {
 		return usuarioRepository.save(usuario);
 	}
 	
+	//Busca um usuário pelo ID.
 	public Usuario buscar(Long id) {
 		return usuarioRepository.findOne(id);
 	}
 	
+	//Busca um usuário pelo email.
 	public Usuario buscar(String email) {
 		return usuarioRepository.findByEmail(email);
 	}
 	
+	//Exclui um usuário pelo ID.
 	public void excluir(Long id) {
 		usuarioRepository.delete(id);
 	}
 	
+	//Lista todos usuários.
 	public List<Usuario> listar() {
 		return usuarioRepository.findAll();
 	}
 	
+	//Função que valida o login de um usuário através do seu email e senha informados.
 	public boolean logar(String email, String senha){
 		Usuario userBanco = usuarioRepository.findByEmail(email);
+		/*Verifica se o usuário com esse email existe e se a senha passada é igual a senha no banco.
+		*Antes ele criptografa a senha informada para comparar com a senha que está no banco.
+		*/
 		if(userBanco != null && new BCryptPasswordEncoder().matches(senha, userBanco.getSenha())) return true;
 		else return false;
 	}
 	
+	/*Retorna o usuário logado.
+	 *Pega o email do usuário logado através do Authentication e busca esse usuário no banco.
+	 */
 	public Usuario usuarioLogado() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String email = auth.getName();
@@ -66,6 +79,7 @@ public class UsuarioService {
 		return usuarioLogado;
 	}
 	
+	//Recebe uma senha e uma senha criptografada e compara as duas.
 	public boolean compararSenha(String senhaLimpa, String senhaCriptografada) {
 		if (new BCryptPasswordEncoder().matches(senhaLimpa, senhaCriptografada)) {
 			return true;
@@ -86,8 +100,6 @@ public class UsuarioService {
 				token.setToken(UUID.randomUUID().toString());
 				tokenService.salvar(token);
 			}
-
-			//tokenService.enviarEmailRecuperacao(token);
 		}
 	}
 	

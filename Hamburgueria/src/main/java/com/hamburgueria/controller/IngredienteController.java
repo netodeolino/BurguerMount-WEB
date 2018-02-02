@@ -281,7 +281,6 @@ public class IngredienteController {
 	public List<Ingrediente> filtraIndisponiveis(List<Ingrediente> ingredientes) {
 		List<Ingrediente> indisponiveis = new ArrayList<>();
 		for (Ingrediente ingrediente : ingredientes) {
-			System.err.println(ingrediente.getNome());
 			if(!ingrediente.isDisponivel())
 				indisponiveis.add(ingrediente);
 		}
