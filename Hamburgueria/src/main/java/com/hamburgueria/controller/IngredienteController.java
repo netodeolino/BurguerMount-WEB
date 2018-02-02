@@ -269,7 +269,7 @@ public class IngredienteController {
 	
 	//Filtra e retorna apenas os ingredientes disponíveis
 	public List<Ingrediente> filtraDisponiveis(List<Ingrediente> ingredientes) {
-		List<Ingrediente> disponiveis = new ArrayList();
+		List<Ingrediente> disponiveis = new ArrayList<>();
 		for (Ingrediente ingrediente : ingredientes) {
 			if(ingrediente.isDisponivel())
 				disponiveis.add(ingrediente);
@@ -279,7 +279,7 @@ public class IngredienteController {
 	
 	//Filtra e retorna apenas os ingredientes indisponíveis
 	public List<Ingrediente> filtraIndisponiveis(List<Ingrediente> ingredientes) {
-		List<Ingrediente> indisponiveis = new ArrayList();
+		List<Ingrediente> indisponiveis = new ArrayList<>();
 		for (Ingrediente ingrediente : ingredientes) {
 			System.err.println(ingrediente.getNome());
 			if(!ingrediente.isDisponivel())
