@@ -57,7 +57,7 @@ public class ProdutoController {
 			produtoBanco.setFoto64(Constants.IMAGE_DEFAULT_PRODUTO);
 		}
 		
-		List<Ingrediente> ingredientes = ingredienteService.listar();
+		List<Ingrediente> ingredientes = ingredienteService.listarTodos(usuarioService.usuarioLogado().getSede().getId());
 		
 		ModelAndView model = new ModelAndView("produto/formAdicionarIngredientes");
 		model.addObject("produto", produtoBanco);
@@ -70,7 +70,7 @@ public class ProdutoController {
 		produto.setSede(usuarioService.usuarioLogado().getSede());
 		Produto produtoBanco = produtoService.salvar(produto);
 		
-		List<Ingrediente> ingredientes = ingredienteService.listar();
+		List<Ingrediente> ingredientes = ingredienteService.listarTodos(usuarioService.usuarioLogado().getSede().getId());
 		
 		ModelAndView model = new ModelAndView("produto/formAdicionarIngredientes");
 		model.addObject("produto", produtoBanco);
@@ -99,7 +99,7 @@ public class ProdutoController {
 	
 	@GetMapping(path="/editar/{id}")
 	public ModelAndView editarProduto(@PathVariable("id") Long id) {
-		List<Ingrediente> ingredientes = ingredienteService.listar();
+		List<Ingrediente> ingredientes = ingredienteService.listarTodos(usuarioService.usuarioLogado().getSede().getId());
 		Produto produto = produtoService.buscar(id);
 		
 		ModelAndView model = new ModelAndView("produto/formEditarProduto");
@@ -130,7 +130,7 @@ public class ProdutoController {
 	@PostMapping(path="/{id}/selecionar_ingredientes")
  	public ModelAndView adicionarIngredientes(@PathVariable("id") Long id, Long id_ingrediente, Integer quantidade) {
 		Produto produto = produtoService.buscar(id);
-		Ingrediente ingrediente = ingredienteService.buscar(id_ingrediente);
+		Ingrediente ingrediente = ingredienteService.buscar(id_ingrediente, usuarioService.usuarioLogado().getSede().getId());
 		
 		if (!(ingrediente.isDisponivel())) {
 			produto.setDisponivel(false);
@@ -156,7 +156,7 @@ public class ProdutoController {
 	@GetMapping(path="/{id_produto}/remover_ingrediente/{id_ingrediente}")
  	public ModelAndView removerIngredientes(@PathVariable("id_produto") Long id_produto, @PathVariable("id_ingrediente") Long id_ingrediente) {
  		Produto produto = produtoService.buscar(id_produto);
- 		Ingrediente ingrediente = ingredienteService.buscar(id_ingrediente);
+ 		Ingrediente ingrediente = ingredienteService.buscar(id_ingrediente, usuarioService.usuarioLogado().getSede().getId());
  		
  		List<Ingrediente> ingredientesDoProduto = produto.getIngredientes();
  		ingredientesDoProduto.remove(ingrediente);
