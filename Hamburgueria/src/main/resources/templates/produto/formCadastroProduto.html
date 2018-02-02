@@ -29,7 +29,7 @@
 					<img id="logoSede" class="profile-img-card" src="/images/logoTemporario.png"  width="150" height="150"/>
 				</div>
 				<div class="row">
-					<form method="POST" th:object="${produto}">
+					<form method="POST" th:object="${produto}" enctype="multipart/form-data">
 						<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 						<input name="valorBruto" type="hidden" th:value="${produto.valorBruto}" />
 						<input name="valorDeVenda" type="hidden" th:value="${produto.valorDeVenda}" />

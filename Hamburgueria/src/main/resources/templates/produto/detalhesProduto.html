@@ -26,11 +26,11 @@
 					<h4> Detalhes do Produto</h4>
 				</div>
 				<div class="row" align="center">
-					<img id="logoSede" class="profile-img-card circle" src="/images/logoTemporario.png"  width="150" height="150"/>
+					<img id="fotoProduto" class="profile-img-card" th:src="${produto.foto64}"  width="150" height="150"/>
 				</div>
 				<div class="row">
 					<div class="card card-container">
-						<table class="highlight">
+						<table class="highlight centered responsive-table">
 						<thead>
 				        	<tr>
 				              <th>Ingrediente</th>
@@ -38,11 +38,11 @@
 				          </tr>
 				        </thead>
 				        <tbody>
-				          <tr th:each="produtoIngrediente : ${produto.produtoIngredientes}">
+				          <tr th:each="ingrediente : ${produto.ingredientes}">
 				            <td>
-				            	<span th:text="${produtoIngrediente.ingrediente.nome}"></span>
+				            	<span th:text="${ingrediente.nome}"></span>
 				            </td>
-				            <td th:text="${produtoIngrediente.quantidade}"></td>
+				            <td th:text="${ingrediente.qtd}"></td>
 				          </tr>
 				        </tbody>
 						</table>

@@ -26,10 +26,10 @@
 					<h4>Editar Produto</h4>
 				</div>
 				<div class="row" align="center">
-					<img id="logoSede" class="profile-img-card" src="/images/logoTemporario.png"  width="150" height="150"/>
+					<img id="logoSede" class="profile-img-card" th:src="${produto.foto64}"  width="150" height="150"/>
 				</div>
 				<div class="row">
-					<form method="POST" th:object="${produto}" th:action="@{/produto/editar/}">
+					<form method="POST" th:object="${produto}" th:action="@{/produto/editar/}"  enctype="multipart/form-data">
 						<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 						<input name="id" type="hidden" th:value="${produto.id}" />
 						<div class="row">
