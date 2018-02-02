@@ -11,5 +11,6 @@ import com.hamburgueria.model.Usuario;
 @Transactional
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
+	//Busca um usuário por email.
 	public Usuario findByEmail(String email);
 }
