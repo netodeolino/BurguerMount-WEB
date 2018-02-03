@@ -67,7 +67,7 @@ public class ProdutoController {
 	
 	public ModelAndView cadastrarProduto(Produto produto) {
 		produto.setSede(usuarioService.usuarioLogado().getSede());
-		Produto produtoBanco = produtoService.buscar(produto.getId());
+		Produto produtoBanco = produtoService.buscar(produto.getId(), usuarioService.usuarioLogado().getSede().getId());
 		
 		List<Ingrediente> ingredientes = ingredienteService.listarTodos(usuarioService.usuarioLogado().getSede().getId());
 		
@@ -81,14 +81,16 @@ public class ProdutoController {
 	@GetMapping(path="/listar")
 	public ModelAndView listarProdutos(){
 		ModelAndView model = new ModelAndView("produto/listarProdutos");
-		List<Produto> produtos = produtoService.listar();
-		model.addObject("produtos", produtos);		
+		List<Produto> disponiveis = produtoService.listarDisponiveis(usuarioService.usuarioLogado().getSede().getId());
+		List<Produto> indisponiveis = produtoService.listarIndisponiveis(usuarioService.usuarioLogado().getSede().getId());
+		model.addObject("disponiveis", disponiveis);
+		model.addObject("indisponiveis", indisponiveis);
 		return model;
 	}
 	
 	@GetMapping(path="/excluir/{id}")
 	public String excluirProduto(@PathVariable("id") Long id) {
-		Produto produto = produtoService.buscar(id);
+		Produto produto = produtoService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
 		produtoService.salvar(produto);
 		
 		produtoService.excluir(id);
@@ -98,7 +100,7 @@ public class ProdutoController {
 	
 	@GetMapping(path="/editar/{id}")
 	public ModelAndView editarProduto(@PathVariable("id") Long id) {
-		Produto produto = produtoService.buscar(id);
+		Produto produto = produtoService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
 		
 		ModelAndView model = new ModelAndView("produto/formEditarProduto");
 		model.addObject("produto", produto);
@@ -107,7 +109,7 @@ public class ProdutoController {
 	
 	@PostMapping(path="/editar")
 	public ModelAndView editarProduto(@Valid Produto produto, @RequestParam(value="imagem", required=false) MultipartFile imagem) throws IOException {
-		Produto produtoBanco = produtoService.buscar(produto.getId());
+		Produto produtoBanco = produtoService.buscar(produto.getId(), usuarioService.usuarioLogado().getSede().getId());
 		
 		if (imagem != null && !imagem.isEmpty()) {
 			produtoBanco.setFoto64(Image.imagemBase64(imagem));
@@ -126,7 +128,7 @@ public class ProdutoController {
 	}
 	
 	public ModelAndView editarProduto(Produto produto) {
-		Produto produtoBanco = produtoService.buscar(produto.getId());
+		Produto produtoBanco = produtoService.buscar(produto.getId(), usuarioService.usuarioLogado().getSede().getId());
 		
 		List<Ingrediente> ingredientes = ingredienteService.listarDisponiveis(usuarioService.usuarioLogado().getSede().getId());
 		
@@ -139,7 +141,7 @@ public class ProdutoController {
 	
 	@GetMapping(path="/detalhes_produto/{id}")
 	public ModelAndView detalhesProduto(@PathVariable("id") Long id) {
-		Produto produto = produtoService.buscar(id);
+		Produto produto = produtoService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
 		
 		ModelAndView model = new ModelAndView("produto/detalhesProduto");
 		model.addObject("produto", produto);
@@ -148,7 +150,7 @@ public class ProdutoController {
 	
 	@PostMapping(path="/{id}/selecionar_ingredientes")
  	public ModelAndView adicionarIngredientes(@PathVariable("id") Long id, Long id_ingrediente, Integer quantidade) {
-		Produto produto = produtoService.buscar(id);
+		Produto produto = produtoService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
 		Ingrediente ingrediente = ingredienteService.buscar(id_ingrediente, usuarioService.usuarioLogado().getSede().getId());
 		
 		if (!(ingrediente.isDisponivel())) {
@@ -174,7 +176,7 @@ public class ProdutoController {
 	
 	@GetMapping(path="/{id_produto}/remover_ingrediente/{id_ingrediente}")
  	public ModelAndView removerIngredientes(@PathVariable("id_produto") Long id_produto, @PathVariable("id_ingrediente") Long id_ingrediente) {
- 		Produto produto = produtoService.buscar(id_produto);
+ 		Produto produto = produtoService.buscar(id_produto, usuarioService.usuarioLogado().getSede().getId());
  		Ingrediente ingrediente = ingredienteService.buscar(id_ingrediente, usuarioService.usuarioLogado().getSede().getId());
  		
  		List<Ingrediente> ingredientesDoProduto = produto.getIngredientes();
@@ -196,7 +198,7 @@ public class ProdutoController {
 	
 	@PostMapping(path="/{id}/selecionar_ingredientes/editar")
  	public ModelAndView adicionarIngredientesEditar(@PathVariable("id") Long id, Long id_ingrediente, Integer quantidade) {
-		Produto produto = produtoService.buscar(id);
+		Produto produto = produtoService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
 		Ingrediente ingrediente = ingredienteService.buscar(id_ingrediente, usuarioService.usuarioLogado().getSede().getId());
 		
 		if (!(ingrediente.isDisponivel())) {
@@ -222,7 +224,7 @@ public class ProdutoController {
 	
 	@GetMapping(path="/{id_produto}/remover_ingrediente/{id_ingrediente}/editar")
  	public ModelAndView removerIngredientesEditar(@PathVariable("id_produto") Long id_produto, @PathVariable("id_ingrediente") Long id_ingrediente) {
- 		Produto produto = produtoService.buscar(id_produto);
+ 		Produto produto = produtoService.buscar(id_produto, usuarioService.usuarioLogado().getSede().getId());
  		Ingrediente ingrediente = ingredienteService.buscar(id_ingrediente, usuarioService.usuarioLogado().getSede().getId());
  		
  		List<Ingrediente> ingredientesDoProduto = produto.getIngredientes();
