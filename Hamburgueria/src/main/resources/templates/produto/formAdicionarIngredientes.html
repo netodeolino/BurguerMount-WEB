@@ -37,11 +37,10 @@
 		                    		<div class="input-field col s12">
 		                    			<i class="material-icons prefix">local_pizza</i>
 										<select name="id_ingrediente" id="id_ingrediente" required="true">
-											<option th:value="${null}" disabled="true" selected="true">Escolha um dos Ingredientes</option>
-											<option th:each="ingrediente : ${ingredientes}"
-					            				th:value="${ingrediente.id}"
-					            				th:text="${ingrediente.nome}">
-											</option>
+											<optgroup th:label="${tipo.nome}" th:each="tipo : ${tipos}">
+												<option th:value="${ingrediente.id}" th:each="ingrediente : ${tipo.ingredientes}"
+													th:text="${ingrediente.nome}"/>
+											</optgroup>
 										</select>
 										<label>Ingrediente</label>
 									</div>
