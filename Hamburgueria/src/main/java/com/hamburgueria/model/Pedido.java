@@ -38,8 +38,7 @@ public class Pedido {
 		
 	}
 	
-	public Pedido(Date data, Double preco) {
-		this.data = data;
+	public Pedido(Double preco) {
 		this.preco = preco;
 	}
 
@@ -71,7 +70,7 @@ public class Pedido {
 		return preco;
 	}
 
-	public void setPreço(Double preco) {
+	public void setPreco(Double preco) {
 		this.preco = preco;
 	}
 
