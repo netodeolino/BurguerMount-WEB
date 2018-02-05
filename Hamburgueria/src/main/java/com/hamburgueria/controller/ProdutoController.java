@@ -18,8 +18,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.hamburgueria.model.Ingrediente;
 import com.hamburgueria.model.Produto;
+import com.hamburgueria.model.Sede;
 import com.hamburgueria.service.IngredienteService;
 import com.hamburgueria.service.ProdutoService;
+import com.hamburgueria.service.SedeService;
 import com.hamburgueria.service.UsuarioService;
 import com.hamburgueria.util.Constants;
 import com.hamburgueria.util.Image;
@@ -36,6 +38,12 @@ public class ProdutoController {
 	
 	@Autowired
 	UsuarioService usuarioService;
+	
+	@Autowired
+	SedeService sedeService;
+	
+	@Autowired
+	IngredienteController ingredienteController;
 	
 	@GetMapping(path="/cadastrar")
 	public ModelAndView cadastrarProduto() {		
@@ -54,7 +62,9 @@ public class ProdutoController {
 		} else {
 			produto.setFoto64(Constants.IMAGE_DEFAULT_PRODUTO);
 		}
+		
 		Produto produtoBanco = produtoService.salvar(produto);
+		this.adicionarProdutoSede(produtoBanco, usuarioService.usuarioLogado().getSede());
 		
 		List<Ingrediente> ingredientes = ingredienteService.listarTodos(usuarioService.usuarioLogado().getSede().getId());
 		
@@ -68,6 +78,7 @@ public class ProdutoController {
 	public ModelAndView cadastrarProduto(Produto produto) {
 		produto.setSede(usuarioService.usuarioLogado().getSede());
 		Produto produtoBanco = produtoService.buscar(produto.getId(), usuarioService.usuarioLogado().getSede().getId());
+		this.adicionarProdutoSede(produtoBanco, usuarioService.usuarioLogado().getSede());
 		
 		List<Ingrediente> ingredientes = ingredienteService.listarTodos(usuarioService.usuarioLogado().getSede().getId());
 		
@@ -91,7 +102,15 @@ public class ProdutoController {
 	@GetMapping(path="/excluir/{id}")
 	public String excluirProduto(@PathVariable("id") Long id) {
 		Produto produto = produtoService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
-		produtoService.salvar(produto);
+		if(produto == null) {
+			return "redirect:/produto/listar";
+		}
+		this.removerProdutoSede(produto, produto.getSede());
+		
+		List<Ingrediente> ingredientes = produto.getIngredientes();
+		for (Ingrediente ingrediente : ingredientes) {
+			this.excluirProdutoIngrediente(produto, ingrediente);
+		}
 		
 		produtoService.excluir(id);
 			
@@ -101,6 +120,12 @@ public class ProdutoController {
 	@GetMapping(path="/editar/{id}")
 	public ModelAndView editarProduto(@PathVariable("id") Long id) {
 		Produto produto = produtoService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
+		
+		if(produto == null) {
+			ModelAndView model = new ModelAndView("erros/erro");
+			model.addObject("mensagem", "Produto não encontrado");
+			return model;
+		}
 		
 		ModelAndView model = new ModelAndView("produto/formEditarProduto");
 		model.addObject("produto", produto);
@@ -118,7 +143,7 @@ public class ProdutoController {
 		
 		produtoBanco = produtoService.salvar(produtoBanco);
 		
-		List<Ingrediente> ingredientes = ingredienteService.listarDisponiveis(usuarioService.usuarioLogado().getSede().getId());
+		List<Ingrediente> ingredientes = ingredienteService.listarTodos(usuarioService.usuarioLogado().getSede().getId());
 		
 		ModelAndView model = new ModelAndView("produto/formEditarAdicionarIngredientes");
 		model.addObject("produto", produtoBanco);
@@ -130,7 +155,7 @@ public class ProdutoController {
 	public ModelAndView editarProduto(Produto produto) {
 		Produto produtoBanco = produtoService.buscar(produto.getId(), usuarioService.usuarioLogado().getSede().getId());
 		
-		List<Ingrediente> ingredientes = ingredienteService.listarDisponiveis(usuarioService.usuarioLogado().getSede().getId());
+		List<Ingrediente> ingredientes = ingredienteService.listarTodos(usuarioService.usuarioLogado().getSede().getId());
 		
 		ModelAndView model = new ModelAndView("produto/formEditarAdicionarIngredientes");
 		model.addObject("produto", produtoBanco);
@@ -143,6 +168,12 @@ public class ProdutoController {
 	public ModelAndView detalhesProduto(@PathVariable("id") Long id) {
 		Produto produto = produtoService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
 		
+		if(produto == null) {
+			ModelAndView model = new ModelAndView("erros/erro");
+			model.addObject("mensagem", "Produto não encontrado");
+			return model;
+		}
+		
 		ModelAndView model = new ModelAndView("produto/detalhesProduto");
 		model.addObject("produto", produto);
 		return model;
@@ -152,7 +183,7 @@ public class ProdutoController {
  	public ModelAndView adicionarIngredientes(@PathVariable("id") Long id, Long id_ingrediente, Integer quantidade) {
 		Produto produto = produtoService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
 		Ingrediente ingrediente = ingredienteService.buscar(id_ingrediente, usuarioService.usuarioLogado().getSede().getId());
-		
+
 		if (!(ingrediente.isDisponivel())) {
 			produto.setDisponivel(false);
 		}
@@ -170,6 +201,9 @@ public class ProdutoController {
  		produto.setValorDeVenda(produto.getValorDeVenda() + (ingrediente.getValorDeVenda() * quantidade));
  		
  		Produto produtoAtualizado = produtoService.salvar(produto);
+ 		
+ 		this.adicionarProdutoIngrediente(produtoAtualizado, ingrediente);
+ 		ingredienteController.verificaDisponibilidade(ingrediente);
 		
  		return cadastrarProduto(produtoAtualizado);
 	}
@@ -187,6 +221,9 @@ public class ProdutoController {
  		produto.setValorDeVenda(produto.getValorDeVenda() - ingrediente.getValorDeVenda());
  		
  		Produto produtoAtualizado = produtoService.salvar(produto);
+ 		
+ 		this.removerProdutoIngrediente(produtoAtualizado, ingrediente);
+ 		ingredienteController.verificaDisponibilidade(ingrediente);
  		
  		return cadastrarProduto(produtoAtualizado);
 	}
@@ -218,6 +255,9 @@ public class ProdutoController {
  		produto.setValorDeVenda(produto.getValorDeVenda() + (ingrediente.getValorDeVenda() * quantidade));
  		
  		Produto produtoAtualizado = produtoService.salvar(produto);
+ 		
+ 		this.adicionarProdutoIngrediente(produtoAtualizado, ingrediente);
+ 		ingredienteController.verificaDisponibilidade(ingrediente);
 		
  		return editarProduto(produtoAtualizado);
 	}
@@ -236,6 +276,57 @@ public class ProdutoController {
  		
  		Produto produtoAtualizado = produtoService.salvar(produto);
  		
+ 		this.removerProdutoIngrediente(produtoAtualizado, ingrediente);
+ 		ingredienteController.verificaDisponibilidade(ingrediente);
+ 		
  		return editarProduto(produtoAtualizado);
+	}
+	
+	public void adicionarProdutoIngrediente(Produto produto, Ingrediente ingrediente) {
+		List<Produto> produtos = ingrediente.getProdutos();
+		if(!produtos.contains(produto)) {
+			produtos.add(produto);
+			ingrediente.setProdutos(produtos);
+			ingredienteService.salvar(ingrediente);
+		}
+	}
+	
+	public void removerProdutoIngrediente(Produto produto, Ingrediente ingrediente) {
+		List<Produto> produtos = ingrediente.getProdutos();
+		
+		if(produtoService.contaIngrediente(produto.getId(), ingrediente.getId()) == 1) {
+			produtos.remove(produto);
+			ingrediente.setProdutos(produtos);
+				
+			ingredienteService.salvar(ingrediente);
+		}
+	}
+	
+	public void excluirProdutoIngrediente(Produto produto, Ingrediente ingrediente) {
+		List<Produto> produtos = ingrediente.getProdutos();
+		
+		if(produtos.contains(produto)) {
+			produtos.remove(produto);
+			ingrediente.setProdutos(produtos);
+			ingredienteService.salvar(ingrediente);
+		}
+	}
+	
+	public void adicionarProdutoSede(Produto produto, Sede sede) {
+		List<Produto> produtos = sede.getProdutos();
+		if(!produtos.contains(produto)) {
+			produtos.add(produto);
+			sede.setProdutos(produtos);
+			
+			sedeService.salvar(sede);
+		}
+	}
+	
+	public void removerProdutoSede(Produto produto, Sede sede) {
+		List<Produto> produtos = sede.getProdutos();
+		produtos.remove(produto);
+		sede.setProdutos(produtos);
+		
+		sedeService.salvar(sede);
 	}
 }
