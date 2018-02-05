@@ -9,8 +9,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 
 @Entity
 public class Pedido {
@@ -21,7 +21,7 @@ public class Pedido {
 	
 	private Date data;
 	private String local;
-	private Double preço;
+	private Double preco;
 	private Double dinheiroCliente;
 	private String mensagem;
 	
@@ -31,11 +31,16 @@ public class Pedido {
 	@ManyToOne
 	private Usuario cliente;
 	
-	@OneToMany
+	@ManyToMany
 	private List<Ingrediente> ingredientes;
 	
 	public Pedido() {
 		
+	}
+	
+	public Pedido(Date data, Double preco) {
+		this.data = data;
+		this.preco = preco;
 	}
 
 	public Long getId() {
@@ -62,12 +67,12 @@ public class Pedido {
 		this.local = local;
 	}
 
-	public Double getPreço() {
-		return preço;
+	public Double getPreco() {
+		return preco;
 	}
 
-	public void setPreço(Double preço) {
-		this.preço = preço;
+	public void setPreço(Double preco) {
+		this.preco = preco;
 	}
 
 	public Double getDinheiroCliente() {

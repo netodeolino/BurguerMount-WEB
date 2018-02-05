@@ -1,5 +1,7 @@
 package com.hamburgueria.controller;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -13,9 +15,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.hamburgueria.model.Ingrediente;
 import com.hamburgueria.model.Pedido;
 import com.hamburgueria.model.Status;
+import com.hamburgueria.service.IngredienteService;
 import com.hamburgueria.service.PedidoService;
+import com.hamburgueria.service.UsuarioService;
 
 @Controller
 @RequestMapping(path="/pedido")
@@ -23,19 +28,44 @@ public class PedidoController {
 	
 	@Autowired
 	PedidoService pedidoService;
+	
+	@Autowired
+	IngredienteService ingredienteService;
+	
+	@Autowired
+	UsuarioService usuarioService;
 
 	@GetMapping(path="/cadastrar")
 	public ModelAndView cadastrarPedido() {		
 		ModelAndView model = new ModelAndView("pedido/formCadastroPedido");
-		model.addObject(new Pedido());
+		model.addObject(new Pedido(new Date(), 0.0));
 		return model;
 	}
 	
 	@PostMapping(path="/cadastrar")
-	public String cadastrarPedido(@Valid Pedido pedido) {
+	public ModelAndView cadastrarPedido(@Valid Pedido pedido) {
 		pedido.setStatus(Status.FEITO);
-		pedidoService.salvar(pedido);
-		return "redirect:/pedido/listar";
+		Pedido pedidoBanco = pedidoService.salvar(pedido);
+		
+		List<Ingrediente> ingredientes = ingredienteService.listarTodos(usuarioService.usuarioLogado().getSede().getId());
+		
+		ModelAndView model = new ModelAndView("pedido/formAdicionarIngredientes");
+		model.addObject("pedido", pedidoBanco);
+		model.addObject("ingredientes", ingredientes);
+		
+		return model;
+	}
+	
+	public ModelAndView cadastrarPedido(Long id) {
+		Pedido pedidoBanco = pedidoService.buscar(id);
+		
+		List<Ingrediente> ingredientes = ingredienteService.listarTodos(usuarioService.usuarioLogado().getSede().getId());
+		
+		ModelAndView model = new ModelAndView("pedido/formAdicionarIngredientes");
+		model.addObject("pedido", pedidoBanco);
+		model.addObject("ingredientes", ingredientes);
+		
+		return model;
 	}
 	
 	@GetMapping(path="/listar")
@@ -69,4 +99,38 @@ public class PedidoController {
 		return "redirect:/sede/listar";
 	}
 	
+	@PostMapping(path="/{id}/selecionar_ingredientes")
+ 	public ModelAndView adicionarIngredientes(@PathVariable("id") Long id, Long id_ingrediente, Integer quantidade) {
+		Pedido pedido = pedidoService.buscar(id);
+		Ingrediente ingrediente = ingredienteService.buscar(id_ingrediente, usuarioService.usuarioLogado().getSede().getId());
+		
+		List<Ingrediente> ingrs = new ArrayList<Ingrediente>();
+ 		for(int i = 0; i < quantidade; i++) {
+ 			ingrs.add(ingrediente);
+ 		}
+ 		
+ 		List<Ingrediente> ingredientesJaSalvos = pedido.getIngredientes();
+ 		ingredientesJaSalvos.addAll(ingrs);
+ 		
+ 		pedido.setIngredientes(ingredientesJaSalvos);
+ 		
+ 		Pedido pedidoAtualizado = pedidoService.salvar(pedido);
+		
+ 		return cadastrarPedido(pedidoAtualizado.getId());
+	}
+	
+	@GetMapping(path="/{id_pedido}/remover_ingrediente/{id_ingrediente}")
+ 	public ModelAndView removerIngredientes(@PathVariable("id_produto") Long id_pedido, @PathVariable("id_ingrediente") Long id_ingrediente) {
+ 		Pedido pedido = pedidoService.buscar(id_pedido);
+ 		Ingrediente ingrediente = ingredienteService.buscar(id_ingrediente, usuarioService.usuarioLogado().getSede().getId());
+ 		
+ 		List<Ingrediente> ingredientesDoProduto = pedido.getIngredientes();
+ 		ingredientesDoProduto.remove(ingrediente);
+ 		
+ 		pedido.setIngredientes(ingredientesDoProduto);
+ 		
+ 		Pedido pedidoAtualizado = pedidoService.salvar(pedido);
+ 		
+ 		return cadastrarPedido(pedidoAtualizado.getId());
+	}
 }
