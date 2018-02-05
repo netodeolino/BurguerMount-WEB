@@ -19,9 +19,11 @@ import org.springframework.web.servlet.ModelAndView;
 import com.hamburgueria.model.Ingrediente;
 import com.hamburgueria.model.Produto;
 import com.hamburgueria.model.Sede;
+import com.hamburgueria.model.TipoIngrediente;
 import com.hamburgueria.service.IngredienteService;
 import com.hamburgueria.service.ProdutoService;
 import com.hamburgueria.service.SedeService;
+import com.hamburgueria.service.TipoIngredienteService;
 import com.hamburgueria.service.UsuarioService;
 import com.hamburgueria.util.Constants;
 import com.hamburgueria.util.Image;
@@ -41,6 +43,9 @@ public class ProdutoController {
 	
 	@Autowired
 	SedeService sedeService;
+	
+	@Autowired
+	TipoIngredienteService tipoIngredienteService;
 	
 	@Autowired
 	IngredienteController ingredienteController;
@@ -77,11 +82,11 @@ public class ProdutoController {
 		//Adiciona o produto a lista de produtos da sede do usuário logado.
 		this.adicionarProdutoSede(produtoBanco, usuarioService.usuarioLogado().getSede());
 		
-		List<Ingrediente> ingredientes = ingredienteService.listarTodos(usuarioService.usuarioLogado().getSede().getId());
+		List<TipoIngrediente> tipos = tipoIngredienteService.listar(usuarioService.usuarioLogado().getSede().getId());
 		
 		ModelAndView model = new ModelAndView("produto/formAdicionarIngredientes");
 		model.addObject("produto", produtoBanco);
-		model.addObject("ingredientes", ingredientes);
+		model.addObject("tipos", tipos);
 		
 		return model;
 	}
@@ -153,11 +158,11 @@ public class ProdutoController {
 		produtoBanco.setNome(produto.getNome());
 		produtoBanco = produtoService.salvar(produtoBanco);
 		
-		List<Ingrediente> ingredientes = ingredienteService.listarTodos(usuarioService.usuarioLogado().getSede().getId());
+		List<TipoIngrediente> tipos = tipoIngredienteService.listar(usuarioService.usuarioLogado().getSede().getId());
 		
 		ModelAndView model = new ModelAndView("produto/formEditarAdicionarIngredientes");
 		model.addObject("produto", produtoBanco);
-		model.addObject("ingredientes", ingredientes);
+		model.addObject("tipos", tipos);
 		
 		return model;
 	}
