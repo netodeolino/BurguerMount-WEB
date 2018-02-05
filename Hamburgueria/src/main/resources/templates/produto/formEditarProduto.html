@@ -32,8 +32,6 @@
 					<form method="POST" th:object="${produto}" th:action="@{/produto/editar/}"  enctype="multipart/form-data">
 						<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 						<input name="id" type="hidden" th:value="${produto.id}" />
-						<input th:field="*{sede}" type="hidden" value="th:text=${produto.sede}" />
-						<input th:field="*{ingredientes}" type="hidden" value="th:text=${produto.ingredientes}" />
 						<div class="row">
 							<div class="form-group">
 		                        <div class="input-field col s12">
