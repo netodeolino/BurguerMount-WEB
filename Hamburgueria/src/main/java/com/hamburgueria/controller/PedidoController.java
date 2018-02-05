@@ -44,25 +44,15 @@ public class PedidoController {
 	
 	@PostMapping(path="/cadastrar")
 	public ModelAndView cadastrarPedido(@Valid Pedido pedido) {
-		Date today = new Date();
+		if (pedido.getId() == null) {
+			Date today = new Date();
+			pedido.setData(today);
+			pedido.setStatus(Status.EM_ABERTO);
+			pedido.setCliente(usuarioService.usuarioLogado());
+		}
 		pedido.setPreco(pedido.getPreco());
-		pedido.setData(today);
-		pedido.setStatus(Status.EM_ABERTO);
-		pedido.setCliente(usuarioService.usuarioLogado());
+		
 		Pedido pedidoBanco = pedidoService.salvar(pedido);
-		
-		List<Ingrediente> ingredientes = ingredienteService.listarTodos(usuarioService.usuarioLogado().getSede().getId());
-		
-		ModelAndView model = new ModelAndView("pedido/formAdicionarIngredientes");
-		model.addObject("pedido", pedidoBanco);
-		model.addObject("ingredientes", ingredientes);
-		
-		return model;
-	}
-	
-	public ModelAndView cadastrarPedido(Long id) {
-		Pedido pedidoBanco = pedidoService.buscar(id);
-		
 		List<Ingrediente> ingredientes = ingredienteService.listarTodos(usuarioService.usuarioLogado().getSede().getId());
 		
 		ModelAndView model = new ModelAndView("pedido/formAdicionarIngredientes");
@@ -121,7 +111,7 @@ public class PedidoController {
  		
  		Pedido pedidoAtualizado = pedidoService.salvar(pedido);
 		
- 		return cadastrarPedido(pedidoAtualizado.getId());
+ 		return cadastrarPedido(pedidoAtualizado);
 	}
 	
 	@GetMapping(path="/{id_pedido}/remover_ingrediente/{id_ingrediente}")
@@ -137,7 +127,7 @@ public class PedidoController {
  		
  		Pedido pedidoAtualizado = pedidoService.salvar(pedido);
  		
- 		return cadastrarPedido(pedidoAtualizado.getId());
+ 		return cadastrarPedido(pedidoAtualizado);
 	}
 	
 	@GetMapping(path="/finalizar_pedido")
