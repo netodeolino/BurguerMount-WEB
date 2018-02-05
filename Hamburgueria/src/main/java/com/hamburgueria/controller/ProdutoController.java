@@ -65,29 +65,16 @@ public class ProdutoController {
 		produto.setSede(usuarioService.usuarioLogado().getSede());
 		
 		//Verifica se foi informada uma imagem, caso não: o produto é salvo com uma imagem padrão.
-		if (imagem != null && !imagem.isEmpty()) {
-			produto.setFoto64(Image.imagemBase64(imagem));
-		} else {
-			produto.setFoto64(Constants.IMAGE_DEFAULT_PRODUTO);
+		if (produto.getFoto64() == null) {
+			if (imagem != null && !imagem.isEmpty()) {
+				produto.setFoto64(Image.imagemBase64(imagem));
+			} else {
+				produto.setFoto64(Constants.IMAGE_DEFAULT_PRODUTO);
+			}
 		}
 		
 		Produto produtoBanco = produtoService.salvar(produto);
 		//Adiciona o produto a lista de produtos da sede do usuário logado.
-		this.adicionarProdutoSede(produtoBanco, usuarioService.usuarioLogado().getSede());
-		
-		List<Ingrediente> ingredientes = ingredienteService.listarTodos(usuarioService.usuarioLogado().getSede().getId());
-		
-		ModelAndView model = new ModelAndView("produto/formAdicionarIngredientes");
-		model.addObject("produto", produtoBanco);
-		model.addObject("ingredientes", ingredientes);
-		
-		return model;
-	}
-	
-	//Função que salva um determinado produto.
-	public ModelAndView cadastrarProduto(Produto produto) {
-		produto.setSede(usuarioService.usuarioLogado().getSede());
-		Produto produtoBanco = produtoService.buscar(produto.getId(), usuarioService.usuarioLogado().getSede().getId());
 		this.adicionarProdutoSede(produtoBanco, usuarioService.usuarioLogado().getSede());
 		
 		List<Ingrediente> ingredientes = ingredienteService.listarTodos(usuarioService.usuarioLogado().getSede().getId());
@@ -175,22 +162,6 @@ public class ProdutoController {
 		return model;
 	}
 	
-	/*Função de edição.
-	 *Manda para a página "formEditarIngredientes" um produto informado por parâmetro
-	 *e a lista de todos ingredientes da sede do usuário logado.
-	 * */
-	public ModelAndView editarProduto(Produto produto) {
-		Produto produtoBanco = produtoService.buscar(produto.getId(), usuarioService.usuarioLogado().getSede().getId());
-		
-		List<Ingrediente> ingredientes = ingredienteService.listarTodos(usuarioService.usuarioLogado().getSede().getId());
-		
-		ModelAndView model = new ModelAndView("produto/formEditarAdicionarIngredientes");
-		model.addObject("produto", produtoBanco);
-		model.addObject("ingredientes", ingredientes);
-		
-		return model;
-	}
-	
 	//Função que retorna para a página "detalhesProduto" um produto passado pela URL.
 	@GetMapping(path="/detalhes_produto/{id}")
 	public ModelAndView detalhesProduto(@PathVariable("id") Long id) {
@@ -212,7 +183,7 @@ public class ProdutoController {
 	 *A função recebe o id do produto, o id do ingrediente e a quantidade desse ingrediente que deve ser adicionado ao produto.
 	 */
 	@PostMapping(path="/{id}/selecionar_ingredientes")
- 	public ModelAndView adicionarIngredientes(@PathVariable("id") Long id, Long id_ingrediente, Integer quantidade) {
+ 	public ModelAndView adicionarIngredientes(@PathVariable("id") Long id, Long id_ingrediente, Integer quantidade) throws IOException {
 		Produto produto = produtoService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
 		Ingrediente ingrediente = ingredienteService.buscar(id_ingrediente, usuarioService.usuarioLogado().getSede().getId());
 
@@ -244,14 +215,14 @@ public class ProdutoController {
  		//Verifica se ao adicionar o ingrediente ao produto, se o produto vai continuar disponível.
  		ingredienteController.verificaDisponibilidade(ingrediente);
 		
- 		return cadastrarProduto(produtoAtualizado);
+ 		return cadastrarProduto(produtoAtualizado, null);
 	}
 	
 	/*Função para retirar um ingrediente da lista de ingrediente de um produto
 	 *A função recebe um produto e um ingrediente por URL.
 	 */
 	@GetMapping(path="/{id_produto}/remover_ingrediente/{id_ingrediente}")
- 	public ModelAndView removerIngredientes(@PathVariable("id_produto") Long id_produto, @PathVariable("id_ingrediente") Long id_ingrediente) {
+ 	public ModelAndView removerIngredientes(@PathVariable("id_produto") Long id_produto, @PathVariable("id_ingrediente") Long id_ingrediente) throws IOException {
  		Produto produto = produtoService.buscar(id_produto, usuarioService.usuarioLogado().getSede().getId());
  		Ingrediente ingrediente = ingredienteService.buscar(id_ingrediente, usuarioService.usuarioLogado().getSede().getId());
  		
@@ -272,7 +243,7 @@ public class ProdutoController {
  		//Verifica se ao adicionar o ingrediente ao produto, se o produto vai continuar disponível.
  		ingredienteController.verificaDisponibilidade(ingrediente);
  		
- 		return cadastrarProduto(produtoAtualizado);
+ 		return cadastrarProduto(produtoAtualizado, null);
 	}
 	
 	//Função apenas para finalizar o processo de cadastro do produto.
@@ -286,7 +257,7 @@ public class ProdutoController {
 	 *Recebe um produto por URL, um ingrediente e a quantidade por parâmetro.
 	 */
 	@PostMapping(path="/{id}/selecionar_ingredientes/editar")
- 	public ModelAndView adicionarIngredientesEditar(@PathVariable("id") Long id, Long id_ingrediente, Integer quantidade) {
+ 	public ModelAndView adicionarIngredientesEditar(@PathVariable("id") Long id, Long id_ingrediente, Integer quantidade) throws IOException {
 		Produto produto = produtoService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
 		Ingrediente ingrediente = ingredienteService.buscar(id_ingrediente, usuarioService.usuarioLogado().getSede().getId());
 		
@@ -318,7 +289,7 @@ public class ProdutoController {
  		//Verifica se ao adicionar o ingrediente ao produto, se o produto vai continuar disponível
  		ingredienteController.verificaDisponibilidade(ingrediente);
 		
- 		return editarProduto(produtoAtualizado);
+ 		return editarProduto(produtoAtualizado, null);
 	}
 	
 	/*Função de edição.
@@ -326,7 +297,7 @@ public class ProdutoController {
 	 *A função recebe um produto e um ingrediente por URL.
 	 */
 	@GetMapping(path="/{id_produto}/remover_ingrediente/{id_ingrediente}/editar")
- 	public ModelAndView removerIngredientesEditar(@PathVariable("id_produto") Long id_produto, @PathVariable("id_ingrediente") Long id_ingrediente) {
+ 	public ModelAndView removerIngredientesEditar(@PathVariable("id_produto") Long id_produto, @PathVariable("id_ingrediente") Long id_ingrediente) throws IOException {
  		Produto produto = produtoService.buscar(id_produto, usuarioService.usuarioLogado().getSede().getId());
  		Ingrediente ingrediente = ingredienteService.buscar(id_ingrediente, usuarioService.usuarioLogado().getSede().getId());
  		
@@ -347,7 +318,7 @@ public class ProdutoController {
  		//Verifica se ao adicionar o ingrediente ao produto, se o produto vai continuar disponível.
  		ingredienteController.verificaDisponibilidade(ingrediente);
  		
- 		return editarProduto(produtoAtualizado);
+ 		return editarProduto(produtoAtualizado, null);
 	}
 	
 	//Adiciona um produto a lista de produtos de um ingrediente e atualiza o ingrediente.
