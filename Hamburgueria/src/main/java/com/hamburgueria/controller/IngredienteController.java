@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.hamburgueria.model.Ingrediente;
+import com.hamburgueria.model.Produto;
 import com.hamburgueria.model.Sede;
 import com.hamburgueria.model.TipoIngrediente;
 import com.hamburgueria.service.IngredienteService;
@@ -89,12 +90,8 @@ public class IngredienteController {
 	 */
 	@PostMapping(path="/cadastrar")
 	public String cadastrarIngrediente(@Valid Ingrediente ingrediente, BindingResult result, @RequestParam(value="imagem", required=false) MultipartFile imagem) throws IOException {
-		//Verifica se a quantidade do ingrediente e coloca a disponibilidade do mesmo.
-		if(ingrediente.getQtd() == 0) {
-			ingrediente.setDisponivel(false);
-		}else {
-			ingrediente.setDisponivel(true);
-		}
+		//Verifica se a disponibilidade do ingrediente e salva o ingrediente.
+		this.verificaDisponibilidade(ingrediente);
 		
 		Ingrediente salvo = ingredienteService.salvar(ingrediente);
 		
@@ -191,17 +188,14 @@ public class IngredienteController {
 	 */
 	@PostMapping(path="/editar")
 	public String editarIngrediente(@Valid Ingrediente ingrediente, BindingResult result, @RequestParam(value="imagem", required=false) MultipartFile imagem) throws IOException { 
-		//Verifica se a quantidade do ingrediente e coloca a disponibilidade do mesmo.
-		if(ingrediente.getQtd() == 0) {
-			ingrediente.setDisponivel(false);
-		}else {
-			ingrediente.setDisponivel(true);
-		}
+		//Verifica se a disponibilidade do ingrediente.
+		this.verificaDisponibilidade(ingrediente);
+		
 		//Verifica se foi informada uma imagem, e altera ela para base64.
 		if(imagem != null && !imagem.isEmpty()) {
 			ingrediente.setFoto64(Image.imagemBase64(imagem));
 		}
-		
+
 		//Verifica se o tipo ingrediente foi alterado e faz a mudança para o novo tipo ingrediente informado.
 		Ingrediente antigo = ingredienteService.buscar(ingrediente.getId(), usuarioService.usuarioLogado().getSede().getId());
 		if(!antigo.getTipoIngrediente().equals(ingrediente.getTipoIngrediente())) {
@@ -211,7 +205,7 @@ public class IngredienteController {
 			this.adicionarIngredienteTipo(ingrediente, tipo);
 		}
 		ingredienteService.salvar(ingrediente);
-		
+
 		return "redirect:/ingrediente/listar";
 	}
 	
@@ -281,11 +275,26 @@ public class IngredienteController {
 	public List<Ingrediente> filtraIndisponiveis(List<Ingrediente> ingredientes) {
 		List<Ingrediente> indisponiveis = new ArrayList<>();
 		for (Ingrediente ingrediente : ingredientes) {
-			System.err.println(ingrediente.getNome());
 			if(!ingrediente.isDisponivel())
 				indisponiveis.add(ingrediente);
 		}
 		return indisponiveis;
+	}
+	
+	//Verifica a disponibilidade do ingrediente e de cada produto que possui o mesmo.
+	public void verificaDisponibilidade(Ingrediente ingrediente) {
+		if(ingrediente.getQtd() == 0) {
+			ingrediente.setDisponivel(false);
+		}else {
+			ingrediente.setDisponivel(true);
+		}
+		for (Produto produto : ingrediente.getProdutos()) {
+			if(produtoService.contaIngrediente(produto.getId(), ingrediente.getId()) < ingrediente.getQtd()) {
+				produto.setDisponivel(false);
+				produtoService.salvar(produto);
+			}
+		}
+		ingredienteService.salvar(ingrediente);
 	}
 
 }

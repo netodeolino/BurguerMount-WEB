@@ -37,6 +37,10 @@ public class UsuarioController {
 	@Autowired
 	SedeService sedeService;
 	
+	/*Função de cadastro simples.
+	 *Manda para a página "formCadastroUsuario" um usuario vazio
+	 *e uma lista de sedes cadastradas no banco.
+	 * */
 	@GetMapping(path="/cadastrar")
 	public ModelAndView cadastrarUsuario(HttpServletRequest request) {
 		List<Sede> sedes = sedeService.listar();
@@ -47,31 +51,39 @@ public class UsuarioController {
 		return model;
 	}
 	
+	/*Função que salva o usuario cadastrado.
+	 *Recebe um usuario e uma possível imagem.
+	 */
 	@PostMapping(path="/cadastrar")
 	public String cadastrarUsuario(@Valid Usuario usuario, BindingResult result, @RequestParam(value="imagem", required=false) MultipartFile imagem) throws IOException {
-			
+		//Coloca o papel do usuário como FUNCIONARIO por padrão.	
 		usuario.setPapel(Papel.FUNCIONARIO);
 		Usuario salvo = usuarioService.salvar(usuario);
 		
+		//Verifica se foi informada uma imagem, caso não: o usuário é salvo com uma imagem padrão.
 		if (imagem != null && !imagem.isEmpty()) {
 			salvo.setFoto64(Image.imagemBase64(imagem));
 		} else {
 			salvo.setFoto64(Constants.IMAGE_DEFAULT_USUARIO);
 		}
 		
+		//Verifica se o usuário informou alguma sede.
 		if(usuario.getSede() != null) {
+			//Adiciona a sede informada ao usuário que será cadastrado.
 			Sede sede = sedeService.buscar(usuario.getSede().getId());
 			usuario.setSede(sede);
 			
-			Sede novaSede = this.adicionarUsuarioSede(usuario, sede);
-			sedeService.salvar(novaSede);
+			//Adiciona o usuário a sede informada e salva a sede no banco.
+			this.adicionarUsuarioSede(usuario, sede);
 		}
-		
 		usuarioService.atualizar(salvo);
 		
 		return "redirect:/";
 	}
 	
+	/*Função que mostra os detalhes do usuário logado.
+	 *Envia para a página "detalhesUsuario" o usuário que está logado.
+	 */
 	@GetMapping(path = "/meu_perfil")
 	public ModelAndView visualizarUsuario() {
 		Usuario usuario = usuarioService.usuarioLogado();
@@ -81,6 +93,10 @@ public class UsuarioController {
 		return model;
 	}
 	
+	/*Função de edição.
+	 *Manda para a página "formEditarUsuario" o usuário logado.
+	 *e uma lista de todas as sedes do banco.
+	 * */
 	@GetMapping(path = "/editar")
 	public ModelAndView editarUsuario() {
 		List<Sede> sedes = sedeService.listar();
@@ -92,26 +108,32 @@ public class UsuarioController {
 		return model;
 	}
 	
+	/*Função que salva o usuario modificado.
+	 *Recebe um usuario e uma possível imagem.
+	 */
 	@PostMapping(path="/editar")
 	public String editarUsuario(@Valid Usuario usuario, BindingResult result, @RequestParam(value="imagem", required=false) MultipartFile imagem) throws IOException { 
+		//Verifica se foi informada uma imagem, e altera ela para base64.
 		if(imagem != null && !imagem.isEmpty()) {
 			usuario.setFoto64(Image.imagemBase64(imagem));
 		}
 
 		Usuario antigo = usuarioService.buscar(usuario.getId());
 
+		//Verifica se a sede foi alterada e faz a mudança para a nova sede informada.
 		if(antigo.getSede()!= null && !antigo.getSede().equals(usuario.getSede())) {
-			Sede sede = this.removerUsuarioSede(antigo, antigo.getSede());
-			sedeService.salvar(sede);
+			this.removerUsuarioSede(antigo, antigo.getSede());
 			
-			sede = this.adicionarUsuarioSede(usuario, usuario.getSede());
-			sedeService.salvar(sede);
+			this.adicionarUsuarioSede(usuario, usuario.getSede());
 		}
 		usuarioService.atualizar(usuario);
 		
 		return "redirect:/usuario/meu_perfil";
 	}
 	
+	/*Função que permite que o usuário logado altere sua senha.
+	 *Retorna o usuário logado para a página "formAlterarSenha".
+	 */
 	@GetMapping(path="/alterar_senha")
 	public ModelAndView alterarSenha() {
 		Usuario usuario = usuarioService.usuarioLogado();
@@ -121,15 +143,22 @@ public class UsuarioController {
 		return model;
 	}
 	
+	/*Função que salva o usuario com a nova senha.
+	 *Recebe um usuario já com a nova senha e a senha antiga para verificação.
+	 */
 	@PostMapping(path = "/alterar_senha")
 	public String alterarSenha(Usuario usuario, @RequestParam String senhaAtual) throws IOException {
 		Usuario usuarioLogado = usuarioService.usuarioLogado();
 		Usuario usuarioBanco = usuarioService.buscar(usuarioLogado.getEmail());
+		//Verifica se foi enviado alguma senha.
 		if(senhaAtual != null && !senhaAtual.isEmpty()){
+			//Compara a senha antiga (senha do banco) e a senha atual informada para validar que o usuário sabia a senha.
 			if(usuarioService.compararSenha(senhaAtual, usuarioBanco.getSenha())){
+				//Altera o usuário colocando a sua senha nova e atualiza no banco.
 				usuarioBanco.setSenha(usuario.getSenha());
 				usuarioService.salvar(usuarioBanco);
 				
+				//Da permissão para o usuário alterado.
 				Authentication authentication = new UsernamePasswordAuthenticationToken(usuarioBanco, usuarioBanco.getSenha(), usuarioBanco.getAuthorities());
 				SecurityContextHolder.getContext().setAuthentication(authentication);
 				return "redirect:/usuario/meu_perfil";
@@ -138,20 +167,22 @@ public class UsuarioController {
 		return "redirect:/usuario/alterar_senha";
 	}
 	
-	public Sede removerUsuarioSede(Usuario usuario, Sede sede) {
+	//Remove o usuário na lista de usuário de uma sede e salva a sede.
+	public void removerUsuarioSede(Usuario usuario, Sede sede) {
 		List<Usuario> clientes = sede.getClientes();
 		clientes.remove(usuario);
 		
 		sede.setClientes(clientes);
-		return sede;
+		sedeService.salvar(sede);
 	}
 	
-	public Sede adicionarUsuarioSede(Usuario usuario, Sede sede) {
+	//Adiciona o usuário na lista de usuário de uma sede e salva a sede.
+	public void adicionarUsuarioSede(Usuario usuario, Sede sede) {
 		List<Usuario> clientes = sede.getClientes();
 		clientes.add(usuario);
 		
 		sede.setClientes(clientes);
-		return sede;
+		sedeService.salvar(sede);
 	}
 	
 }
