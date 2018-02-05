@@ -15,18 +15,22 @@ public class ProdutoService {
 	@Autowired
 	ProdutoRepository produtoRepository;
 	
+	//Salva um determinado produto.
 	public Produto salvar(Produto produto) {
 		return produtoRepository.save(produto);
 	}
 	
+	//Busca um determinado produto de uma determinada sede.
 	public Produto buscar(Long id_produto, Long id_sede) {
 		return produtoRepository.buscar(id_produto, id_sede);
 	}
 	
+	//Exclui um determinado produto.
 	public void excluir(Long id) {
 		produtoRepository.delete(id);
 	}
 	
+	//Lista todos produtos de uma determinada sede
 	public List<Produto> listarTodos(Long id_sede){
 		return produtoRepository.listarTodos(id_sede);
 	}
