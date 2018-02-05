@@ -288,10 +288,17 @@ public class IngredienteController {
 		}else {
 			ingrediente.setDisponivel(true);
 		}
-		for (Produto produto : ingrediente.getProdutos()) {
-			if(produtoService.contaIngrediente(produto.getId(), ingrediente.getId()) < ingrediente.getQtd()) {
-				produto.setDisponivel(false);
-				produtoService.salvar(produto);
+
+		List<Produto> produtos = ingrediente.getProdutos();
+		if(produtos != null) {
+			for (Produto produto : ingrediente.getProdutos()) {
+				if(produtoService.contaIngrediente(produto.getId(), ingrediente.getId()) > ingrediente.getQtd()) {
+					produto.setDisponivel(false);
+					produtoService.salvar(produto);
+				}else {
+					produto.setDisponivel(true);
+					produtoService.salvar(produto);
+				}
 			}
 		}
 		ingredienteService.salvar(ingrediente);

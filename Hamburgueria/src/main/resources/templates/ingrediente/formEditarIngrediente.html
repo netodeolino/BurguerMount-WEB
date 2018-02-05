@@ -36,6 +36,7 @@
 						<input th:field="*{sede}" type="hidden" value="th:text=${ingrediente.sede}" />
 						<input th:field="*{foto64}" type="hidden" value="th:text=${ingrediente.foto64}" />
 						<input th:field="*{disponivel}" type="hidden" value="th:text=${ingrediente.disponivel}" />
+						<input th:field="*{produtos}" type="hidden" value="th:text=${ingrediente.produtos}" />
 						
 						<div th:if="${#fields.hasAnyErrors()}">
 							<h3>Preencha todos os campos corretamente!</h3>
