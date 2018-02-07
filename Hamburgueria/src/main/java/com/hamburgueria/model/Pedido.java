@@ -32,6 +32,9 @@ public class Pedido {
 	private Usuario cliente;
 	
 	@ManyToMany
+	private List<Produto> produtos;
+	
+	@ManyToMany
 	private List<Ingrediente> ingredientes;
 	
 	public Pedido() {
@@ -106,6 +109,14 @@ public class Pedido {
 		this.cliente = cliente;
 	}
 
+	public List<Produto> getProdutos() {
+		return produtos;
+	}
+
+	public void setProdutos(List<Produto> produtos) {
+		this.produtos = produtos;
+	}
+
 	public List<Ingrediente> getIngredientes() {
 		return ingredientes;
 	}
@@ -113,5 +124,4 @@ public class Pedido {
 	public void setIngredientes(List<Ingrediente> ingredientes) {
 		this.ingredientes = ingredientes;
 	}
-	
 }
