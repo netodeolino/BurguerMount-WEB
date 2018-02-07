@@ -26,10 +26,13 @@
 
 		<nav>
 			<div class="nav-wrapper teal lighten-2">
-				<a href="#" class="brand-logo left">
-					<img class="right" src="/images/logo.png" width="50" height="50" />
-					<span>Hamburgueria</span>
-				</a>
+				<div class="col s1">
+					<a th:href="@{/usuario/meu_perfil}" class="brand-logo left" title="Suas Informações">
+						<img class="left circle" th:src="${#authentication.getPrincipal().getFoto64()}" width="50" height="50" />
+						<h5 th:text="${#authentication.getPrincipal().getNome()}"></h5>
+						<h6 th:text="${#authentication.getPrincipal().getSede().getCidade() + ' (' + #authentication.getPrincipal().getPapel() +')'}"></h6>
+					</a>
+				</div>
 				<ul id="nav-mobile" class="right hide-on-med-and-down">
 					<li>
 						<a class="dropdown-button" href="#!" data-activates="dropdownCadastrar">
@@ -42,10 +45,6 @@
 							Listar
 							<i class="material-icons right">arrow_drop_down</i>
 						</a>
-					</li>
-					<li>
-						<a title="Suas Informações" th:href="@{/usuario/meu_perfil}"
-							th:text="${#authentication.getPrincipal().getNome() + ', ' + #authentication.getPrincipal().getPapel() }"></a>
 					</li>
 					<li><a th:href="@{/usuario/logout}" title="Sair">Logout</a></li>
 				</ul>
