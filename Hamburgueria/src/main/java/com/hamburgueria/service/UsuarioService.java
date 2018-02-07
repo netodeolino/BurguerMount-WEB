@@ -55,9 +55,14 @@ public class UsuarioService {
 	}
 	
 	//Lista todos usuários.
-	public List<Usuario> listar() {
-		return usuarioRepository.findAll();
+	public List<Usuario> listarTodos() {
+		return usuarioRepository.listarTodos();
 	}
+	
+	//Lista todos usuários de uma sede.
+		public List<Usuario> listar(Long sede_id) {
+			return usuarioRepository.listar(sede_id);
+		}
 	
 	//Função que valida o login de um usuário através do seu email e senha informados.
 	public boolean logar(String email, String senha){

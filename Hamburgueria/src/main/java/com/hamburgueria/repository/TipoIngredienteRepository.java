@@ -16,7 +16,8 @@ public interface TipoIngredienteRepository extends JpaRepository<TipoIngrediente
 	
 	//Lista todos tipo ingredientes de uma determinada sede
 	@Query(value = "SELECT * FROM TIPO_INGREDIENTE "
-			+ "WHERE sede_id = ?1", nativeQuery=true)
+			+ "WHERE sede_id = ?1 "
+			+ "ORDER BY nome", nativeQuery=true)
 	public List<TipoIngrediente> listar(Long id_sede);
 	
 	//Busca um determinado tipo ingrediente de uma determinada sede
