@@ -25,7 +25,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 	
 	//Lista todos usuarios de uma determinada sede.
 	@Query(value = "SELECT * FROM USUARIO "
-			+ "WHERE sede_id = ?1 "
+			+ "WHERE sede_id = ?1 and papel != 'MASTER' "
 			+ "ORDER BY papel", nativeQuery=true)
 	public List<Usuario> listar(Long id_sede);
 }
