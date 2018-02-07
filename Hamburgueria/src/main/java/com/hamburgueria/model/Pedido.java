@@ -34,6 +34,9 @@ public class Pedido {
 	@ManyToMany
 	private List<Produto> produtos;
 	
+	@ManyToMany
+	private List<Ingrediente> ingredientes;
+	
 	public Pedido() {
 		
 	}
@@ -112,5 +115,13 @@ public class Pedido {
 
 	public void setProdutos(List<Produto> produtos) {
 		this.produtos = produtos;
+	}
+
+	public List<Ingrediente> getIngredientes() {
+		return ingredientes;
+	}
+
+	public void setIngredientes(List<Ingrediente> ingredientes) {
+		this.ingredientes = ingredientes;
 	}
 }

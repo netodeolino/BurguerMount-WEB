@@ -91,14 +91,23 @@
 					</div>
 					<div class="row">
 						<div class="col s12">
+							<a th:href="@{${'/pedido/adicionar_produto/'+pedido.id}}" title="Adicionar Produto"
+						          		class="btn-large waves-effect waves-light col s12">
+						        <b>Adicionar Produto</b>
+						    	<i class="material-icons right">add_shopping_cart</i>
+						    </a>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col s12">
 						    <a th:href="@{${'/pedido/excluir/'+pedido.id}}" title="Cancelar Cadastro"
 						          		class="btn-large waves-effect waves-light col s3 red">
 						        <b>Cancelar</b>
 						    	<i class="material-icons right">cancel</i>
 						    </a>
-						    <a th:href="@{/pedido/finalizar_pedido}" title="Cadastrar Produto"
-						          		class="btn-large waves-effect waves-light col s9 green">
-						        <b>Finalizar Cadastro</b>
+						    <a th:href="@{${'/pedido/cadastrar/'+pedido.id}}" title="Cadastrar Produto"
+						          		class="btn-large waves-effect waves-light col s9">
+						        <b>Prosseguir com o pedido</b>
 						    	<i class="material-icons right">done</i>
 						    </a>
 						</div>

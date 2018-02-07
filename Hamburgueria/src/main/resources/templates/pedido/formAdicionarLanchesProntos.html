@@ -27,7 +27,7 @@
 				</div>
 				<div class="row">
 					<div>
-						<form method="POST" th:action="@{${'/pedido/'+'/selecionar_produtos'}}">
+						<form method="POST" th:action="@{${'/pedido/'+pedido.id+'/selecionar_produtos'}}">
 							<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 							<input name="preco" type="hidden" th:value="${pedido.preco}" />
 	                    	<div class="row">
@@ -72,8 +72,8 @@
 						<table class="highlight centered responsive-table">
 						<thead>
 				        	<tr>
-				              <th>Ingredientes</th>
-				              <th>Remover Ingrediente</th>
+				              <th>Produtos</th>
+				              <th>Remover Produto</th>
 				          </tr>
 				        </thead>
 				        <tbody>
@@ -83,7 +83,7 @@
 				            </td>
 				            <td>
 				          		<a class="btn-floating halfway-fab waves-effect waves-light red" name="Remover"
-				          			th:href="@{${'/pedido/'+produto.id+'/remover_ingrediente/'+produto.id}}">
+				          			th:href="@{${'/pedido/'+pedido.id+'/remover_produto/'+produto.id}}">
 	    							<i class="material-icons">remove_shopping_cart</i>
 	  							</a>
 				            </td>
@@ -98,9 +98,9 @@
 						        <b>Cancelar</b>
 						    	<i class="material-icons right">cancel</i>
 						    </a>
-						    <a th:href="@{/pedido/finalizar_pedido}" title="Cadastrar Produto"
-						          		class="btn-large waves-effect waves-light col s9 green">
-						        <b>Finalizar Cadastro</b>
+						    <a th:href="@{${'/pedido/cadastrar/'+pedido.id}}" title="Cadastrar Produto"
+						          		class="btn-large waves-effect waves-light col s9">
+						        <b>Prosseguir com o pedido</b>
 						    	<i class="material-icons right">done</i>
 						    </a>
 						</div>
