@@ -39,7 +39,7 @@
 										<select name="id_ingrediente" id="id_ingrediente" required="true">
 											<optgroup th:label="${tipo.nome}" th:each="tipo : ${tipos}">
 												<option th:value="${ingrediente.id}" th:each="ingrediente : ${tipo.ingredientes}"
-													th:text="${ingrediente.nome}"/>
+													th:text="${ingrediente.nome}" />
 											</optgroup>
 										</select>
 										<label>Ingrediente</label>

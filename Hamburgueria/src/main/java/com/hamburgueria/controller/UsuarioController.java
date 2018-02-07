@@ -158,7 +158,7 @@ public class UsuarioController {
 				usuarioBanco.setSenha(usuario.getSenha());
 				usuarioService.salvar(usuarioBanco);
 				
-				//Da permissão para o usuário alterado.
+				//Atualiza as informações do usuario logado.
 				Authentication authentication = new UsernamePasswordAuthenticationToken(usuarioBanco, usuarioBanco.getSenha(), usuarioBanco.getAuthorities());
 				SecurityContextHolder.getContext().setAuthentication(authentication);
 				return "redirect:/usuario/meu_perfil";
