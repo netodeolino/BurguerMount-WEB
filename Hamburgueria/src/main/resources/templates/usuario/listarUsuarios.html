@@ -1,0 +1,75 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+
+<title>Lista de Ingredientes</title>
+
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
+<meta name="_csrf" content="${_csrf.token}"/>
+<link href="/webjars/materializecss/0.97.7/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection" />
+<link href="/css/hamburgueria.css" type="text/css" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+<script type="text/javascript" src="/webjars/jquery/2.2.4/jquery.min.js"></script>
+<script src="/webjars/materializecss/0.97.7/js/materialize.min.js"></script>
+<link rel="icon" type="image/png" sizes="20x20" th:href="@{/images/logo.png}" />
+</head>
+<body>
+	<div th:replace="fragments/header :: header"></div>
+	
+	<div class="container" style="margin-top: 50px;">
+		<div class="row">
+			<div class="col s12">
+				
+				<div th:unless="${tipo != null}">
+					<h3>Lista de Usuarios</h3>
+					<div class="col s3"></div>
+					<br/><br/>
+				</div>			
+				<div class="card card-container row">
+					<div class="container">
+						<table class="highlight">
+							<thead>
+					        	<tr>
+					              <th></th>
+					              <th>Nome</th>
+					              <th>Sede</th>
+					              <th>Papel</th>
+					              <th >Ações</th>
+					          </tr>
+					        </thead>
+					        <tbody>
+					          <tr th:each="usuario : ${usuarios}">
+					            <td>
+					            	<img class="profile-img-card circle" th:src="${usuario.foto64}" width="50" height="50" />
+					            </td>
+					            <td>
+					            	<span th:text="${usuario.nome}"></span>
+					            </td>
+					            <td th:text="${usuario.sede.cidade}"></td>
+					            <td th:text="${usuario.papel}"></td>
+					            <td>
+						          	<a th:href="@{${'/master/perfil_usuario/' + usuario.id}}" title="Detalhes"
+						          		class="btn-floating halfway-fab waves-effect waves-light blue">
+						          		<i class="material-icons">visibility</i>
+						          	</a>
+						          	<a th:href="@{${'/master/usuario/editar_papel/' + usuario.id}}" title="Editar Papel"
+						          		class="btn-floating halfway-fab waves-effect waves-light orange">
+						          		<i class="material-icons">mode_edit</i>
+						          	</a>
+						          	<a href="#" title="Consumo"
+						          		class="btn-floating halfway-fab waves-effect waves-light green">
+						          		<i class="material-icons">monetization_on</i>
+						          	</a>
+					            </td>
+					          </tr>
+					        </tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="/js/hamburgueria.js"></script>
+</body>
+</html>

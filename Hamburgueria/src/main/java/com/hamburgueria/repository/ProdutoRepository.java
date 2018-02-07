@@ -17,17 +17,20 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 
 	//Lista todos produtos de uma determinada sede
 		@Query(value = "SELECT * FROM PRODUTO "
-				+ "WHERE sede_id = ?1", nativeQuery=true)
+				+ "WHERE sede_id = ?1 "
+				+ "ORDER BY nome", nativeQuery=true)
 		public List<Produto> listarTodos(Long id_sede);
 		
 		//Lista todos produtos disponiveis de uma determinada sede
 		@Query(value = "SELECT * FROM PRODUTO "
-				+ "WHERE sede_id = ?1 AND disponivel = true", nativeQuery=true)
+				+ "WHERE sede_id = ?1 AND disponivel = true "
+				+ "ORDER BY nome", nativeQuery=true)
 		public List<Produto> listarDisponiveis(Long id_sede);
 		
 		//Lista todos produtos indisponiveis de uma determinada sede
 		@Query(value = "SELECT * FROM PRODUTO "
-				+ "WHERE sede_id = ?1 AND disponivel = false", nativeQuery=true)
+				+ "WHERE sede_id = ?1 AND disponivel = false "
+				+ "ORDER BY nome", nativeQuery=true)
 		public List<Produto> listarIndisponiveis(Long id_sede);
 		
 		//Busca um determinado produto de uma determinada sede

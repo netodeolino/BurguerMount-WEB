@@ -55,8 +55,8 @@ public class UsuarioService {
 	}
 	
 	//Lista todos usuários.
-	public List<Usuario> listar() {
-		return usuarioRepository.findAll();
+	public List<Usuario> listarTodos() {
+		return usuarioRepository.listarTodos();
 	}
 	
 	//Função que valida o login de um usuário através do seu email e senha informados.

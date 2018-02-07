@@ -88,7 +88,7 @@ public class UsuarioController {
 	public ModelAndView visualizarUsuario() {
 		Usuario usuario = usuarioService.usuarioLogado();
 		
-		ModelAndView model = new ModelAndView("usuario/detalhesUsuario");
+		ModelAndView model = new ModelAndView("usuario/perfilUsuario");
 		model.addObject("usuario", usuario);
 		return model;
 	}
