@@ -17,9 +17,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.hamburgueria.model.Ingrediente;
 import com.hamburgueria.model.Pedido;
+import com.hamburgueria.model.Produto;
 import com.hamburgueria.model.Status;
 import com.hamburgueria.service.IngredienteService;
 import com.hamburgueria.service.PedidoService;
+import com.hamburgueria.service.ProdutoService;
 import com.hamburgueria.service.UsuarioService;
 
 @Controller
@@ -34,6 +36,26 @@ public class PedidoController {
 	
 	@Autowired
 	UsuarioService usuarioService;
+	
+	@Autowired
+	ProdutoService produtoService;
+	
+	@GetMapping(path="/pre/cadastrar")
+	public ModelAndView preCadastrarPedido() {		
+		ModelAndView model = new ModelAndView("pedido/preCadastroPedido");
+		model.addObject(new Pedido(0.0));
+		return model;
+	}
+	
+	@GetMapping(path="/lanches_prontos")
+	public ModelAndView lanchesProntos() {		
+		List<Produto> produtos = produtoService.listarDisponiveis(usuarioService.usuarioLogado().getSede().getId());
+		
+		ModelAndView model = new ModelAndView("pedido/formAdicionarLanchesProntos");
+		model.addObject("produtos", produtos);
+		model.addObject(new Pedido(0.0));
+		return model;
+	}
 
 	@GetMapping(path="/cadastrar")
 	public ModelAndView cadastrarPedido() {		
@@ -103,11 +125,11 @@ public class PedidoController {
  			ingrs.add(ingrediente);
  		}
  		
- 		List<Ingrediente> ingredientesJaSalvos = pedido.getIngredientes();
- 		ingredientesJaSalvos.addAll(ingrs);
+ 		//List<Ingrediente> ingredientesJaSalvos = pedido.getIngredientes();
+ 		//ingredientesJaSalvos.addAll(ingrs);
  		
  		pedido.setPreco(pedido.getPreco() + (ingrediente.getValorDeVenda() * quantidade));
- 		pedido.setIngredientes(ingredientesJaSalvos);
+ 		//pedido.setIngredientes(ingredientesJaSalvos);
  		
  		Pedido pedidoAtualizado = pedidoService.salvar(pedido);
 		
@@ -119,11 +141,11 @@ public class PedidoController {
  		Pedido pedido = pedidoService.buscar(id_pedido);
  		Ingrediente ingrediente = ingredienteService.buscar(id_ingrediente, usuarioService.usuarioLogado().getSede().getId());
  		
- 		List<Ingrediente> ingredientesDoProduto = pedido.getIngredientes();
- 		ingredientesDoProduto.remove(ingrediente);
+ 		//List<Ingrediente> ingredientesDoProduto = pedido.getIngredientes();
+ 		//ingredientesDoProduto.remove(ingrediente);
  		
  		pedido.setPreco(pedido.getPreco() - (ingrediente.getValorDeVenda()));
- 		pedido.setIngredientes(ingredientesDoProduto);
+ 		//pedido.setIngredientes(ingredientesDoProduto);
  		
  		Pedido pedidoAtualizado = pedidoService.salvar(pedido);
  		

@@ -41,9 +41,6 @@ public class Ingrediente {
 	
 	@ManyToMany(cascade=CascadeType.ALL)
 	private List<Produto> produtos;
-	
-	@ManyToMany(cascade=CascadeType.ALL)
-	private List<Pedido> pedidos;
 
 	public Ingrediente() {
 		
@@ -127,13 +124,5 @@ public class Ingrediente {
 
 	public void setProdutos(List<Produto> produtos) {
 		this.produtos = produtos;
-	}
-	
-	public List<Pedido> getPedidos() {
-		return pedidos;
-	}
-
-	public void setPedidos(List<Pedido> pedidos) {
-		this.pedidos = pedidos;
 	}
 }
