@@ -17,6 +17,10 @@
 		</ul>
 		
 		<ul id="dropdownListar" class="dropdown-content">
+			<li th:if="${#authentication.getPrincipal().getPapel() == T(com.hamburgueria.model.Papel).MASTER || 
+				#authentication.getPrincipal().getPapel() == T(com.hamburgueria.model.Papel).ADMINISTRADOR}">
+				<a th:href="@{/usuario/listar_usuarios}">Usuarios</a>
+			</li>
 			<li th:if="${#authentication.getPrincipal().getPapel() == T(com.hamburgueria.model.Papel).MASTER}">
 				<a th:href="@{/sede/listar}">Sedes</a>
 			</li>

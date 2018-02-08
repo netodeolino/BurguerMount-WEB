@@ -49,17 +49,21 @@
 					            <td th:text="${usuario.sede.cidade}"></td>
 					            <td th:text="${usuario.papel}"></td>
 					            <td>
-						          	<a th:href="@{${'/master/perfil_usuario/' + usuario.id}}" title="Detalhes"
+						          	<a th:href="@{${'/usuario/perfil_usuario/' + usuario.id}}" title="Detalhes"
 						          		class="btn-floating halfway-fab waves-effect waves-light blue">
 						          		<i class="material-icons">visibility</i>
 						          	</a>
-						          	<a th:href="@{${'/master/usuario/editar_papel/' + usuario.id}}" title="Editar Papel"
+						          	<a th:href="@{${'/usuario/editar_papel/' + usuario.id}}" title="Editar Papel"
 						          		class="btn-floating halfway-fab waves-effect waves-light orange">
 						          		<i class="material-icons">mode_edit</i>
 						          	</a>
 						          	<a href="#" title="Consumo"
 						          		class="btn-floating halfway-fab waves-effect waves-light green">
 						          		<i class="material-icons">monetization_on</i>
+						          	</a>
+						          	<a href="#" title="Produtos"
+						          		class="btn-floating halfway-fab waves-effect waves-light red">
+						          		<i class="material-icons">restaurant</i>
 						          	</a>
 					            </td>
 					          </tr>

@@ -1,6 +1,7 @@
 package com.hamburgueria.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -165,6 +167,92 @@ public class UsuarioController {
 			}
 		}
 		return "redirect:/usuario/alterar_senha";
+	}
+	
+	/*Função que envia para a página "listarUsuarios" uma lista de usuários.
+	 *Se o usuário for adm, a função envia apenas os usuários da sede desse usuário.
+	 *Se o usuário for master, a função retorna todos os usuários de todas as sedes.
+	 */
+	@GetMapping(path="/listar_usuarios")
+	public ModelAndView listarUsuarios() {
+		List<Usuario> usuarios =  new ArrayList<>();
+		
+		if(usuarioService.usuarioLogado().getPapel().equals(Papel.ADMINISTRADOR))
+			usuarios = usuarioService.listar(usuarioService.usuarioLogado().getSede().getId());
+		
+		if(usuarioService.usuarioLogado().getPapel().equals(Papel.MASTER))
+			usuarios = usuarioService.listarTodos();
+		
+		usuarios.remove(usuarioService.usuarioLogado());
+		
+		ModelAndView model = new ModelAndView("usuario/listarUsuarios");
+		model.addObject("usuarios", usuarios);
+		return model;
+	}
+	
+	//Função que retorna para a página "detalhesUsuario" um usuário passado por URL.
+	@GetMapping(path="/perfil_usuario/{id_usuario}")
+	public ModelAndView visualizarUsuario(@PathVariable ("id_usuario") Long id_usuario) {
+		Usuario usuario = usuarioService.buscar(id_usuario);
+		
+		//Verifica se o usuário existe, caso contrário o usuário é redirecionado para uma página de erro.
+		if(usuario == null) {
+			ModelAndView model = new ModelAndView("erros/erro");
+			model.addObject("mensagem", "Usuário não encontrado!");
+			return model;
+		}
+		
+		//Se o usuário logado for ADM, ele tem permissão de visualizar o perfil só de usuários da sua sede e os não MASTER.
+		if(usuarioService.usuarioLogado().getPapel().equals(Papel.ADMINISTRADOR)) {
+			if(!usuario.getSede().equals(usuarioService.usuarioLogado().getSede()) || usuario.getPapel().equals(Papel.MASTER)) {
+				ModelAndView model = new ModelAndView("erros/erro");
+				model.addObject("mensagem", "Usuário não encontrado!");
+				return model;
+			}
+				
+		}
+		
+		ModelAndView model = new ModelAndView("usuario/detalhesUsuario");
+		model.addObject("usuario", usuario);
+		return model;
+	}
+	
+	@GetMapping(path="/editar_papel/{id_usuario}")
+	public ModelAndView editarPapelUsuario(@PathVariable ("id_usuario") Long id_usuario) {
+		Usuario usuario = usuarioService.buscar(id_usuario);
+		
+		//Verifica se o usuário existe, caso contrário o usuário é redirecionado para uma página de erro.
+		if(usuario == null) {
+			ModelAndView model = new ModelAndView("erros/erro");
+			model.addObject("mensagem", "Usuário não encontrado!");
+			return model;
+		}
+		
+		//Se o usuário logado for ADM, ele tem permissão de visualizar o perfil só de usuários da sua sede e os não MASTER.
+		if(usuarioService.usuarioLogado().getPapel().equals(Papel.ADMINISTRADOR)) {
+			if(!usuario.getSede().equals(usuarioService.usuarioLogado().getSede()) || usuario.getPapel().equals(Papel.MASTER)) {
+				ModelAndView model = new ModelAndView("erros/erro");
+				model.addObject("mensagem", "Usuário não encontrado!");
+				return model;
+			}
+				
+		}
+		
+		ModelAndView model = new ModelAndView("usuario/alterarPapel");
+		model.addObject("usuario", usuario);
+		return model;
+	}
+	
+	//Função que altera o papel do usuário passado no formulário e atualiza essa informação.
+	@PostMapping(path="/usuario/editar_papel")
+	public String editarPapelUsuario(@Valid Usuario usuario) {
+		Usuario usuarioBanco = usuarioService.buscar(usuario.getId());
+		
+		if(usuario.getPapel().equals(usuarioBanco.getPapel()))
+			return "redirect:/master/listar_usuarios";
+		
+		usuarioService.atualizar(usuario);
+		return "redirect:/master/perfil_usuario/" + usuario.getId();
 	}
 	
 	//Remove o usuário na lista de usuário de uma sede e salva a sede.
