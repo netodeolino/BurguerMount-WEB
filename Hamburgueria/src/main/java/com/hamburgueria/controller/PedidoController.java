@@ -62,6 +62,17 @@ public class PedidoController {
 		return model;
 	}
 	
+	@GetMapping(path="/lanches_prontos/editar/{id}")
+	public ModelAndView editarLanchesProntos(@PathVariable("id") Long id) {		
+		List<Produto> produtos = produtoService.listarDisponiveis(usuarioService.usuarioLogado().getSede().getId());
+		Pedido pedido = pedidoService.buscar(id);
+		
+		ModelAndView model = new ModelAndView("pedido/formEditarAdicionarLanchesProntos");
+		model.addObject("produtos", produtos);
+		model.addObject("pedido", pedido);
+		return model;
+	}
+	
 	@GetMapping(path="/montar_lanches")
 	public ModelAndView montarLanches() {
 		Pedido pedido = new Pedido();
@@ -109,7 +120,7 @@ public class PedidoController {
 	@GetMapping(path="/excluir/{id}")
 	public String excluirPedido(@PathVariable("id") Long id) {
 		pedidoService.excluir(id);
-		return "redirect:/produto/listar";
+		return "redirect:/pedido/listar";
 	}
 	
 	@GetMapping(path="/editar/{id}")
@@ -125,8 +136,33 @@ public class PedidoController {
 	 */
 	@PostMapping(path="/editar")
 	public String editarPedido(@Valid Pedido pedido, BindingResult result) { 
-		pedidoService.salvar(pedido);
-		return "redirect:/sede/listar";
+		Pedido pedidoBanco = pedidoService.buscar(pedido.getId());
+		pedidoBanco.setLocal(pedido.getLocal());
+		pedidoBanco.setDinheiroCliente(pedido.getDinheiroCliente());
+		pedidoBanco.setMensagem(pedido.getMensagem());
+		Date today = new Date();
+		pedidoBanco.setData(today);
+		pedidoBanco.setStatus(Status.FEITO);
+		
+		pedidoService.salvar(pedidoBanco);
+		return "redirect:/pedido/listar";
+	}
+	
+	//Função que retorna para a página "detalhesPedido" um produto passado pela URL.
+	@GetMapping(path="/detalhes_pedido/{id}")
+	public ModelAndView detalhesPedido(@PathVariable("id") Long id) {
+		Pedido pedido = pedidoService.buscar(id);
+		
+		//Verifica se o pedido informado existe, caso não exista o usuário é redirecionado para uma página de erro.
+		if(pedido == null) {
+			ModelAndView model = new ModelAndView("erros/erro");
+			model.addObject("mensagem", "Pedido não encontrado");
+			return model;
+		}
+		
+		ModelAndView model = new ModelAndView("pedido/detalhesPedido");
+		model.addObject("pedido", pedido);
+		return model;
 	}
 	
 	@PostMapping(path="/{id}/selecionar_ingredientes")
@@ -234,6 +270,32 @@ public class PedidoController {
 		return model; 
 	}
 	
+	@PostMapping(path="/{id}/selecionar_produtos/editar")
+ 	public ModelAndView editarAdicionarProdutos(@PathVariable("id") Long id, Long id_produto, Integer quantidade) {
+		Pedido pedido = pedidoService.buscar(id);
+		Produto produto = produtoService.buscar(id_produto, usuarioService.usuarioLogado().getSede().getId());
+		
+		List<Produto> produts = new ArrayList<Produto>();
+ 		for(int i = 0; i < quantidade; i++) {
+ 			produts.add(produto);
+ 		}
+ 		
+ 		List<Produto> produtosJaSalvos = pedido.getProdutos();
+ 		produtosJaSalvos.addAll(produts);
+ 		
+ 		pedido.setPreco(pedido.getPreco() + (produto.getValorDeVenda() * quantidade));
+ 		pedido.setProdutos(produtosJaSalvos);
+ 		pedido.setStatus(Status.EM_ABERTO);
+ 		
+ 		Pedido pedidoAtualizado = pedidoService.salvar(pedido);
+ 		
+ 		List<Produto> produtos = produtoService.listarDisponiveis(usuarioService.usuarioLogado().getSede().getId());
+ 		ModelAndView model = new ModelAndView("pedido/formEditarAdicionarLanchesProntos");
+		model.addObject("produtos", produtos);
+		model.addObject("pedido", pedidoAtualizado);
+		return model; 
+	}
+	
 	@GetMapping(path="/{id_pedido}/remover_produto/{id_produto}")
  	public ModelAndView removerProdutos(@PathVariable("id_pedido") Long id_pedido, @PathVariable("id_produto") Long id_produto) {
  		Pedido pedido = pedidoService.buscar(id_pedido);
@@ -249,6 +311,26 @@ public class PedidoController {
  		
  		List<Produto> produtos = produtoService.listarDisponiveis(usuarioService.usuarioLogado().getSede().getId());
  		ModelAndView model = new ModelAndView("pedido/formAdicionarLanchesProntos");
+		model.addObject("produtos", produtos);
+		model.addObject("pedido", pedidoAtualizado);
+		return model;
+	}
+	
+	@GetMapping(path="/{id_pedido}/remover_produto/{id_produto}/editar")
+ 	public ModelAndView editarRemoverProdutos(@PathVariable("id_pedido") Long id_pedido, @PathVariable("id_produto") Long id_produto) {
+ 		Pedido pedido = pedidoService.buscar(id_pedido);
+ 		Produto produto = produtoService.buscar(id_produto, usuarioService.usuarioLogado().getSede().getId());
+ 		
+ 		List<Produto> produtosDoPedido = pedido.getProdutos();
+ 		produtosDoPedido.remove(produto);
+ 		
+ 		pedido.setPreco(pedido.getPreco() - (produto.getValorDeVenda()));
+ 		pedido.setProdutos(produtosDoPedido);
+ 		
+ 		Pedido pedidoAtualizado = pedidoService.salvar(pedido);
+ 		
+ 		List<Produto> produtos = produtoService.listarDisponiveis(usuarioService.usuarioLogado().getSede().getId());
+ 		ModelAndView model = new ModelAndView("pedido/formEditarAdicionarLanchesProntos");
 		model.addObject("produtos", produtos);
 		model.addObject("pedido", pedidoAtualizado);
 		return model;
