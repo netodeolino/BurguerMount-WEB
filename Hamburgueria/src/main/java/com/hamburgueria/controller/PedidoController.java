@@ -19,7 +19,6 @@ import com.hamburgueria.model.Ingrediente;
 import com.hamburgueria.model.Pedido;
 import com.hamburgueria.model.Produto;
 import com.hamburgueria.model.Status;
-import com.hamburgueria.model.Usuario;
 import com.hamburgueria.service.IngredienteService;
 import com.hamburgueria.service.PedidoService;
 import com.hamburgueria.service.ProdutoService;
@@ -54,6 +53,8 @@ public class PedidoController {
 		Pedido pedido = new Pedido();
 		pedido.setStatus(Status.EM_ABERTO);
 		pedido.setPreco(0.0);
+		pedido.setDisponivel(true);
+		pedido.setSede(usuarioService.usuarioLogado().getSede());
 		
 		Pedido pedidoSalvo = pedidoService.salvar(pedido);
 		
@@ -79,6 +80,8 @@ public class PedidoController {
 		Pedido pedido = new Pedido();
 		pedido.setStatus(Status.EM_ABERTO);
 		pedido.setPreco(0.0);
+		pedido.setDisponivel(true);
+		pedido.setSede(usuarioService.usuarioLogado().getSede());
 		
 		Pedido pedidoSalvo = pedidoService.salvar(pedido);
 		

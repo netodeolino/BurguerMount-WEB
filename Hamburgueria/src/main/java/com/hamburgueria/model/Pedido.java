@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class Pedido {
@@ -26,11 +27,17 @@ public class Pedido {
 	private Double dinheiroCliente;
 	private String mensagem;
 	
+	@NotNull
+	private boolean disponivel;
+	
 	@Enumerated(EnumType.STRING)
 	private Status status;
 	
 	@ManyToOne
 	private Usuario cliente;
+	
+	@ManyToOne
+	private Sede sede;
 	
 	@ManyToMany(cascade=CascadeType.ALL)
 	private List<Produto> produtos;
@@ -94,6 +101,14 @@ public class Pedido {
 		this.mensagem = mensagem;
 	}
 
+	public boolean isDisponivel() {
+		return disponivel;
+	}
+
+	public void setDisponivel(boolean disponivel) {
+		this.disponivel = disponivel;
+	}
+
 	public Status getStatus() {
 		return status;
 	}
@@ -108,6 +123,14 @@ public class Pedido {
 
 	public void setCliente(Usuario cliente) {
 		this.cliente = cliente;
+	}
+
+	public Sede getSede() {
+		return sede;
+	}
+
+	public void setSede(Sede sede) {
+		this.sede = sede;
 	}
 
 	public List<Produto> getProdutos() {
