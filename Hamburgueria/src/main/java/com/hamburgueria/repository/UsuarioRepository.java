@@ -28,4 +28,9 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 			+ "WHERE sede_id = ?1 and papel != 'MASTER' "
 			+ "ORDER BY papel", nativeQuery=true)
 	public List<Usuario> listar(Long id_sede);
+	
+	//Calcula o total gasto por um determinado usuário.
+	@Query(value = "SELECT SUM(preco) FROM PEDIDO "
+			+ "WHERE cliente_id = ?1", nativeQuery=true)
+	public Double calcularConsumo(Long usuario_id);
 }

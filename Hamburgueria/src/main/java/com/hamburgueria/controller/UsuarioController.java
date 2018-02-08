@@ -209,7 +209,6 @@ public class UsuarioController {
 				model.addObject("mensagem", "Usuário não encontrado!");
 				return model;
 			}
-				
 		}
 		
 		ModelAndView model = new ModelAndView("usuario/detalhesUsuario");
@@ -228,14 +227,13 @@ public class UsuarioController {
 			return model;
 		}
 		
-		//Se o usuário logado for ADM, ele tem permissão de visualizar o perfil só de usuários da sua sede e os não MASTER.
+		//Se o usuário logado for ADM, ele tem permissão de alterar o papel só de usuários da sua sede e os não MASTER.
 		if(usuarioService.usuarioLogado().getPapel().equals(Papel.ADMINISTRADOR)) {
 			if(!usuario.getSede().equals(usuarioService.usuarioLogado().getSede()) || usuario.getPapel().equals(Papel.MASTER)) {
 				ModelAndView model = new ModelAndView("erros/erro");
 				model.addObject("mensagem", "Usuário não encontrado!");
 				return model;
-			}
-				
+			}	
 		}
 		
 		ModelAndView model = new ModelAndView("usuario/alterarPapel");
@@ -244,7 +242,7 @@ public class UsuarioController {
 	}
 	
 	//Função que altera o papel do usuário passado no formulário e atualiza essa informação.
-	@PostMapping(path="/usuario/editar_papel")
+	@PostMapping(path="/editar_papel")
 	public String editarPapelUsuario(@Valid Usuario usuario) {
 		Usuario usuarioBanco = usuarioService.buscar(usuario.getId());
 		
@@ -253,6 +251,60 @@ public class UsuarioController {
 		
 		usuarioService.atualizar(usuario);
 		return "redirect:/master/perfil_usuario/" + usuario.getId();
+	}
+	
+	//Função que retorna para a página "detalhesConsumo" um usuário, o total de pedidos que ele fez e o total gasto.
+	@GetMapping(path="/consumo/{id_usuario}")
+	public ModelAndView consumoUsuario(@PathVariable ("id_usuario") Long id_usuario) {
+		Usuario usuario = usuarioService.buscar(id_usuario);
+		
+		//Verifica se o usuário existe, caso contrário o usuário é redirecionado para uma página de erro.
+		if(usuario == null) {
+			ModelAndView model = new ModelAndView("erros/erro");
+			model.addObject("mensagem", "Usuário não encontrado!");
+			return model;
+		}
+		
+		//Se o usuário logado for ADM, ele tem permissão de visualizar o consumo só de usuários da sua sede e os não MASTER.
+		if(usuarioService.usuarioLogado().getPapel().equals(Papel.ADMINISTRADOR)) {
+			if(!usuario.getSede().equals(usuarioService.usuarioLogado().getSede()) || usuario.getPapel().equals(Papel.MASTER)) {
+				ModelAndView model = new ModelAndView("erros/erro");
+				model.addObject("mensagem", "Usuário não encontrado!");
+				return model;
+			}
+		}
+		
+		ModelAndView model = new ModelAndView("usuario/detalhesConsumo");
+		model.addObject("usuario", usuario);
+		model.addObject("totalPedidos", usuario.getPedidos().size());
+		model.addObject("totalGasto", usuarioService.calcularConsumo(usuario.getId()));
+		return model;
+	}
+	
+	//Função que retorna para a página "listaProdutos" o usuário informado por URL.
+	@GetMapping(path="/listar_produtos/{id_usuario}")
+	public ModelAndView produtosUsuario(@PathVariable ("id_usuario") Long id_usuario) {
+		Usuario usuario = usuarioService.buscar(id_usuario);
+		
+		//Verifica se o usuário existe, caso contrário o usuário é redirecionado para uma página de erro.
+		if(usuario == null) {
+			ModelAndView model = new ModelAndView("erros/erro");
+			model.addObject("mensagem", "Usuário não encontrado!");
+			return model;
+		}
+		
+		//Se o usuário logado for ADM, ele tem permissão de visualizar os produtos só de usuários da sua sede e os não MASTER.
+		if(usuarioService.usuarioLogado().getPapel().equals(Papel.ADMINISTRADOR)) {
+			if(!usuario.getSede().equals(usuarioService.usuarioLogado().getSede()) || usuario.getPapel().equals(Papel.MASTER)) {
+				ModelAndView model = new ModelAndView("erros/erro");
+				model.addObject("mensagem", "Usuário não encontrado!");
+				return model;
+			}
+		}
+		
+		ModelAndView model = new ModelAndView("usuario/listaProdutos");
+		model.addObject("usuario", usuario);
+		return model;
 	}
 	
 	//Remove o usuário na lista de usuário de uma sede e salva a sede.

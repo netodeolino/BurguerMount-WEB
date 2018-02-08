@@ -29,7 +29,7 @@
 						th:src="${usuario.foto64}"  width="150" height="150"/>
 				</div>
 				<div class="row">
-					<form method="POST" th:object="${usuario}" th:action="@{/master/usuario/editar_papel}" enctype="multipart/form-data">
+					<form method="POST" th:object="${usuario}" th:action="@{/usuario/editar_papel}" enctype="multipart/form-data">
 						<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 						<input th:field="*{id}" type="hidden" value="th:text=${usuario.id}" />
 						<input th:field="*{pedidos}" type="hidden" value="th:text=${usuario.pedidos}" />

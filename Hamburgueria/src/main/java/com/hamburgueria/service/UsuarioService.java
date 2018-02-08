@@ -60,9 +60,14 @@ public class UsuarioService {
 	}
 	
 	//Lista todos usuários de uma sede.
-		public List<Usuario> listar(Long sede_id) {
-			return usuarioRepository.listar(sede_id);
-		}
+	public List<Usuario> listar(Long sede_id) {
+		return usuarioRepository.listar(sede_id);
+	}
+	
+	//Calcula o total gasto por um determinado usuário.
+	public Double calcularConsumo(Long usuario_id) {
+		return usuarioRepository.calcularConsumo(usuario_id);
+	}
 	
 	//Função que valida o login de um usuário através do seu email e senha informados.
 	public boolean logar(String email, String senha){

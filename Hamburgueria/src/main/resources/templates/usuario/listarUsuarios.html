@@ -21,7 +21,7 @@
 		<div class="row">
 			<div class="col s12">
 				
-				<div th:unless="${tipo != null}">
+				<div>
 					<h3>Lista de Usuarios</h3>
 					<div class="col s3"></div>
 					<br/><br/>
@@ -57,11 +57,11 @@
 						          		class="btn-floating halfway-fab waves-effect waves-light orange">
 						          		<i class="material-icons">mode_edit</i>
 						          	</a>
-						          	<a href="#" title="Consumo"
+						          	<a th:href="@{${'/usuario/consumo/' + usuario.id}}" title="Consumo"
 						          		class="btn-floating halfway-fab waves-effect waves-light green">
 						          		<i class="material-icons">monetization_on</i>
 						          	</a>
-						          	<a href="#" title="Produtos"
+						          	<a th:href="@{${'/usuario/listar_produtos/' + usuario.id}}" title="Produtos"
 						          		class="btn-floating halfway-fab waves-effect waves-light red">
 						          		<i class="material-icons">restaurant</i>
 						          	</a>
