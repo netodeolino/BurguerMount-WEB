@@ -13,7 +13,7 @@
 			<li><a th:href="@{/ingrediente/cadastrar}">Ingrediente</a></li>
 			<li><a th:href="@{/produto/cadastrar}">Produto</a></li>
 			<li><a th:href="@{/tipo_ingrediente/cadastrar}">Tipo Ingrediente</a></li>
-			<li><a th:href="@{/pedido/pre/cadastrar}">Pedido</a></li>
+			<li><a th:href="@{/pedido/pre_cadastrar}">Pedido</a></li>
 		</ul>
 		
 		<ul id="dropdownListar" class="dropdown-content">
@@ -24,8 +24,17 @@
 			<li th:if="${#authentication.getPrincipal().getPapel() == T(com.hamburgueria.model.Papel).MASTER}">
 				<a th:href="@{/sede/listar}">Sedes</a>
 			</li>
+			<li><a th:href="@{/pedido/listar}">Pedidos</a></li>
 			<li><a th:href="@{/tipo_ingrediente/listar}">Ingredientes</a></li>
 			<li><a th:href="@{/produto/listar}">Produtos</a></li>
+		</ul>
+		<ul id="dropdownPedidos" class="dropdown-content">
+			<li><a th:href="@{/pedido/pre_cadastrar}">Novo</a></li>
+			<li><a th:href="@{/pedido/listar/todos}">Todos</a></li>
+			<li><a th:href="@{/pedido/listar/em_aberto}">Em Aberto</a></li>
+			<li><a th:href="@{/pedido/listar/em_andamento}">Em Andamento</a></li>
+			<li><a th:href="@{/pedido/listar/prontos}">Prontos</a></li>
+			<li><a th:href="@{/pedido/listar/entregues}">Entregues</a></li>
 		</ul>
 
 		<nav>
@@ -39,14 +48,20 @@
 				</div>
 				<ul id="nav-mobile" class="right hide-on-med-and-down">
 					<li>
+						<a class="dropdown-button" href="#!" data-activates="dropdownPedidos">
+							Pedidos
+							<i class="material-icons right">arrow_drop_down</i>
+						</a>
+					</li>
+					<li>
 						<a class="dropdown-button" href="#!" data-activates="dropdownCadastrar">
-							Cadastrar
+							Cadastros
 							<i class="material-icons right">arrow_drop_down</i>
 						</a>
 					</li>
 					<li>
 						<a class="dropdown-button" href="#!" data-activates="dropdownListar">
-							Listar
+							Visualizar
 							<i class="material-icons right">arrow_drop_down</i>
 						</a>
 					</li>

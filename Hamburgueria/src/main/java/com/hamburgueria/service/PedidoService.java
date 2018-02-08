@@ -18,15 +18,31 @@ public class PedidoService {
 		return pedidoRepository.save(pedido);
 	}
 	
-	public Pedido buscar(Long id) {
-		return pedidoRepository.findOne(id);
+	public Pedido buscar(Long id_pedido, Long id_sede) {
+		return pedidoRepository.buscar(id_pedido, id_sede);
 	}
 	
 	public void excluir(Long id) {
 		pedidoRepository.delete(id);
 	}
 	
-	public List<Pedido> listar(){
-		return pedidoRepository.findAll();
+	public List<Pedido> listarTodos(Long id_sede){
+		return pedidoRepository.listarTodos(id_sede);
+	}
+	
+	public List<Pedido> listarEmAberto(Long id_sede){
+		return pedidoRepository.listarEmAberto(id_sede);
+	}
+	
+	public List<Pedido> listarEmAndamento(Long id_sede){
+		return pedidoRepository.listarEmAndamento(id_sede);
+	}
+	
+	public List<Pedido> listarProntos(Long id_sede){
+		return pedidoRepository.listarProntos(id_sede);
+	}
+	
+	public List<Pedido> listarEntregues(Long id_sede){
+		return pedidoRepository.listarEntregues(id_sede);
 	}
 }
