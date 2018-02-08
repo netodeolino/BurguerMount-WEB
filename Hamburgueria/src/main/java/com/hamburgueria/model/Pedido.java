@@ -3,6 +3,7 @@ package com.hamburgueria.model;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -31,7 +32,7 @@ public class Pedido {
 	@ManyToOne
 	private Usuario cliente;
 	
-	@ManyToMany
+	@ManyToMany(cascade=CascadeType.ALL)
 	private List<Produto> produtos;
 	
 	@ManyToMany
