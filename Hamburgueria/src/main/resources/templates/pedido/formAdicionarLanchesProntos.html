@@ -39,7 +39,7 @@
 											<option th:each="produto : ${produtos}"
 					            				th:value="${produto.id}"
 					            				th:text="${produto.nome}"
-					            				data-icon="${produto.foto64}" class="circle">
+					            				th:data-icon="@{${produto.foto64}}" class="circle">
 											</option>
 										</select>
 										<label>Produtos</label>
