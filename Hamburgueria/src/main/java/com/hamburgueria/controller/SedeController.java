@@ -7,6 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,6 +37,9 @@ public class SedeController {
 	
 	@Autowired
 	UsuarioService usuarioService;
+	
+	@Autowired
+	UsuarioController usuarioController;
 	
 	/*Função de cadastro simples.
 	 *Manda para a página "formCadastroSede" uma sede vazia e uma lista de  sedes
@@ -110,6 +116,35 @@ public class SedeController {
 		sedeService.salvar(sede);
 		
 		return "redirect:/sede/listar";
+	}
+	
+	//Função que permite um usuário MASTER alterar a sua sede.
+	@GetMapping(path="/alterar_sede/{id_sede}")
+	public String alterarSede(@PathVariable("id_sede") Long id_sede) {
+		Sede sede = sedeService.buscar(id_sede);
+		//Verifica se a sede informada existe, caso contrário é redirecionado para página de listar as sedes.
+		if(sede == null)
+			return "redirect:/sede/listar";
+		
+		//Altera a sede do usuário logado.
+		Usuario usuarioLogado = usuarioService.usuarioLogado();
+		usuarioLogado.setSede(sede);
+		
+		Usuario usuarioAntigo = usuarioService.buscar(usuarioLogado.getId());
+		
+		//Verifica se a sede foi alterada.
+		if(usuarioAntigo.getSede()!= null && !usuarioAntigo.getSede().equals(usuarioLogado.getSede())) {
+			usuarioController.removerUsuarioSede(usuarioAntigo, usuarioAntigo.getSede());
+			usuarioController.adicionarUsuarioSede(usuarioLogado, usuarioLogado.getSede());
+		}
+		
+		usuarioService.atualizar(usuarioLogado);
+		
+		//Atualiza as informações do usuário logado.
+		Authentication authentication = new UsernamePasswordAuthenticationToken(usuarioLogado, usuarioLogado.getSenha(), usuarioLogado.getAuthorities());
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+		
+		return "redirect:/tipo_ingrediente/listar";
 	}
 	
 	//Função que remove a sede do usuário.
