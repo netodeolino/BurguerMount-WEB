@@ -160,7 +160,6 @@ public class PedidoController {
 		pedidoBanco.setMensagem(pedido.getMensagem());
 		Date today = new Date();
 		pedidoBanco.setData(today);
-		pedidoBanco.setStatus(Status.EM_ANDAMENTO);
 		
 		pedidoService.salvar(pedidoBanco);
 		return "redirect:/pedido/listar/todos";
