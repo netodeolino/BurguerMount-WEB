@@ -201,6 +201,7 @@ public class PedidoController {
 		return model;
 	}
 	
+	/* AQUI TAMBEM DA O MESMO ERRO AO BUSCAR PEDIDO */
 	@PostMapping(path="/{id}/selecionar_ingredientes")
  	public ModelAndView adicionarIngredientes(@PathVariable("id") Long id, Long id_ingrediente, Integer quantidade) {
 		Pedido pedido = pedidoService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
@@ -284,6 +285,7 @@ public class PedidoController {
 	@PostMapping(path="/{id}/selecionar_produtos")
  	public ModelAndView adicionarProdutos(@PathVariable("id") Long id, Long id_produto, Integer quantidade) {
 		Pedido pedido = pedidoService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
+		/*
 		Produto produto = produtoService.buscar(id_produto, usuarioService.usuarioLogado().getSede().getId());
 		
 		List<Produto> produts = new ArrayList<Produto>();
@@ -298,11 +300,12 @@ public class PedidoController {
  		pedido.setProdutos(produtosJaSalvos);
  		
  		Pedido pedidoAtualizado = pedidoService.salvar(pedido);
- 		
+ 		*/
  		List<Produto> produtos = produtoService.listarDisponiveis(usuarioService.usuarioLogado().getSede().getId());
  		ModelAndView model = new ModelAndView("pedido/formAdicionarLanchesProntos");
 		model.addObject("produtos", produtos);
-		model.addObject("pedido", pedidoAtualizado);
+		//model.addObject("pedido", pedidoAtualizado);
+		model.addObject("pedido", pedido);
 		return model; 
 	}
 	

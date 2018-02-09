@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.hamburgueria.model.Ingrediente;
 import com.hamburgueria.model.Pedido;
 
 @Repository
@@ -16,10 +15,8 @@ import com.hamburgueria.model.Pedido;
 public interface PedidoRepository extends JpaRepository<Pedido, Long> {
 	
 	//Busca um determinado pedido de uma determinada sede
-	@Query(value = "SELECT * FROM PEDIDO p "
-		+ "WHERE p.id = ?1 IN "
-		+ "(SELECT pedidos_id FROM SEDE_PEDIDOS "
-		+ "WHERE sede_id = ?2)", nativeQuery=true)
+	@Query(value = "SELECT * FROM PEDIDO p"
+		+ "WHERE p.id = ?1 AND p.sede_id = ?2", nativeQuery=true)
 	public Pedido buscar(Long id_pedido, Long id_sede);
 	
 	//Lista todos pedidos de uma determinada sede
