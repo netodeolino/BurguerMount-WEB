@@ -247,10 +247,10 @@ public class UsuarioController {
 		Usuario usuarioBanco = usuarioService.buscar(usuario.getId());
 		
 		if(usuario.getPapel().equals(usuarioBanco.getPapel()))
-			return "redirect:/master/listar_usuarios";
+			return "redirect:/usuario/listar_usuarios";
 		
 		usuarioService.atualizar(usuario);
-		return "redirect:/master/perfil_usuario/" + usuario.getId();
+		return "redirect:/usuario/perfil_usuario/" + usuario.getId();
 	}
 	
 	//Função que retorna para a página "detalhesConsumo" um usuário, o total de pedidos que ele fez e o total gasto.
