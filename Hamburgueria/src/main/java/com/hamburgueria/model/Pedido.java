@@ -26,9 +26,6 @@ public class Pedido {
 	private Double dinheiroCliente;
 	private String mensagem;
 	
-	@NotNull
-	private boolean disponivel;
-	
 	@Enumerated(EnumType.STRING)
 	private Status status;
 	
@@ -95,14 +92,6 @@ public class Pedido {
 
 	public void setMensagem(String mensagem) {
 		this.mensagem = mensagem;
-	}
-
-	public boolean isDisponivel() {
-		return disponivel;
-	}
-
-	public void setDisponivel(boolean disponivel) {
-		this.disponivel = disponivel;
 	}
 
 	public Status getStatus() {

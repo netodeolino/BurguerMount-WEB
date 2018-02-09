@@ -58,16 +58,18 @@
                     	</div>
 					</form>
 					<div class="card card-container">
-						<table class="highlight centered responsive-table">
+						<table class="highlight centered responsive-table" th:each="produto : ${pedido.produtos}">
 						<thead>
 				        	<tr>
-				              <th>Produtos</th>
+				              <th thtext="${produto.nome}"></th>
 				          </tr>
 				        </thead>
 				        <tbody>
-				          <tr th:each="produto : ${pedido.produtos}">
+				          <tr th:each="ingrediente : ${produto.ingredientes}">
 				            <td>
-				            	<span th:text="${produto.nome}"></span>
+				            	<span th:text="${ingrediente.nome}"></span>
+				            </td>
+				            <td>
 				            </td>
 				          </tr>
 				        </tbody>

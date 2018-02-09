@@ -15,32 +15,32 @@ import com.hamburgueria.model.Pedido;
 public interface PedidoRepository extends JpaRepository<Pedido, Long> {
 	
 	//Busca um determinado pedido de uma determinada sede
-	@Query(value = "SELECT * FROM PEDIDO p"
-		+ "WHERE p.id = ?1 AND p.sede_id = ?2", nativeQuery=true)
+	@Query(value = "SELECT * FROM PEDIDO "
+		+ "WHERE id = ?1 AND sede_id = ?2", nativeQuery=true)
 	public Pedido buscar(Long id_pedido, Long id_sede);
 	
 	//Lista todos pedidos de uma determinada sede
-	@Query(value = "SELECT * FROM PEDIDO p "
-			+ "WHERE p.sede_id = ?1", nativeQuery=true)
+	@Query(value = "SELECT * FROM PEDIDO "
+			+ "WHERE sede_id = ?1", nativeQuery=true)
 	public List<Pedido> listarTodos(Long id_sede);
 	
 	//Lista todos pedidos em aberto de uma determinada sede
-	@Query(value = "SELECT * FROM PEDIDO p "
-			+ "WHERE p.status = 'EM_ABERTO' AND p.sede_id = ?1", nativeQuery=true)
+	@Query(value = "SELECT * FROM PEDIDO "
+			+ "WHERE status = 'EM_ABERTO' AND sede_id = ?1", nativeQuery=true)
 	public List<Pedido> listarEmAberto(Long id_sede);
 	
 	//Lista todos pedidos em andamento de uma determinada sede
-	@Query(value = "SELECT * FROM PEDIDO p "
-			+ "WHERE p.status = 'EM_ANDAMENTO' AND p.sede_id = ?1", nativeQuery=true)
+	@Query(value = "SELECT * FROM PEDIDO "
+			+ "WHERE status = 'EM_ANDAMENTO' AND sede_id = ?1", nativeQuery=true)
 	public List<Pedido> listarEmAndamento(Long id_sede);
 	
 	//Lista todos pedidos prontos de uma determinada sede
-	@Query(value = "SELECT * FROM PEDIDO p "
-			+ "WHERE p.status = 'PRONTO' AND p.sede_id = ?1", nativeQuery=true)
+	@Query(value = "SELECT * FROM PEDIDO "
+			+ "WHERE status = 'PRONTO' AND sede_id = ?1", nativeQuery=true)
 	public List<Pedido> listarProntos(Long id_sede);
 	
 	//Lista todos pedidos entregues de uma determinada sede
-	@Query(value = "SELECT * FROM PEDIDO p "
-			+ "WHERE p.status = 'ENTREGUE' AND p.sede_id = ?1", nativeQuery=true)
+	@Query(value = "SELECT * FROM PEDIDO "
+			+ "WHERE status = 'ENTREGUE' AND sede_id = ?1", nativeQuery=true)
 	public List<Pedido> listarEntregues(Long id_sede);
 }

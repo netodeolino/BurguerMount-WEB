@@ -24,7 +24,7 @@
 			<li th:if="${#authentication.getPrincipal().getPapel() == T(com.hamburgueria.model.Papel).MASTER}">
 				<a th:href="@{/sede/listar}">Sedes</a>
 			</li>
-			<li><a th:href="@{/pedido/listar}">Pedidos</a></li>
+			<li><a th:href="@{/pedido/listar/todos}">Pedidos</a></li>
 			<li><a th:href="@{/tipo_ingrediente/listar}">Ingredientes</a></li>
 			<li><a th:href="@{/produto/listar}">Produtos</a></li>
 		</ul>

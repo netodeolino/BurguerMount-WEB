@@ -28,14 +28,6 @@
 					<form method="POST" th:object="${pedido}" th:action="@{/pedido/editar_status}" enctype="multipart/form-data">
 						<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 						<input th:field="*{id}" type="hidden" value="th:text=${pedido.id}" />
-						<input th:field="*{data}" type="hidden" value="th:text=${pedido.data}" />
-						<input th:field="*{local}" type="hidden" value="th:text=${pedido.local}" />
-						<input th:field="*{preco}" type="hidden" value="th:text=${pedido.preco}" />
-						<input th:field="*{dinheiroCliente}" type="hidden" value="th:text=${pedido.dinheiroCliente}" />
-						<input th:field="*{mensagem}" type="hidden" value="th:text=${pedido.mensagem}" />
-						<input th:field="*{cliente}" type="hidden" value="th:text=${pedido.cliente}" />
-						<input th:field="*{produtos}" type="hidden" value="th:text=${pedido.produtos}" />
-						<input th:field="*{ingredientes}" type="hidden" value="th:text=${pedido.ingredientes}" />
 						
 						<div class="row">
 							<div class="form-group">
