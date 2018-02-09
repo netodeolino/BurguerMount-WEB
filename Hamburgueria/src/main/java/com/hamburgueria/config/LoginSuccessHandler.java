@@ -21,9 +21,9 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler{
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
 		for (GrantedAuthority auth : authentication.getAuthorities()) {
 			if(auth.getAuthority().contains("FUNCIONARIO")) {
-				redirect.sendRedirect(request, response, "/tipo_ingrediente/listar");
+				redirect.sendRedirect(request, response, "/pedido/listar/todos");
 			}else if(auth.getAuthority().contains("ADMINISTRADOR")) {
-				redirect.sendRedirect(request, response, "/ingrediente/cadastrar");
+				redirect.sendRedirect(request, response, "/tipo_ingrediente/listar");
 			}else if(auth.getAuthority().contains("MASTER")) {
 				redirect.sendRedirect(request, response, "/sede/listar");
 			}else {
