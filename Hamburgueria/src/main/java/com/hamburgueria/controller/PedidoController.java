@@ -193,9 +193,8 @@ public class PedidoController {
  			produts.add(produto);
  		}
  		
- 		List<Produto> produtosJaSalvos = pedido.getProdutos();
+ 		List<Produto> produtosJaSalvos = pedido.getProdutos(); 
  		produtosJaSalvos.addAll(produts);
- 		
  		pedido.setPreco(pedido.getPreco() + (produto.getValorDeVenda() * quantidade));
  		pedido.setProdutos(produtosJaSalvos);
  		
