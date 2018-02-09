@@ -21,36 +21,26 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
 	
 	//Lista todos pedidos de uma determinada sede
 	@Query(value = "SELECT * FROM PEDIDO p "
-			+ "WHERE p.id IN "
-			+ "(SELECT pedidos_id FROM SEDE_PEDIDOS "
-			+ "WHERE sede_id = ?1)", nativeQuery=true)
+			+ "WHERE p.sede_id = ?1", nativeQuery=true)
 	public List<Pedido> listarTodos(Long id_sede);
 	
 	//Lista todos pedidos em aberto de uma determinada sede
 	@Query(value = "SELECT * FROM PEDIDO p "
-			+ "WHERE p.status = 'EM_ABERTO' AND p.id IN "
-			+ "(SELECT pedidos_id FROM SEDE_PEDIDOS "
-			+ "WHERE sede_id = ?1)", nativeQuery=true)
+			+ "WHERE p.status = 'EM_ABERTO' AND p.sede_id = ?1", nativeQuery=true)
 	public List<Pedido> listarEmAberto(Long id_sede);
 	
 	//Lista todos pedidos em andamento de uma determinada sede
 	@Query(value = "SELECT * FROM PEDIDO p "
-			+ "WHERE p.status = 'EM_ANDAMENTO' AND p.id IN "
-			+ "(SELECT pedidos_id FROM SEDE_PEDIDOS "
-			+ "WHERE sede_id = ?1)", nativeQuery=true)
+			+ "WHERE p.status = 'EM_ANDAMENTO' AND p.sede_id = ?1", nativeQuery=true)
 	public List<Pedido> listarEmAndamento(Long id_sede);
 	
 	//Lista todos pedidos prontos de uma determinada sede
 	@Query(value = "SELECT * FROM PEDIDO p "
-			+ "WHERE p.status = 'PRONTO' AND p.id IN "
-			+ "(SELECT pedidos_id FROM SEDE_PEDIDOS "
-			+ "WHERE sede_id = ?1)", nativeQuery=true)
+			+ "WHERE p.status = 'PRONTO' AND p.sede_id = ?1", nativeQuery=true)
 	public List<Pedido> listarProntos(Long id_sede);
 	
 	//Lista todos pedidos entregues de uma determinada sede
 	@Query(value = "SELECT * FROM PEDIDO p "
-			+ "WHERE p.status = 'ENTREGUE' AND p.id IN "
-			+ "(SELECT pedidos_id FROM SEDE_PEDIDOS "
-			+ "WHERE sede_id = ?1)", nativeQuery=true)
+			+ "WHERE p.status = 'ENTREGUE' AND p.sede_id = ?1", nativeQuery=true)
 	public List<Pedido> listarEntregues(Long id_sede);
 }
