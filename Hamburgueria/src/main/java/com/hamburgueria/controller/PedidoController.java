@@ -17,10 +17,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.hamburgueria.model.Pedido;
 import com.hamburgueria.model.Produto;
+import com.hamburgueria.model.Sede;
 import com.hamburgueria.model.Status;
 import com.hamburgueria.service.IngredienteService;
 import com.hamburgueria.service.PedidoService;
 import com.hamburgueria.service.ProdutoService;
+import com.hamburgueria.service.SedeService;
 import com.hamburgueria.service.UsuarioService;
 
 @Controller
@@ -39,13 +41,15 @@ public class PedidoController {
 	@Autowired
 	ProdutoService produtoService;
 	
+	@Autowired
+	SedeService sedeService;
+	
 	@GetMapping(path="/lanches_prontos")
 	public ModelAndView lanchesProntos() {		
 		List<Produto> produtos = produtoService.listarDisponiveis(usuarioService.usuarioLogado().getSede().getId());
 		Pedido pedido = new Pedido();
 		pedido.setStatus(Status.EM_ABERTO);
 		pedido.setPreco(0.0);
-		pedido.setDisponivel(true);
 		pedido.setSede(usuarioService.usuarioLogado().getSede());
 		
 		Pedido pedidoSalvo = pedidoService.salvar(pedido);
@@ -59,7 +63,7 @@ public class PedidoController {
 	@GetMapping(path="/lanches_prontos/editar/{id}")
 	public ModelAndView editarLanchesProntos(@PathVariable("id") Long id) {		
 		List<Produto> produtos = produtoService.listarDisponiveis(usuarioService.usuarioLogado().getSede().getId());
-		Pedido pedido = pedidoService.buscar(id);
+		Pedido pedido = pedidoService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
 		
 		ModelAndView model = new ModelAndView("pedido/formEditarAdicionarLanchesProntos");
 		model.addObject("produtos", produtos);
@@ -69,7 +73,7 @@ public class PedidoController {
 
 	@GetMapping(path="/cadastrar/{id}")
 	public ModelAndView cadastrarPedido(@PathVariable("id") Long id) {		
-		Pedido pedido = pedidoService.buscar(id);
+		Pedido pedido = pedidoService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
 		ModelAndView model = new ModelAndView("pedido/formCadastroPedido");
 		model.addObject("pedido", pedido);
 		return model;
@@ -77,12 +81,14 @@ public class PedidoController {
 	
 	@PostMapping(path="/cadastrar")
 	public String cadastrarPedido(@Valid Pedido pedido) {
-		pedido.setCliente(usuarioService.usuarioLogado());
+		pedido.setCliente(null);
 		Date today = new Date();
 		pedido.setData(today);
 		pedido.setPreco(pedido.getPreco());
 		pedido.setStatus(Status.EM_ANDAMENTO);
 		pedido.setSede(usuarioService.usuarioLogado().getSede());
+		
+		this.adicionarPedidoSede(pedido, usuarioService.usuarioLogado().getSede());
 		
 		pedidoService.salvar(pedido);
 		
@@ -148,7 +154,7 @@ public class PedidoController {
 	 */
 	@PostMapping(path="/editar")
 	public String editarPedido(@Valid Pedido pedido, BindingResult result) { 
-		Pedido pedidoBanco = pedidoService.buscar(pedido.getId());
+		Pedido pedidoBanco = pedidoService.buscar(pedido.getId(), usuarioService.usuarioLogado().getSede().getId());
 		pedidoBanco.setLocal(pedido.getLocal());
 		pedidoBanco.setDinheiroCliente(pedido.getDinheiroCliente());
 		pedidoBanco.setMensagem(pedido.getMensagem());
@@ -163,7 +169,7 @@ public class PedidoController {
 	//Função que retorna para a página "detalhesPedido" um produto passado pela URL.
 	@GetMapping(path="/detalhes_pedido/{id}")
 	public ModelAndView detalhesPedido(@PathVariable("id") Long id) {
-		Pedido pedido = pedidoService.buscar(id);
+		Pedido pedido = pedidoService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
 		
 		//Verifica se o pedido informado existe, caso não exista o usuário é redirecionado para uma página de erro.
 		if(pedido == null) {
@@ -179,7 +185,7 @@ public class PedidoController {
 	
 	@PostMapping(path="/{id}/selecionar_produtos")
  	public ModelAndView adicionarProdutos(@PathVariable("id") Long id, Long id_produto, Integer quantidade) {
-		Pedido pedido = pedidoService.buscar(id);
+		Pedido pedido = pedidoService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
 		Produto produto = produtoService.buscar(id_produto, usuarioService.usuarioLogado().getSede().getId());
 		
 		List<Produto> produts = new ArrayList<Produto>();
@@ -204,7 +210,7 @@ public class PedidoController {
 	
 	@PostMapping(path="/{id}/selecionar_produtos/editar")
  	public ModelAndView editarAdicionarProdutos(@PathVariable("id") Long id, Long id_produto, Integer quantidade) {
-		Pedido pedido = pedidoService.buscar(id);
+		Pedido pedido = pedidoService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
 		Produto produto = produtoService.buscar(id_produto, usuarioService.usuarioLogado().getSede().getId());
 		
 		List<Produto> produts = new ArrayList<Produto>();
@@ -230,7 +236,7 @@ public class PedidoController {
 	
 	@GetMapping(path="/{id_pedido}/remover_produto/{id_produto}")
  	public ModelAndView removerProdutos(@PathVariable("id_pedido") Long id_pedido, @PathVariable("id_produto") Long id_produto) {
- 		Pedido pedido = pedidoService.buscar(id_pedido);
+ 		Pedido pedido = pedidoService.buscar(id_pedido, usuarioService.usuarioLogado().getSede().getId());
  		Produto produto = produtoService.buscar(id_produto, usuarioService.usuarioLogado().getSede().getId());
  		
  		List<Produto> produtosDoPedido = pedido.getProdutos();
@@ -250,7 +256,7 @@ public class PedidoController {
 	
 	@GetMapping(path="/{id_pedido}/remover_produto/{id_produto}/editar")
  	public ModelAndView editarRemoverProdutos(@PathVariable("id_pedido") Long id_pedido, @PathVariable("id_produto") Long id_produto) {
- 		Pedido pedido = pedidoService.buscar(id_pedido);
+ 		Pedido pedido = pedidoService.buscar(id_pedido, usuarioService.usuarioLogado().getSede().getId());
  		Produto produto = produtoService.buscar(id_produto, usuarioService.usuarioLogado().getSede().getId());
  		
  		List<Produto> produtosDoPedido = pedido.getProdutos();
@@ -270,7 +276,7 @@ public class PedidoController {
 	
 	@GetMapping(path="/editar_status/{id_pedido}")
 	public ModelAndView editarStatusPedido(@PathVariable ("id_pedido") Long id_pedido) {
-		Pedido pedido = pedidoService.buscar(id_pedido);
+		Pedido pedido = pedidoService.buscar(id_pedido, usuarioService.usuarioLogado().getSede().getId());
 		
 		//Verifica se o pedido existe, caso contrário o usuário é redirecionado para uma página de erro.
 		if(pedido == null) {
@@ -287,12 +293,21 @@ public class PedidoController {
 	//Função que altera o status do pedido passado no formulário e atualiza essa informação.
 	@PostMapping(path="/editar_status")
 	public String editarStatusPedido(@Valid Pedido pedido) {
-		Pedido pedidoBanco = pedidoService.buscar(pedido.getId());
+		Pedido pedidoBanco = pedidoService.buscar(pedido.getId(), usuarioService.usuarioLogado().getSede().getId());
 		
 		if(pedido.getStatus().equals(pedidoBanco.getStatus()))
 			return "redirect:/pedido/listar/todos";
 		
-		pedidoService.salvar(pedido);
+		pedidoBanco.setStatus(pedido.getStatus());
+		pedidoService.salvar(pedidoBanco);
 		return "redirect:/pedido/listar/todos";
+	}
+	
+	public void adicionarPedidoSede(Pedido pedido, Sede sede) {
+		List<Pedido> pedidos =  sede.getPedidos();
+		
+		pedidos.add(pedido);
+		sede.setPedidos(pedidos);
+		sedeService.salvar(sede);
 	}
 }

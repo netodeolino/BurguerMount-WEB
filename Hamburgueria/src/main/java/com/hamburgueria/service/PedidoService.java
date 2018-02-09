@@ -22,10 +22,6 @@ public class PedidoService {
 		return pedidoRepository.buscar(id_pedido, id_sede);
 	}
 	
-	public Pedido buscar(Long id) {
-		return pedidoRepository.findOne(id);
-	}
-	
 	public void excluir(Long id) {
 		pedidoRepository.delete(id);
 	}
