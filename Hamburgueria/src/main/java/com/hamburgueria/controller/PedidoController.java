@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.hamburgueria.model.Ingrediente;
 import com.hamburgueria.model.Pedido;
 import com.hamburgueria.model.Produto;
 import com.hamburgueria.model.Sede;
@@ -80,7 +81,7 @@ public class PedidoController {
 	}
 	
 	@PostMapping(path="/cadastrar")
-	public String cadastrarPedido(@Valid Pedido pedido) {
+	public String cadastrarPedido(@Valid Pedido pedido) {		
 		pedido.setCliente(null);
 		Date today = new Date();
 		pedido.setData(today);
@@ -194,8 +195,22 @@ public class PedidoController {
  		
  		List<Produto> produtosJaSalvos = pedido.getProdutos(); 
  		produtosJaSalvos.addAll(produts);
+ 		
  		pedido.setPreco(pedido.getPreco() + (produto.getValorDeVenda() * quantidade));
  		pedido.setProdutos(produtosJaSalvos);
+ 		
+ 		if(!this.temEstoque(pedido)) {
+ 			//Essa bosta ta vindo alterada já.
+ 			Pedido pedidoBanco = pedidoService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
+ 			System.err.println(pedidoBanco.getProdutos().size());
+ 			List<Produto> produtos = produtoService.listarDisponiveis(usuarioService.usuarioLogado().getSede().getId());
+			
+	 		ModelAndView model = new ModelAndView("pedido/formAdicionarLanchesProntos");
+			model.addObject("produtos", produtos);
+			model.addObject("pedido", pedidoBanco);
+			model.addObject("mensagem", "Desculpe não temos ingredientes suficientes para adicionar esse produto ao seu pedido.");
+			return model; 
+ 		}
  		
  		Pedido pedidoAtualizado = pedidoService.salvar(pedido);
  		
@@ -307,5 +322,55 @@ public class PedidoController {
 		pedidos.add(pedido);
 		sede.setPedidos(pedidos);
 		sedeService.salvar(sede);
+	}
+	
+	//Conta a quantidade de um ingrediente em um produto.
+	public Integer contaIngredienteProduto(Produto produto, Ingrediente ingrediente) {
+		int contador = 0;
+		for (Ingrediente i : produto.getIngredientes()) {
+			if(i.equals(ingrediente))
+				contador++;
+		}
+		return contador;
+	}
+	
+	//Conta a quantidade de um ingrediente em um pedido.
+	public Integer contaIngredientePedido(Pedido pedido, Ingrediente ingrediente) {
+		int contador = 0;
+		for (Produto produto : pedido.getProdutos()) {
+			contador = contador + this.contaIngredienteProduto(produto, ingrediente);
+		}
+		return contador;
+	}
+	
+	//Verifica se algum ingrediente presente no pedido tem a quantidade suficiente no estoque.
+	public boolean temEstoque(Pedido pedido) {
+		for (Produto produto : pedido.getProdutos()) {
+			for (Ingrediente ingrediente : produto.getIngredientes()) {
+				if(this.contaIngredientePedido(pedido, ingrediente) > ingrediente.getQtd())
+					return false;
+			}	
+		}
+		return true;
+	}
+	
+	//Conta a quantidade de um produto em um pedido.
+	public Integer contaProdutoPedido(Pedido pedido, Produto produto) {
+		int contador = 0;
+		for (Produto p : pedido.getProdutos()) {
+			if(p.equals(produto))
+				contador++;
+		}
+		return contador;
+	}
+	
+	//Conta o a quantidade máxima de produtos que pode ser pedido com base no estoque.
+	public Integer contaMaximoProduto(Produto produto) {
+		int maximo = produto.getIngredientes().get(0).getQtd() / this.contaIngredienteProduto(produto, produto.getIngredientes().get(0));
+		for (Ingrediente ingrediente : produto.getIngredientes()) {
+			if((ingrediente.getQtd() / this.contaIngredienteProduto(produto, ingrediente)) < maximo)
+				maximo = ingrediente.getQtd() / this.contaIngredienteProduto(produto, ingrediente);
+		}
+		return maximo;
 	}
 }
