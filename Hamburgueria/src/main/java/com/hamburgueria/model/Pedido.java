@@ -3,7 +3,6 @@ package com.hamburgueria.model;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -39,11 +38,8 @@ public class Pedido {
 	@ManyToOne
 	private Sede sede;
 	
-	@ManyToMany(cascade=CascadeType.ALL)
-	private List<Produto> produtos;
-	
 	@ManyToMany
-	private List<Ingrediente> ingredientes;
+	private List<Produto> produtos;
 	
 	public Pedido() {
 		
@@ -139,13 +135,5 @@ public class Pedido {
 
 	public void setProdutos(List<Produto> produtos) {
 		this.produtos = produtos;
-	}
-
-	public List<Ingrediente> getIngredientes() {
-		return ingredientes;
-	}
-
-	public void setIngredientes(List<Ingrediente> ingredientes) {
-		this.ingredientes = ingredientes;
 	}
 }
