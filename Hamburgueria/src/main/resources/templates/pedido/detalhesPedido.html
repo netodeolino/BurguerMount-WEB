@@ -61,7 +61,7 @@
 						<table class="highlight centered responsive-table" th:each="produto : ${pedido.produtos}">
 						<thead>
 				        	<tr>
-				              <th thtext="${produto.nome}"></th>
+				              <th th:text="${produto.nome}"></th>
 				          </tr>
 				        </thead>
 				        <tbody>

@@ -201,11 +201,11 @@ public class PedidoController {
  		if(!this.temEstoque(pedido)) {
  			List<Produto> produtos = produtoService.listarDisponiveis(usuarioService.usuarioLogado().getSede().getId());
  			pedido.setProdutos(produtosJaSalvos);
- 			Pedido pedidoBanco = pedidoService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
  			
+ 			Pedido pedidoBanco = pedidoService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
 	 		ModelAndView model = new ModelAndView("pedido/formAdicionarLanchesProntos");
 			model.addObject("produtos", produtos);
-			model.addObject("pedido", pedido);
+			model.addObject("pedido", pedidoBanco);
 			model.addObject("mensagem", "Desculpe não temos ingredientes suficientes para adicionar esse produto ao seu pedido.");
 			return model; 
  		}

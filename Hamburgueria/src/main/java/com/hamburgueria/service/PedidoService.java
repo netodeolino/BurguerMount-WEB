@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.hamburgueria.model.Ingrediente;
 import com.hamburgueria.model.Pedido;
 import com.hamburgueria.repository.PedidoRepository;
 
@@ -44,5 +45,9 @@ public class PedidoService {
 	
 	public List<Pedido> listarEntregues(Long id_sede){
 		return pedidoRepository.listarEntregues(id_sede);
+	}
+	
+	public List<Ingrediente> getIngredientes(Long id_pedido){
+		return pedidoRepository.getIngredientes(id_pedido);
 	}
 }

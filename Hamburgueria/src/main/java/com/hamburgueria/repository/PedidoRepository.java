@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import com.hamburgueria.model.Ingrediente;
 import com.hamburgueria.model.Pedido;
 
 @Repository
@@ -43,4 +44,10 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
 	@Query(value = "SELECT * FROM PEDIDO "
 			+ "WHERE status = 'ENTREGUE' AND sede_id = ?1", nativeQuery=true)
 	public List<Pedido> listarEntregues(Long id_sede);
+	
+	//Lista de ingredientes de um pedido.
+	@Query(value = "SELECT * FROM  INGREDIENTE WHERE id IN ( "
+			+ "SELECT ingredientes_id FROM PRODUTO_INGREDIENTES WHERE produto_id IN ( "
+			+ "SELECT produtos_id FROM PEDIDO_PRODUTOS WHERE pedido_id = ?1", nativeQuery=true)
+	public List<Ingrediente> getIngredientes(Long id_pedido);
 }
