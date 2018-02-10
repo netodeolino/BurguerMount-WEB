@@ -194,24 +194,23 @@ public class PedidoController {
  		}
  		
  		List<Produto> produtosJaSalvos = pedido.getProdutos(); 
- 		produtosJaSalvos.addAll(produts);
+ 		produts.addAll(produtosJaSalvos);
  		
- 		pedido.setPreco(pedido.getPreco() + (produto.getValorDeVenda() * quantidade));
- 		pedido.setProdutos(produtosJaSalvos);
+ 		pedido.setProdutos(produts);
  		
  		if(!this.temEstoque(pedido)) {
- 			//Essa bosta ta vindo alterada já.
- 			Pedido pedidoBanco = pedidoService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
- 			System.err.println(pedidoBanco.getProdutos().size());
  			List<Produto> produtos = produtoService.listarDisponiveis(usuarioService.usuarioLogado().getSede().getId());
-			
+ 			pedido.setProdutos(produtosJaSalvos);
+ 			Pedido pedidoBanco = pedidoService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
+ 			
 	 		ModelAndView model = new ModelAndView("pedido/formAdicionarLanchesProntos");
 			model.addObject("produtos", produtos);
-			model.addObject("pedido", pedidoBanco);
+			model.addObject("pedido", pedido);
 			model.addObject("mensagem", "Desculpe não temos ingredientes suficientes para adicionar esse produto ao seu pedido.");
 			return model; 
  		}
  		
+ 		pedido.setPreco(pedido.getPreco() + (produto.getValorDeVenda() * quantidade));
  		Pedido pedidoAtualizado = pedidoService.salvar(pedido);
  		
  		List<Produto> produtos = produtoService.listarDisponiveis(usuarioService.usuarioLogado().getSede().getId());
@@ -373,4 +372,5 @@ public class PedidoController {
 		}
 		return maximo;
 	}
+
 }
