@@ -43,4 +43,9 @@ public class IngredienteService {
 	public List<Ingrediente> listarIndisponiveis(Long id_sede){
 		return ingredienteRepository.listarIndisponiveis(id_sede);
 	}
+	
+	//Lista de ingredientes de um pedido.
+	public List<Ingrediente> getIngredientes(Long id_pedido){
+		return ingredienteRepository.getIngredientes(id_pedido);
+	}
 }

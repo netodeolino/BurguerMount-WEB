@@ -48,4 +48,5 @@ public class ProdutoService {
 	public Integer contaIngrediente(Long id_produto, Long id_ingrediente) {
 		return produtoRepository.contaIngrediente(id_produto, id_ingrediente);
 	}
+
 }
