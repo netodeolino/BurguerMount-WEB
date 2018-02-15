@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.hamburgueria.model.Ingrediente;
 import com.hamburgueria.model.Pedido;
 
 @Repository
@@ -22,7 +21,8 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
 	
 	//Lista todos pedidos de uma determinada sede
 	@Query(value = "SELECT * FROM PEDIDO "
-			+ "WHERE sede_id = ?1", nativeQuery=true)
+			+ "WHERE sede_id = ?1 "
+			+ "ORDER BY status", nativeQuery=true)
 	public List<Pedido> listarTodos(Long id_sede);
 	
 	//Lista todos pedidos em aberto de uma determinada sede
@@ -45,9 +45,9 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
 			+ "WHERE status = 'ENTREGUE' AND sede_id = ?1", nativeQuery=true)
 	public List<Pedido> listarEntregues(Long id_sede);
 	
-	//Lista de ingredientes de um pedido.
-	@Query(value = "SELECT * FROM  INGREDIENTE WHERE id IN ( "
-			+ "SELECT ingredientes_id FROM PRODUTO_INGREDIENTES WHERE produto_id IN ( "
-			+ "SELECT produtos_id FROM PEDIDO_PRODUTOS WHERE pedido_id = ?1", nativeQuery=true)
-	public List<Ingrediente> getIngredientes(Long id_pedido);
+	//Conta a quantidade de um determinado ingrediente de um pedido.
+	@Query(value = "SELECT COUNT (ingredientes_id) FROM PRODUTO_INGREDIENTES "
+			+ "LEFT OUTER JOIN PEDIDO_PRODUTOS ON produto_id = produtos_id "
+			+ "WHERE ingredientes_id = ?2 AND pedido_id = ?1", nativeQuery=true)
+	public Integer contaIngredientes(Long id_pedido, Long id_ingrediente);
 }

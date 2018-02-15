@@ -39,6 +39,7 @@
 					              <th>Data</th>
 					              <th>Valor</th>
 					              <th>Local</th>
+					              <th>Status</th>
 					              <th>Ações</th>
 					          </tr>
 					        </thead>
@@ -46,13 +47,14 @@
 					          <tr th:each="pedido : ${pedidos}">
 					            <td>
 					            	<span th:if="${pedido.cliente}" th:text="${pedido.cliente.nome}"></span>
-					            	<span th:unless="${pedido.cliente}">Pedido sem usuário</span>
+					            	<span th:unless="${pedido.cliente}">Sem usuário</span>
 					            </td>
 					            <td th:text="${pedido.data}"></td>
 					            <td th:text="${pedido.preco}"></td>
 					            <td th:text="${pedido.local}"></td>
+					            <td th:text="${pedido.status}"></td>
 					            <td>
-					            	<a th:href="@{${'/pedido/detalhes_pedido/' + pedido.id}}" title="Detalhes"
+					            	<a th:href="@{${'/pedido/detalhes/' + pedido.id}}" title="Detalhes"
 						          		class="btn-floating halfway-fab waves-effect waves-light blue">
 						          		<i class="material-icons">visibility</i>
 						          	</a>

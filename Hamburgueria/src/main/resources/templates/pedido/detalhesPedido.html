@@ -75,7 +75,7 @@
 				        </tbody>
 						</table>
 					</div>
-					<div class="row">
+					<div class="row" th:if="${pedido.status == T(com.hamburgueria.model.Status).EM_ABERTO}">
                     		<div class="col s5"></div>
                     		<div class="form-group">
 	                    		<a th:href="@{${'/pedido/lanches_prontos/editar/'+ pedido.id}}" class="btn-large waves-effect waves-light col s3">

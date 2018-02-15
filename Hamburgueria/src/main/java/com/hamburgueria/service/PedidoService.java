@@ -47,7 +47,7 @@ public class PedidoService {
 		return pedidoRepository.listarEntregues(id_sede);
 	}
 	
-	public List<Ingrediente> getIngredientes(Long id_pedido){
-		return pedidoRepository.getIngredientes(id_pedido);
+	public Integer contaIngredientes(Long id_pedido, Long id_ingrediente) {
+		return pedidoRepository.contaIngredientes(id_pedido, id_ingrediente);
 	}
 }

@@ -46,8 +46,6 @@
 		                        		<option th:value="${pedido.status}" selected="true"
 		                        			th:text="${pedido.status}"></option>
 		                        		
-		                        		<option th:unless="${T(com.hamburgueria.model.Status).EM_ABERTO == pedido.status}" 
-		                        			th:value="${T(com.hamburgueria.model.Status).EM_ABERTO}">Em Aberto</option>
 		                        		<option th:unless="${T(com.hamburgueria.model.Status).EM_ANDAMENTO == pedido.status}" 
 		                        			th:value="${T(com.hamburgueria.model.Status).EM_ANDAMENTO}">Em Andamento</option>
 		                        		<option th:unless="${T(com.hamburgueria.model.Status).PRONTO == pedido.status}" 
