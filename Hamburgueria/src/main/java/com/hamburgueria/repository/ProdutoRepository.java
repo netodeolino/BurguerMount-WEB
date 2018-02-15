@@ -41,4 +41,5 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 		@Query(value = "SELECT COUNT(*) FROM PRODUTO_INGREDIENTES "
 				+ "WHERE produto_id = ?1 AND ingredientes_id = ?2", nativeQuery=true)
 		public Integer contaIngrediente(Long id_produto, Long id_ingrediente);
+	
 }

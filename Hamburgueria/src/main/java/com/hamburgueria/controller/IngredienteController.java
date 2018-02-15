@@ -283,25 +283,34 @@ public class IngredienteController {
 	
 	//Verifica a disponibilidade do ingrediente e de cada produto que possui o mesmo.
 	public void verificaDisponibilidade(Ingrediente ingrediente) {
+		
 		if(ingrediente.getQtd() == 0) {
 			ingrediente.setDisponivel(false);
 		}else {
 			ingrediente.setDisponivel(true);
 		}
-
+		
+		ingredienteService.salvar(ingrediente);
+		
 		List<Produto> produtos = ingrediente.getProdutos();
 		if(produtos != null) {
-			for (Produto produto : ingrediente.getProdutos()) {
-				if(produtoService.contaIngrediente(produto.getId(), ingrediente.getId()) > ingrediente.getQtd()) {
-					produto.setDisponivel(false);
-					produtoService.salvar(produto);
-				}else {
-					produto.setDisponivel(true);
+			for (Produto produto : produtos) {
+				List<Ingrediente> ingredientes = produto.getIngredientes();
+				if(ingredientes != null) {
+					for (Ingrediente i : ingredientes) {
+						if(!i.isDisponivel() || 
+								produtoService.contaIngrediente(produto.getId(), i.getId()) > i.getQtd()) {
+							
+							produto.setDisponivel(false);
+							break;
+						}else {
+							produto.setDisponivel(true);
+						}
+					}
 					produtoService.salvar(produto);
 				}
 			}
 		}
-		ingredienteService.salvar(ingrediente);
 	}
 
 }

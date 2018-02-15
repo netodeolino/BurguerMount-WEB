@@ -191,7 +191,7 @@ public class ProdutoController {
  	public ModelAndView adicionarIngredientes(@PathVariable("id") Long id, Long id_ingrediente, Integer quantidade) throws IOException {
 		Produto produto = produtoService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
 		Ingrediente ingrediente = ingredienteService.buscar(id_ingrediente, usuarioService.usuarioLogado().getSede().getId());
-
+		
 		//Verifica a disponibilidade do ingrediente.
 		if (!(ingrediente.isDisponivel())) {
 			produto.setDisponivel(false);
@@ -219,7 +219,7 @@ public class ProdutoController {
  		
  		//Verifica se ao adicionar o ingrediente ao produto, se o produto vai continuar disponível.
  		ingredienteController.verificaDisponibilidade(ingrediente);
-		
+ 		
  		return cadastrarProduto(produtoAtualizado, null);
 	}
 	
@@ -378,4 +378,5 @@ public class ProdutoController {
 		
 		sedeService.salvar(sede);
 	}
+	
 }

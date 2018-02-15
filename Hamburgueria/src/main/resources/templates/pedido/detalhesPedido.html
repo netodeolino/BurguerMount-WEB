@@ -43,7 +43,7 @@
 		                        <div class="input-field col s12">
 		                        	<i class="material-icons prefix">attach_money</i>
 		                        	<input id="preco" type="number" step="0.01" min="0.00" class="validate" th:field="*{preco}" disabled="true"/>
-		                        	<label for="preco" class="active">Dinheiro do cliente</label>
+		                        	<label for="preco" class="active">Valor</label>
 		                        </div>
 		                	</div>
                     	</div>
@@ -61,7 +61,7 @@
 						<table class="highlight centered responsive-table" th:each="produto : ${pedido.produtos}">
 						<thead>
 				        	<tr>
-				              <th thtext="${produto.nome}"></th>
+				              <th th:text="${produto.nome}"></th>
 				          </tr>
 				        </thead>
 				        <tbody>
@@ -75,7 +75,7 @@
 				        </tbody>
 						</table>
 					</div>
-					<div class="row">
+					<div class="row" th:if="${pedido.status == T(com.hamburgueria.model.Status).EM_ABERTO}">
                     		<div class="col s5"></div>
                     		<div class="form-group">
 	                    		<a th:href="@{${'/pedido/lanches_prontos/editar/'+ pedido.id}}" class="btn-large waves-effect waves-light col s3">
