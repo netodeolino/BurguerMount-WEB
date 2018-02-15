@@ -157,6 +157,11 @@ public class IngredienteController {
 		this.removerIngredienteTipo(ingrediente, ingrediente.getTipoIngrediente());
 		//Remove o ingrediente que será excluido da lista de ingredientes da sua sede, e atualiza  a sede.
 		this.removerIngredienteSede(ingrediente, ingrediente.getSede());
+		//Remove os produtos que possuem o ingrediente que será excluído.
+		this.removerProdutosIngrediente(ingrediente);
+		//Adiciona a Sede do ingrediente como null para não da erro de restrição de chave e salva. 
+		ingrediente.setSede(null);
+		ingredienteService.salvar(ingrediente);
 
 		ingredienteService.excluir(id);
 
@@ -259,6 +264,25 @@ public class IngredienteController {
 		
 		sede.setEstoque(ingredientes);
 		sedeService.salvar(sede);
+	}
+	
+	//Remove o produto da lista de produtos da sede e salva a sede
+	public void removerProdutoSede(Produto produto, Sede sede) {
+		List<Produto> produtos = sede.getProdutos();
+		produtos.remove(produto);
+		
+		sede.setProdutos(produtos);
+		sedeService.salvar(sede);
+	}
+	
+	public void removerProdutosIngrediente(Ingrediente ingrediente) {
+		List<Produto> produtos = ingrediente.getProdutos();
+		for (Produto produto : produtos) {
+			produto.setIngredientes(null);
+			produtoService.excluir(produto.getId());
+		}
+		ingrediente.setProdutos(null);
+		ingredienteService.salvar(ingrediente);
 	}
 	
 	//Filtra e retorna apenas os ingredientes disponíveis

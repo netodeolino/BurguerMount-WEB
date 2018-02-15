@@ -34,7 +34,7 @@ public class Produto {
 	private Sede sede;
 	
 	@ManyToMany
-	private List<Ingrediente> ingredientes; 
+	private List<Ingrediente> ingredientes;
 	
 	public Produto() {}
 	

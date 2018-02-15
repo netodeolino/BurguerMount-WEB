@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.hamburgueria.model.Ingrediente;
 import com.hamburgueria.model.Pedido;
 import com.hamburgueria.repository.PedidoRepository;
 
