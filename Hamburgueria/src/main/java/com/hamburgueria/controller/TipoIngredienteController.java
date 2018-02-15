@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.hamburgueria.model.Ingrediente;
 import com.hamburgueria.model.Sede;
 import com.hamburgueria.model.TipoIngrediente;
+import com.hamburgueria.service.IngredienteService;
 import com.hamburgueria.service.SedeService;
 import com.hamburgueria.service.TipoIngredienteService;
 import com.hamburgueria.service.UsuarioService;
@@ -38,6 +39,9 @@ public class TipoIngredienteController {
 
 	@Autowired
 	SedeService sedeService;
+	
+	@Autowired
+	IngredienteService ingredienteService;
 	
 	@Autowired
 	IngredienteController ingredienteController;
@@ -89,18 +93,21 @@ public class TipoIngredienteController {
 	@GetMapping(path="/excluir/{id}")
 	public String excluirTipoIngrediente(@PathVariable("id") Long id) {
 		TipoIngrediente tipoIngrediente = tipoIngredienteService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
-		if(tipoIngrediente == null)
+		if (tipoIngrediente == null) {
 			return "redirect:/tipo_ingrediente/listar";
+		}
+		
 		//Remove o tipo ingrediente que será excluido da lista de tipo ingredientes da sua sede, e atualiza  a sede.
 		this.removerTipoIngredienteSede(tipoIngrediente, tipoIngrediente.getSede());
 		
 		//Remove todos ingredientes do tipo ingrediente que será excluido 
 		//da lista de ingredientes da sua sede, e atualiza  a sede.
 		for (Ingrediente ingrediente : tipoIngrediente.getIngredientes()) {
+			ingredienteController.removerProdutosIngrediente(ingrediente);
 			ingredienteController.removerIngredienteSede(ingrediente, tipoIngrediente.getSede());
 		}
 		
-		tipoIngredienteService.excluir(id);
+		tipoIngredienteService.excluir(tipoIngrediente.getId());
 			
 		return "redirect:/tipo_ingrediente/listar";
 	}
@@ -155,6 +162,4 @@ public class TipoIngredienteController {
 		
 		sedeService.salvar(sede);
 	}
-	
-
 }
