@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.hamburgueria.model.Ingrediente;
+import com.hamburgueria.model.Papel;
 import com.hamburgueria.model.Pedido;
 import com.hamburgueria.model.Produto;
 import com.hamburgueria.model.Sede;
@@ -56,9 +57,12 @@ public class PedidoController {
 	public ModelAndView lanchesProntos() {		
 		List<Produto> produtos = produtoService.listarDisponiveis(usuarioService.usuarioLogado().getSede().getId());
 		Pedido pedido = new Pedido();
+		Date today = new Date();
+		pedido.setData(today);
 		pedido.setStatus(Status.EM_ABERTO);
 		pedido.setPreco(0.0);
 		pedido.setSede(usuarioService.usuarioLogado().getSede());
+		
 		//Escolhe uma mensagem aleatória e adiciona ao pedido.
 		Mensagem mensagem = new Mensagem();
 		pedido.setMensagem(mensagem.getMensagem());
@@ -187,8 +191,15 @@ public class PedidoController {
 	//Função que exclui um pedido.
 	@GetMapping(path="/excluir/{id}")
 	public String excluirPedido(@PathVariable("id") Long id) {
-
-		pedidoService.excluir(id);
+		Pedido pedido = pedidoService.buscar(id, usuarioService.usuarioLogado().getSede().getId());		
+		
+		//Verifica se o status era EM_ABERTO ou o papel do usuário é MASTER ou ADM, pois apenas pedidos em aberto podem ser editados.
+		if(pedido.getStatus().equals(Status.EM_ABERTO) || 
+				usuarioService.usuarioLogado().getPapel().equals(Papel.ADMINISTRADOR) ||
+				usuarioService.usuarioLogado().getPapel().equals(Papel.MASTER)) {
+			
+			pedidoService.excluir(id);
+		}
 		return "redirect:/pedido/listar/todos";
 	}
 	
@@ -204,8 +215,10 @@ public class PedidoController {
 			return model;
 		}
 		
-		//Verifica se o status era EM_ABERTO, pois apenas pedidos em aberto podem ser editados.
-		if(pedido.getStatus().equals(Status.EM_ABERTO)) {
+		//Verifica se o status era EM_ABERTO ou o papel do usuário é MASTER ou ADM, pois apenas pedidos em aberto podem ser editados.
+		if(pedido.getStatus().equals(Status.EM_ABERTO) || 
+				usuarioService.usuarioLogado().getPapel().equals(Papel.ADMINISTRADOR) ||
+				usuarioService.usuarioLogado().getPapel().equals(Papel.MASTER)) {
 			ModelAndView model = new ModelAndView("pedido/formEditarPedido");
 			model.addObject("pedido", pedido);
 			return model;
