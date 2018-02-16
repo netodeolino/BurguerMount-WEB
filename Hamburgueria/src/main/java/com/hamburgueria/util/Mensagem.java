@@ -6,10 +6,11 @@ import java.util.Random;
 
 public class Mensagem {
 	
+	//Cria uma lista com várias mensagens;
 	public List<String> povoarMensagens(){
 		List<String> mensagens = new ArrayList();
 		
-		mensagens.add("1");
+		mensagens.add("Obrigado pela preferência.");
 		mensagens.add("2");
 		mensagens.add("3");
 		mensagens.add("4");
@@ -20,6 +21,7 @@ public class Mensagem {
 		return mensagens;
 	}
 	
+	//Sorteia e retorna uma mensagem aleatória.
 	public String getMensagem() {
 		
 		List<String> mensagens = this.povoarMensagens();
