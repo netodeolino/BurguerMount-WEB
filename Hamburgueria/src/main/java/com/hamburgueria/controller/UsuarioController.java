@@ -58,7 +58,8 @@ public class UsuarioController {
 	 */
 	@PostMapping(path="/cadastrar")
 	public String cadastrarUsuario(@Valid Usuario usuario, BindingResult result, @RequestParam(value="imagem", required=false) MultipartFile imagem) throws IOException {
-		//Coloca o papel do usuário como FUNCIONARIO por padrão.	
+		
+    //Coloca o papel do usuário como CLIENTE por padrão.	
 		usuario.setPapel(Papel.CLIENTE);
 		Usuario salvo = usuarioService.salvar(usuario);
 		

@@ -17,10 +17,12 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.hamburgueria.model.Ingrediente;
+import com.hamburgueria.model.Pedido;
 import com.hamburgueria.model.Produto;
 import com.hamburgueria.model.Sede;
 import com.hamburgueria.model.TipoIngrediente;
 import com.hamburgueria.service.IngredienteService;
+import com.hamburgueria.service.PedidoService;
 import com.hamburgueria.service.ProdutoService;
 import com.hamburgueria.service.SedeService;
 import com.hamburgueria.service.TipoIngredienteService;
@@ -43,6 +45,9 @@ public class ProdutoController {
 	
 	@Autowired
 	SedeService sedeService;
+	
+	@Autowired
+	PedidoService pedidoService;
 	
 	@Autowired
 	TipoIngredienteService tipoIngredienteService;
@@ -120,6 +125,18 @@ public class ProdutoController {
 			this.excluirProdutoIngrediente(produto, ingrediente);
 		}
 		
+		List<Pedido> pedidos = pedidoService.listarTodos(usuarioService.usuarioLogado().getSede().getId());
+		for (Pedido pedido : pedidos) {
+			for (Produto produtoPedido : pedido.getProdutos()) {
+				if (produtoPedido.getId() == produto.getId()) {
+					List<Produto> produtos = pedido.getProdutos();
+					produtos.remove(produtoPedido);
+					pedido.setProdutos(produtos);
+					pedidoService.salvar(pedido);
+				}
+			}
+		}
+		
 		produtoService.excluir(id);
 		return "redirect:/produto/listar";
 	}
@@ -191,7 +208,7 @@ public class ProdutoController {
  	public ModelAndView adicionarIngredientes(@PathVariable("id") Long id, Long id_ingrediente, Integer quantidade) throws IOException {
 		Produto produto = produtoService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
 		Ingrediente ingrediente = ingredienteService.buscar(id_ingrediente, usuarioService.usuarioLogado().getSede().getId());
-
+		
 		//Verifica a disponibilidade do ingrediente.
 		if (!(ingrediente.isDisponivel())) {
 			produto.setDisponivel(false);
@@ -219,7 +236,7 @@ public class ProdutoController {
  		
  		//Verifica se ao adicionar o ingrediente ao produto, se o produto vai continuar disponível.
  		ingredienteController.verificaDisponibilidade(ingrediente);
-		
+ 		
  		return cadastrarProduto(produtoAtualizado, null);
 	}
 	
@@ -378,4 +395,5 @@ public class ProdutoController {
 		
 		sedeService.salvar(sede);
 	}
+	
 }

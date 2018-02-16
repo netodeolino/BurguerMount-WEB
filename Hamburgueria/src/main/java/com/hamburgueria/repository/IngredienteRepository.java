@@ -37,4 +37,10 @@ public interface IngredienteRepository extends JpaRepository<Ingrediente, Long> 
 			+ "WHERE id = ?1 AND sede_id = ?2", nativeQuery=true)
 	public Ingrediente buscar(Long id_tipo, Long id_sede);
 	
+	//Lista de ingredientes de um pedido.
+	@Query(value = "SELECT * FROM  INGREDIENTE WHERE id IN ( "
+			+ "SELECT ingredientes_id FROM PRODUTO_INGREDIENTES WHERE produto_id IN ( "
+			+ "SELECT produtos_id FROM PEDIDO_PRODUTOS WHERE pedido_id = ?1))", nativeQuery=true)
+	public List<Ingrediente> getIngredientes(Long id_pedido);
+	
 }
