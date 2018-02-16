@@ -52,10 +52,11 @@
                     	</div>
                     	<div class="row">
 							<div class="form-group">
+								<span style="color: red;"> Caso deseje, você pode editar essa mensagem padrão abaixo. </span>
 		                        <div class="input-field col s12">
 		                        	<i class="material-icons prefix">message</i>
-		                        	<input id="mensagem" type="text" step="0.01" min="0.00" class="validate" th:field="*{mensagem}" required="true"/>
-		                        	<label for="mensagem">Mensagem</label>
+		                        	<input id="mensagem" type="text" step="0.01" min="0.00" class="validate" th:field="*{mensagem}" th:value="${pedido.mensagem}"/>
+		                        	<label for="mensagem" class= "active">Mensagem Customizada</label>
 		                        </div>
 		                	</div>
                     	</div>

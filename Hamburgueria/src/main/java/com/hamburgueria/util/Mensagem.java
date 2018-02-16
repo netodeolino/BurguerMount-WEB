@@ -9,7 +9,7 @@ public class Mensagem {
 	public List<String> povoarMensagens(){
 		List<String> mensagens = new ArrayList();
 		
-		mensagens.add("1");
+		mensagens.add("Obrigado pela preferência.");
 		mensagens.add("2");
 		mensagens.add("3");
 		mensagens.add("4");

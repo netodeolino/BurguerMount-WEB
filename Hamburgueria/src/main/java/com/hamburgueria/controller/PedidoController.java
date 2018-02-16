@@ -25,6 +25,7 @@ import com.hamburgueria.service.PedidoService;
 import com.hamburgueria.service.ProdutoService;
 import com.hamburgueria.service.SedeService;
 import com.hamburgueria.service.UsuarioService;
+import com.hamburgueria.util.Mensagem;
 
 @Controller
 @RequestMapping(path="/pedido")
@@ -58,6 +59,9 @@ public class PedidoController {
 		pedido.setStatus(Status.EM_ABERTO);
 		pedido.setPreco(0.0);
 		pedido.setSede(usuarioService.usuarioLogado().getSede());
+		
+		Mensagem mensagem = new Mensagem();
+		pedido.setMensagem(mensagem.getMensagem());
 		
 		Pedido pedidoSalvo = pedidoService.salvar(pedido);
 		
@@ -466,7 +470,6 @@ public class PedidoController {
 	@PostMapping(path="/finalizar")
 	public String finalizarPedido(@Valid Pedido pedido) {
 		Pedido pedidoBanco = pedidoService.buscar(pedido.getId(), usuarioService.usuarioLogado().getSede().getId());
-		
 		Date today = new Date();
 		pedidoBanco.setData(today);
 		pedidoBanco.setSede(usuarioService.usuarioLogado().getSede());
