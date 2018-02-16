@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.hamburgueria.model.Papel;
 import com.hamburgueria.model.Sede;
@@ -57,7 +58,7 @@ public class UsuarioController {
 	 *Recebe um usuario e uma possível imagem.
 	 */
 	@PostMapping(path="/cadastrar")
-	public String cadastrarUsuario(@Valid Usuario usuario, BindingResult result, @RequestParam(value="imagem", required=false) MultipartFile imagem) throws IOException {
+	public String cadastrarUsuario(@Valid Usuario usuario, BindingResult result, @RequestParam(value="imagem", required=false) MultipartFile imagem, RedirectAttributes attributes) throws IOException {
 		
     //Coloca o papel do usuário como CLIENTE por padrão.	
 		usuario.setPapel(Papel.CLIENTE);
@@ -81,6 +82,7 @@ public class UsuarioController {
 		}
 		usuarioService.atualizar(salvo);
 		
+		attributes.addFlashAttribute("mensagemCadastro", "Cadastro realizado com Sucesso!");
 		return "redirect:/";
 	}
 	

@@ -11,7 +11,13 @@
 <link rel="icon" type="image/png" sizes="20x20" th:href="@{/images/logo.png}" />
 </head>
 <body>
-	<div class="container" >
+	<div th:if="${!#strings.isEmpty(mensagemCadastro)}">
+		<script>
+			var $toastContent = $('<span>Cadastro realizado com Sucesso!</span>');
+			Materialize.toast($toastContent, 4000, 'green');
+		</script>
+	</div>
+	<div class="container">
 		<div class="row">
 			<div class="col s7" style="margin-top: 50px;" align="center">
 				<h3 class="row box-title m-b-20">BurguerMount</h3>
@@ -22,6 +28,7 @@
 			<div class="col s5" style="margin-top: 120px;">
 				<form class="form-horizontal form-material" id="loginform" method="POST" th:object="${usuario}">
 				<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+					
 					<h3 class="box-title m-b-20">Entrar</h3>
 					<div class="form-group ">
 						<div class="col-xs-12">
