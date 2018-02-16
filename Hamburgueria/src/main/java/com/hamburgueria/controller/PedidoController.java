@@ -59,7 +59,7 @@ public class PedidoController {
 		pedido.setStatus(Status.EM_ABERTO);
 		pedido.setPreco(0.0);
 		pedido.setSede(usuarioService.usuarioLogado().getSede());
-		
+		//Escolhe uma mensagem aleatória e adiciona ao pedido.
 		Mensagem mensagem = new Mensagem();
 		pedido.setMensagem(mensagem.getMensagem());
 		
