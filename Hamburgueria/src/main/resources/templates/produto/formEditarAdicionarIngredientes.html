@@ -57,14 +57,13 @@
 			                	</div>
                     		</div>
 	                    	<div class="row">
-	                    		<div class="col s1"></div>
-	                    		<div class="form-group">
+	                    		<div class="col s8"></div>
+	                    		<div class="form-group col s4">
 		                    		<button class="btn-large waves-effect waves-light col s10" type="submit" name="Adicionar">
 		                    			<b>Adicionar</b>
 		    							<i class="material-icons right">add_shopping_cart</i>
 		  							</button>
 		  						</div>
-	  							<div class="col s1"></div>
 	                    	</div>                    	
 						</form>
 					</div>
@@ -93,14 +92,16 @@
 					</div>
 					<div class="row">
 						<div class="col s12">
+							<div class="col s1"></div>
 						    <a th:href="@{/produto/listar}" title="Cancelar Cadastro"
 						          		class="btn-large waves-effect waves-light col s3 red">
 						        <b>Cancelar</b>
 						    	<i class="material-icons right">cancel</i>
 						    </a>
+						    <div class="col s1"></div>
 						    <a th:href="@{/produto/finalizar_produto}" title="Cadastrar Produto"
-						          		class="btn-large waves-effect waves-light col s9 green">
-						        <b>Finalizar Edição</b>
+						          		class="btn-large waves-effect waves-light col s6">
+						        <b>Finalizar Cadastro</b>
 						    	<i class="material-icons right">done</i>
 						    </a>
 						</div>
