@@ -218,7 +218,7 @@ public class IngredienteController {
 	}
 	
 	//Função que retorna para a página "detalhesIngrediente" um ingrediente passado pela URL.
-	@GetMapping(path="/detalhes_ingrediente/{id}")
+	@GetMapping(path="/{id}")
 	public ModelAndView detalhesIngrediente(@PathVariable("id") Long id) {
 		Ingrediente ingrediente = ingredienteService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
 		//Verifica se o ingrediente informado existe, caso não exista o usuário é redirecionado para uma página de erro.

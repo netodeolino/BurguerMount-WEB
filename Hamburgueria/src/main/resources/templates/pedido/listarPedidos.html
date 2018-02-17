@@ -68,7 +68,7 @@
 					            <td th:text="${pedido.preco}"></td>
 					            <td th:text="${pedido.status}"></td>
 					            <td>
-					            	<a th:href="@{${'/pedido/detalhes/' + pedido.id}}" title="Detalhes"
+					            	<a th:href="@{${'/pedido/' + pedido.id}}" title="Detalhes"
 						          		class="btn-floating halfway-fab waves-effect waves-light blue">
 						          		<i class="material-icons">visibility</i>
 						          	</a>
