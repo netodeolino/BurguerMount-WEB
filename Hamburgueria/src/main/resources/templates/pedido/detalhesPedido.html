@@ -84,7 +84,7 @@
 				        <tbody>
 				          <tr th:each="ingrediente : ${produto.ingredientes}">
 				            <td>
-				            	<a th:href="@{${'/ingrediente/detalhes_ingrediente/'+ ingrediente.id}}" 
+				            	<a th:href="@{${'/ingrediente/'+ ingrediente.id}}" 
 				            		th:text="${ingrediente.nome}" title="Detalhes"></a>
 				            </td>
 				            <td>

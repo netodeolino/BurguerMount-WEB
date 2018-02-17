@@ -250,11 +250,11 @@ public class PedidoController {
 		
 		pedidoService.salvar(pedidoBanco);
 		
-		return "redirect:/pedido/detalhes/" + pedidoBanco.getId();
+		return "redirect:/pedido/" + pedidoBanco.getId();
 	}
 	
 	//Função que retorna para a página "detalhesPedido" um produto passado pela URL.
-	@GetMapping(path="/detalhes/{id}")
+	@GetMapping(path="/{id}")
 	public ModelAndView detalhesPedido(@PathVariable("id") Long id) {
 		Pedido pedido = pedidoService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
 		
@@ -506,7 +506,7 @@ public class PedidoController {
 		pedidoService.salvar(pedidoBanco);
 		
 		attributes.addFlashAttribute("mensagemCadastro", "Pedido cadastrado com Sucesso!");
-		return "redirect:/pedido/detalhes/" + pedidoBanco.getId();
+		return "redirect:/pedido/" + pedidoBanco.getId();
 	}
 	
 	//Adiciona o pedido a lista de pedidos de uma sede.

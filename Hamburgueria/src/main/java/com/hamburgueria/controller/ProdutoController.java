@@ -187,7 +187,7 @@ public class ProdutoController {
 	}
 	
 	//Função que retorna para a página "detalhesProduto" um produto passado pela URL.
-	@GetMapping(path="/detalhes_produto/{id}")
+	@GetMapping(path="/{id}")
 	public ModelAndView detalhesProduto(@PathVariable("id") Long id) {
 		Produto produto = produtoService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
 		
