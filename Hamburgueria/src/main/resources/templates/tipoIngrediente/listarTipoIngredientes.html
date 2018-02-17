@@ -20,13 +20,13 @@
 	<div th:if="${!#strings.isEmpty(mensagemCadastro)}">
 		<script>
 			var $toastContent = $('<span>Tipo de Ingrediente cadastrado com Sucesso!</span>');
-			Materialize.toast($toastContent, 4000, 'green');
+			Materialize.toast($toastContent, 3000, 'green');
 		</script>
 	</div>
 	<div th:if="${!#strings.isEmpty(mensagemExcluir)}">
 		<script>
 			var $toastContent = $('<span>Tipo de Ingrediente excluído com Sucesso!</span>');
-			Materialize.toast($toastContent, 4000, 'orange');
+			Materialize.toast($toastContent, 3000, 'green');
 		</script>
 	</div>
 	<div class="container" style="margin-top: 50px;">

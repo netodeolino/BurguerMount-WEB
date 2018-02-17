@@ -16,7 +16,12 @@
 </head>
 <body>
 	<div th:replace="fragments/header :: header"></div>
-	
+	<div th:if="${!#strings.isEmpty(mensagemCadastro)}">
+		<script>
+			var $toastContent = $('<span>Sede cadastrada com Sucesso!</span>');
+			Materialize.toast($toastContent, 3000, 'green');
+		</script>
+	</div>
 	<div class="container" style="margin-top: 50px;">
 		<div class="row">
 			<div class="col s12">

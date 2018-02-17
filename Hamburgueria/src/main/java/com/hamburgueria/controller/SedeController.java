@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.hamburgueria.model.Papel;
 import com.hamburgueria.model.Sede;
@@ -55,7 +56,7 @@ public class SedeController {
 	 *Recebe uma sede e uma possível imagem.
 	 */
 	@PostMapping(path="/cadastrar")
-	public String cadastrarSede(@Valid Sede sede, BindingResult result, @RequestParam(value="imagem", required=false) MultipartFile imagem) throws IOException {
+	public String cadastrarSede(@Valid Sede sede, BindingResult result, @RequestParam(value="imagem", required=false) MultipartFile imagem, RedirectAttributes attributes) throws IOException {
 		Sede salva = sedeService.salvar(sede);
 		
 		//Verifica se foi informada uma imagem, caso não: o ingrediente é salvo com uma imagem padrão.
@@ -67,6 +68,7 @@ public class SedeController {
 		
 		sedeService.salvar(salva);
 		
+		attributes.addFlashAttribute("mensagemCadastro", "Cadastro realizado com Sucesso!");
 		return "redirect:/sede/listar";
 	}
 	
