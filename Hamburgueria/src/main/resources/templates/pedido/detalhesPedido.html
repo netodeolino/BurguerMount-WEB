@@ -32,6 +32,15 @@
 						<div class="row">
 							<div class="form-group">
 		                        <div class="input-field col s12">
+		                        	<i class="material-icons prefix">account_circle</i>
+		                        	<input id="cliente" type="text" class="validate" th:field="*{cliente}" disabled="true"/>
+		                        	<label for="cliente" class="active">Cliente</label>
+		                        </div>
+		                	</div>
+                    	</div>
+                    	<div class="row">
+							<div class="form-group">
+		                        <div class="input-field col s12">
 		                        	<i class="material-icons prefix">local_pizza</i>
 		                        	<input id="local" type="text" class="validate" th:field="*{local}" disabled="true"/>
 		                        	<label for="local" class="active">Local</label>
@@ -40,10 +49,18 @@
                     	</div>
                     	<div class="row">
 							<div class="form-group">
-		                        <div class="input-field col s12">
+		                        <div class="input-field col s5">
 		                        	<i class="material-icons prefix">attach_money</i>
 		                        	<input id="preco" type="number" step="0.01" min="0.00" class="validate" th:field="*{preco}" disabled="true"/>
 		                        	<label for="preco" class="active">Valor</label>
+		                        </div>
+		                	</div>
+		                	<div class="col s2"></div>
+		                	<div class="form-group">
+		                        <div class="input-field col s5">
+		                        	<i class="material-icons prefix">attach_money</i>
+		                        	<input id="troco" type="number" step="0.01" min="0.00" class="validate" th:field="*{troco}" disabled="true"/>
+		                        	<label for="troco" class="active">Troco</label>
 		                        </div>
 		                	</div>
                     	</div>
@@ -67,7 +84,8 @@
 				        <tbody>
 				          <tr th:each="ingrediente : ${produto.ingredientes}">
 				            <td>
-				            	<span th:text="${ingrediente.nome}"></span>
+				            	<a th:href="@{${'/ingrediente/detalhes_ingrediente/'+ ingrediente.id}}" 
+				            		th:text="${ingrediente.nome}" title="Detalhes"></a>
 				            </td>
 				            <td>
 				            </td>
@@ -75,7 +93,9 @@
 				        </tbody>
 						</table>
 					</div>
-					<div class="row" th:if="${pedido.status == T(com.hamburgueria.model.Status).EM_ABERTO}">
+					<div class="row" th:if="${pedido.status == T(com.hamburgueria.model.Status).EM_ABERTO || 
+												#authentication.getPrincipal().getPapel() == T(com.hamburgueria.model.Papel).MASTER ||
+						          				#authentication.getPrincipal().getPapel() == T(com.hamburgueria.model.Papel).ADMINISTRADOR}">
                     		<div class="col s5"></div>
                     		<div class="form-group">
 	                    		<a th:href="@{${'/pedido/lanches_prontos/editar/'+ pedido.id}}" class="btn-large waves-effect waves-light col s3">

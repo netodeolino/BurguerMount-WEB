@@ -37,7 +37,6 @@
 					              <th>Cliente</th>
 					              <th>Data</th>
 					              <th>Valor</th>
-					              <th>Local</th>
 					              <th>Status</th>
 					              <th>Ações</th>
 					          </tr>
@@ -50,7 +49,6 @@
 					            </td>
 					            <td th:text="${pedido.data}"></td>
 					            <td th:text="${pedido.preco}"></td>
-					            <td th:text="${pedido.local}"></td>
 					            <td th:text="${pedido.status}"></td>
 					            <td>
 					            	<a th:href="@{${'/pedido/detalhes/' + pedido.id}}" title="Detalhes"

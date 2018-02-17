@@ -22,7 +22,7 @@ public class Pedido {
 	private Date data;
 	private String local;
 	private Double preco;
-	private Double dinheiroCliente;
+	private Double troco;
 	private String mensagem;
 	
 	@Enumerated(EnumType.STRING)
@@ -77,12 +77,12 @@ public class Pedido {
 		this.preco = preco;
 	}
 
-	public Double getDinheiroCliente() {
-		return dinheiroCliente;
+	public Double getTroco() {
+		return troco;
 	}
 
-	public void setDinheiroCliente(Double dinheiroCliente) {
-		this.dinheiroCliente = dinheiroCliente;
+	public void setTroco(Double troco) {
+		this.troco = troco;
 	}
 
 	public String getMensagem() {
