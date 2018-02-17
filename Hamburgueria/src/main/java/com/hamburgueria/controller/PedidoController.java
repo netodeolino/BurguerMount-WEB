@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.hamburgueria.model.Ingrediente;
 import com.hamburgueria.model.Papel;
@@ -190,7 +191,7 @@ public class PedidoController {
 	
 	//Função que exclui um pedido.
 	@GetMapping(path="/excluir/{id}")
-	public String excluirPedido(@PathVariable("id") Long id) {
+	public String excluirPedido(@PathVariable("id") Long id, RedirectAttributes attributes) {
 		Pedido pedido = pedidoService.buscar(id, usuarioService.usuarioLogado().getSede().getId());		
 		
 		//Verifica se o status era EM_ABERTO ou o papel do usuário é MASTER ou ADM, pois apenas pedidos em aberto podem ser editados.
@@ -200,6 +201,7 @@ public class PedidoController {
 			
 			pedidoService.excluir(id);
 		}
+		attributes.addFlashAttribute("mensagemExcluir", "Pedido excluído com Sucesso!");
 		return "redirect:/pedido/listar/todos";
 	}
 	
@@ -454,7 +456,7 @@ public class PedidoController {
 	
 	//Função que altera o status do pedido passado no formulário e atualiza essa informação.
 	@PostMapping(path="/editar_status")
-	public String editarStatusPedido(@Valid Pedido pedido) {
+	public String editarStatusPedido(@Valid Pedido pedido, RedirectAttributes attributes) {
 		Pedido pedidoBanco = pedidoService.buscar(pedido.getId(), usuarioService.usuarioLogado().getSede().getId());
 		
 		//Verifica se o status foi alterado, caso contrário ele apenas redireciona para lista de pedidos.
@@ -476,12 +478,13 @@ public class PedidoController {
 			return "redirect:/pedido/listar/todos";
 		}
 		
+		attributes.addFlashAttribute("mensagemStatus", "Status atualizado com Sucesso!");
 		return "redirect:/pedido/listar/todos";
 	}
 	
 	//Função que finaliza o cadastro de um pedido.
 	@PostMapping(path="/finalizar")
-	public String finalizarPedido(@Valid Pedido pedido) {
+	public String finalizarPedido(@Valid Pedido pedido, RedirectAttributes attributes) {
 		Pedido pedidoBanco = pedidoService.buscar(pedido.getId(), usuarioService.usuarioLogado().getSede().getId());
 		Date today = new Date();
 		pedidoBanco.setData(today);
@@ -493,6 +496,7 @@ public class PedidoController {
 		
 		pedidoService.salvar(pedidoBanco);
 		
+		attributes.addFlashAttribute("mensagemCadastro", "Pedido cadastrado com Sucesso!");
 		return "redirect:/pedido/detalhes/" + pedidoBanco.getId();
 	}
 	

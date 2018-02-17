@@ -16,7 +16,24 @@
 </head>
 <body>
 	<div th:replace="fragments/header :: header"></div>
-	
+	<div th:if="${!#strings.isEmpty(mensagemCadastro)}">
+		<script>
+			var $toastContent = $('<span>Pedido cadastrado com Sucesso!</span>');
+			Materialize.toast($toastContent, 4000, 'green');
+		</script>
+	</div>
+	<div th:if="${!#strings.isEmpty(mensagemExcluir)}">
+		<script>
+			var $toastContent = $('<span>Pedido excluído com Sucesso!</span>');
+			Materialize.toast($toastContent, 4000, 'orange');
+		</script>
+	</div>
+	<div th:if="${!#strings.isEmpty(mensagemStatus)}">
+		<script>
+			var $toastContent = $('<span>Status atualizado com Sucesso!</span>');
+			Materialize.toast($toastContent, 4000, 'green');
+		</script>
+	</div>
 	<div class="container" style="margin-top: 50px;">
 		<div class="row">
 			<div class="col s12">
