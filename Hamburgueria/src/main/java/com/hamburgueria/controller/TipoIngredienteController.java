@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.hamburgueria.model.Ingrediente;
 import com.hamburgueria.model.Sede;
@@ -60,7 +61,7 @@ public class TipoIngredienteController {
 	 *Recebe um tipo ingrediente e uma possível imagem.
 	 */
 	@PostMapping(path="/cadastrar")
-	public String cadastrarTipoIngrediente(@Valid TipoIngrediente tipoIngrediente, BindingResult result, @RequestParam(value="imagem", required=false) MultipartFile imagem) throws IOException {
+	public String cadastrarTipoIngrediente(@Valid TipoIngrediente tipoIngrediente, BindingResult result, @RequestParam(value="imagem", required=false) MultipartFile imagem, RedirectAttributes attributes) throws IOException {
 		
 		TipoIngrediente salvo = tipoIngredienteService.salvar(tipoIngrediente);
 		
@@ -77,6 +78,7 @@ public class TipoIngredienteController {
 		
 		tipoIngredienteService.salvar(salvo);
 		
+		attributes.addFlashAttribute("mensagemCadastro", "Cadastro realizado com Sucesso!");
 		return "redirect:/tipo_ingrediente/listar";
 	}
 	
@@ -91,7 +93,7 @@ public class TipoIngredienteController {
 	
 	//Função que exclui um determinado tipo ingrediente.
 	@GetMapping(path="/excluir/{id}")
-	public String excluirTipoIngrediente(@PathVariable("id") Long id) {
+	public String excluirTipoIngrediente(@PathVariable("id") Long id, RedirectAttributes attributes) {
 		TipoIngrediente tipoIngrediente = tipoIngredienteService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
 		if (tipoIngrediente == null) {
 			return "redirect:/tipo_ingrediente/listar";
@@ -108,7 +110,8 @@ public class TipoIngredienteController {
 		}
 		
 		tipoIngredienteService.excluir(tipoIngrediente.getId());
-			
+		
+		attributes.addFlashAttribute("mensagemExcluir", "Tipo de Ingrediente excluído com Sucesso!");
 		return "redirect:/tipo_ingrediente/listar";
 	}
 	

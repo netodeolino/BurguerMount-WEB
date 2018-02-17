@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.hamburgueria.model.Ingrediente;
 import com.hamburgueria.model.Produto;
@@ -89,7 +90,7 @@ public class IngredienteController {
 	 *Recebe um ingrediente e uma possível imagem.
 	 */
 	@PostMapping(path="/cadastrar")
-	public String cadastrarIngrediente(@Valid Ingrediente ingrediente, BindingResult result, @RequestParam(value="imagem", required=false) MultipartFile imagem) throws IOException {
+	public String cadastrarIngrediente(@Valid Ingrediente ingrediente, BindingResult result, @RequestParam(value="imagem", required=false) MultipartFile imagem, RedirectAttributes attributes) throws IOException {
 		//Verifica se a disponibilidade do ingrediente e salva o ingrediente.
 		this.verificaDisponibilidade(ingrediente);
 		
@@ -111,6 +112,7 @@ public class IngredienteController {
 		}
 		ingredienteService.salvar(salvo);
 		
+		attributes.addFlashAttribute("mensagemCadastro", "Ingrediente cadastrado com Sucesso!");
 		return "redirect:/ingrediente/" + tipo.getId() + "/listar";
 	}
 	
@@ -148,7 +150,7 @@ public class IngredienteController {
 	
 	//Função que exclui um determinado ingrediente.
 	@GetMapping(path="/excluir/{id}")
-	public String excluirIngrediente(@PathVariable("id") Long id) {
+	public String excluirIngrediente(@PathVariable("id") Long id, RedirectAttributes attributes) {
 		Ingrediente ingrediente = ingredienteService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
 		if(ingrediente == null) {
 			return "redirect:/ingrediente/listar";
@@ -165,6 +167,7 @@ public class IngredienteController {
 
 		ingredienteService.excluir(id);
 
+		attributes.addFlashAttribute("mensagemExcluir", "Ingrediente excluído com Sucesso!");
 		return "redirect:/ingrediente/listar";
 	}
 	
