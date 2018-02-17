@@ -469,6 +469,8 @@ public class PedidoController {
 		if(!pedidoBanco.getStatus().equals(Status.EM_ABERTO)) {
 			pedidoBanco.setStatus(pedido.getStatus());
 			pedidoService.salvar(pedidoBanco);
+			
+			attributes.addFlashAttribute("mensagemStatus", "Status atualizado com Sucesso!");
 			return "redirect:/pedido/listar/todos";
 		//O status era EM ABERTO e tem estoque suficiente para aceitar o pedido.	
 		}else if(this.temEstoque(pedidoBanco)) {
@@ -476,10 +478,11 @@ public class PedidoController {
 			this.debitaIngredientes(pedidoBanco);
 			pedidoBanco.setStatus(pedido.getStatus());
 			pedidoService.salvar(pedidoBanco);
+			
+			attributes.addFlashAttribute("mensagemStatus", "Status atualizado com Sucesso!");
 			return "redirect:/pedido/listar/todos";
 		}
 		
-		attributes.addFlashAttribute("mensagemStatus", "Status atualizado com Sucesso!");
 		return "redirect:/pedido/listar/todos";
 	}
 	

@@ -4,5 +4,6 @@ public enum Status {
 	EM_ABERTO,
 	EM_ANDAMENTO,
 	PRONTO,
-	ENTREGUE
+	ENTREGUE,
+	NAO_ENTREGUE
 }
