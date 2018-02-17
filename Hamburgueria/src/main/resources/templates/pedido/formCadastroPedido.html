@@ -44,8 +44,18 @@
                     	<div class="row">
 							<div class="form-group">
 		                        <div class="input-field col s12">
+		                        	<i class="material-icons prefix">monetization_on</i>
+		                        	<input id="valorPedido" type="number"  step="0.01" th:value="${pedido.preco}" disabled="true"/>
+		                        	<label for="valorPedido" class="active">Preço Total</label>
+		                        </div>
+		                	</div>
+                    	</div>
+                    	<div class="row">
+							<div class="form-group">
+								<span style="color: red;"> Caso deseje, informe quanto dinheiro o cliente tem e calcularemos o troco. </span>
+		                        <div class="input-field col s12">
 		                        	<i class="material-icons prefix">credit_card</i>
-		                        	<input id="dinheiroCliente" type="number" step="0.01" min="0.00" class="validate" th:field="*{dinheiroCliente}" required="true"/>
+		                        	<input id="dinheiroCliente" type="number" step="0.01" th:min="${pedido.preco}" class="validate" name="dinheiroCliente"/>
 		                        	<label for="dinheiroCliente">Dinheiro do Cliente</label>
 		                        </div>
 		                	</div>
@@ -61,20 +71,22 @@
 		                	</div>
                     	</div>
                     	<div class="row">
-                    		<div class="col s12"></div>
-                    		<div class="form-group">
-	                    		<a th:href="@{${'/pedido/excluir/'+pedido.id}}" title="Cancelar Cadastro"
-							          		class="btn-large waves-effect waves-light col s3 red">
-							        <b>Cancelar</b>
-							    	<i class="material-icons right">cancel</i>
-							    </a>
-	                    		<button class="btn-large waves-effect waves-light col s9 green" type="submit" name="ingredientes">
-	                    			<b>Finalizar pedido</b>
-	    							<i class="material-icons right">send</i>
-	  							</button>
+                    		<div class="col s12">
+                    			<div class="col s1"></div>
+	                    		<div class="form-group">
+		                    		<a th:href="@{${'/pedido/excluir/'+pedido.id}}" title="Cancelar Cadastro"
+								          		class="btn-large waves-effect waves-light col s3 red">
+								        <b>Cancelar</b>
+								    	<i class="material-icons right">cancel</i>
+								    </a>
+								    <div class="col s1"></div>
+		                    		<button class="btn-large waves-effect waves-light col s6 green" type="submit" name="ingredientes">
+		                    			<b>Finalizar pedido</b>
+		    							<i class="material-icons right">send</i>
+		  							</button>
+		  						</div>
 	  						</div>
-  							<div class="col s3"></div>
-                    	</div>                    	
+	                   </div>                    	
 					</form>
 				</div>
 			</div>

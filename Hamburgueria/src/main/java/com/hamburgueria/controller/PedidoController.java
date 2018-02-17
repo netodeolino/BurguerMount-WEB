@@ -40,8 +40,8 @@ public class PedidoController {
 	IngredienteService ingredienteService;
 	
 	@Autowired
-	UsuarioService usuarioService;
 	
+	UsuarioService usuarioService;
 	@Autowired
 	ProdutoService produtoService;
 	
@@ -63,6 +63,7 @@ public class PedidoController {
 		pedido.setStatus(Status.EM_ABERTO);
 		pedido.setPreco(0.0);
 		pedido.setSede(usuarioService.usuarioLogado().getSede());
+		pedido.setTroco(0.0);
 		
 		//Escolhe uma mensagem aleatória e adiciona ao pedido.
 		Mensagem mensagem = new Mensagem();
@@ -238,7 +239,7 @@ public class PedidoController {
 	public String editarPedido(@Valid Pedido pedido, BindingResult result) { 
 		Pedido pedidoBanco = pedidoService.buscar(pedido.getId(), usuarioService.usuarioLogado().getSede().getId());
 		pedidoBanco.setLocal(pedido.getLocal());
-		pedidoBanco.setDinheiroCliente(pedido.getDinheiroCliente());
+		pedidoBanco.setTroco(pedido.getTroco());
 		pedidoBanco.setMensagem(pedido.getMensagem());
 		Date today = new Date();
 		pedidoBanco.setData(today);
@@ -484,12 +485,17 @@ public class PedidoController {
 	
 	//Função que finaliza o cadastro de um pedido.
 	@PostMapping(path="/finalizar")
-	public String finalizarPedido(@Valid Pedido pedido, RedirectAttributes attributes) {
+	public String finalizarPedido(@Valid Pedido pedido, Double dinheiroCliente, RedirectAttributes attributes) {
 		Pedido pedidoBanco = pedidoService.buscar(pedido.getId(), usuarioService.usuarioLogado().getSede().getId());
 		Date today = new Date();
 		pedidoBanco.setData(today);
 		pedidoBanco.setSede(usuarioService.usuarioLogado().getSede());
 		pedidoBanco.setStatus(Status.EM_ANDAMENTO);
+		pedidoBanco.setLocal(pedido.getLocal());
+		pedidoBanco.setMensagem(pedido.getMensagem());
+		if(dinheiroCliente != null) {
+			pedidoBanco.setTroco(dinheiroCliente - pedidoBanco.getPreco());
+		}
 		
 		//Debita os ingredientes do estoque com base na quantidade usada no pedido.
 		this.debitaIngredientes(pedidoBanco);
