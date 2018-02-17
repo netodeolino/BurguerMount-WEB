@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.hamburgueria.model.Ingrediente;
 import com.hamburgueria.model.Pedido;
@@ -111,7 +112,7 @@ public class ProdutoController {
 	
 	//Função que exclui um determinado produto.
 	@GetMapping(path="/excluir/{id}")
-	public String excluirProduto(@PathVariable("id") Long id) {
+	public String excluirProduto(@PathVariable("id") Long id, RedirectAttributes attributes) {
 		Produto produto = produtoService.buscar(id, usuarioService.usuarioLogado().getSede().getId());
 		if(produto == null) {
 			return "redirect:/produto/listar";
@@ -137,6 +138,7 @@ public class ProdutoController {
 			}
 		}
 		
+		attributes.addFlashAttribute("mensagemExcluir", "Produto excluído com Sucesso!");
 		produtoService.excluir(id);
 		return "redirect:/produto/listar";
 	}
@@ -270,7 +272,8 @@ public class ProdutoController {
 	
 	//Função apenas para finalizar o processo de cadastro do produto.
 	@GetMapping(path="/finalizar_produto")
- 	public String adicionarIngredientes() {
+ 	public String adicionarIngredientes(RedirectAttributes attributes) {
+		attributes.addFlashAttribute("mensagemCadastro", "Produto cadastrado com Sucesso!");
  		return "redirect:/produto/listar";
 	}
 	
