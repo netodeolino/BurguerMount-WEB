@@ -22,9 +22,13 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.hamburgueria.model.Papel;
+import com.hamburgueria.model.Pedido;
 import com.hamburgueria.model.Sede;
+import com.hamburgueria.model.TipoIngrediente;
 import com.hamburgueria.model.Usuario;
+import com.hamburgueria.service.PedidoService;
 import com.hamburgueria.service.SedeService;
+import com.hamburgueria.service.TipoIngredienteService;
 import com.hamburgueria.service.UsuarioService;
 import com.hamburgueria.util.Constants;
 import com.hamburgueria.util.Image;
@@ -40,7 +44,16 @@ public class SedeController {
 	UsuarioService usuarioService;
 	
 	@Autowired
+	TipoIngredienteService tipoIngredienteService;
+	
+	@Autowired
+	PedidoService pedidoService;
+	
+	@Autowired
 	UsuarioController usuarioController;
+	
+	@Autowired
+	TipoIngredienteController tipoIngredienteController;
 	
 	/*Função de cadastro simples.
 	 *Manda para a página "formCadastroSede" uma sede vazia e uma lista de  sedes
@@ -87,9 +100,9 @@ public class SedeController {
 	@GetMapping(path="/excluir/{id}")
 	public String excluirSede(@PathVariable("id") Long id) {
 		Sede sede = sedeService.buscar(id);
-		
-		//Remove a sede do usuário e atualiza o usuário.
+		this.excluirTipoIngredientesSede(sede);
 		this.removerSedeUsuarios(sede);
+		
 		sedeService.excluir(id);
 		
 		return "redirect:/sede/listar";
@@ -157,6 +170,33 @@ public class SedeController {
 				cliente.setPapel(Papel.CLIENTE);
 			cliente.setSede(null);
 			usuarioService.atualizar(cliente);
+		}
+	}
+	
+	//Exclui todos os produtos de uma sede.
+	public void excluirTipoIngredientesSede(Sede sede) {
+		List<TipoIngrediente> tipoIngredientes = sede.getTipoIngredientes();
+		Integer tamanho = tipoIngredientes.size();
+		
+		for (int i = 0; i < tamanho; i++) {
+			this.excluirTipoIngrediente(tipoIngredientes.get(0));
+		}
+	}
+	
+	//Exclui um determinado produto.
+	public void excluirTipoIngrediente(TipoIngrediente tipoIngrediente) {
+		tipoIngredienteController.removerTipoIngredienteSede(tipoIngrediente, tipoIngrediente.getSede());
+		tipoIngredienteController.excluirIngredientesTipoIngrediente(tipoIngrediente);
+		tipoIngredienteService.excluir(tipoIngrediente.getId());
+	}
+	
+	//Função que remove a sede do usuário.
+	public void removerPedidosSede(Sede sede) {
+		List<Pedido> pedidos = sede.getPedidos();
+		Integer tamanho = pedidos.size();
+		for (int i = 0; i < tamanho; i++) {
+			System.out.println("ENTRA AQUI");
+			pedidoService.excluir(pedidos.get(0).getId());
 		}
 	}
 
