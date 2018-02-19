@@ -11,12 +11,12 @@ public class Mensagem {
 		List<String> mensagens = new ArrayList();
 		
 		mensagens.add("Obrigado pela preferência.");
-		mensagens.add("2");
-		mensagens.add("3");
-		mensagens.add("4");
-		mensagens.add("5");
-		mensagens.add("6");
-		mensagens.add("7");
+		mensagens.add("Esperamos vê-lo aqui mais uma vez, em breve!");
+		mensagens.add("Obrigado por comprar com a gente!");
+		mensagens.add("Obrigado por fazer parte da nossa história!");
+		mensagens.add("Ótima refeição!");
+		mensagens.add("Não deixe de conferir nossas incríveis promoções no Instagram @burguermount!");
+		mensagens.add("Indique amigos para a BurguerMount e ganhe créditos especiais :)");
 		
 		return mensagens;
 	}

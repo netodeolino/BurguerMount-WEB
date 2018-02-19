@@ -50,6 +50,9 @@ public class IngredienteController {
 	@Autowired
 	SedeService sedeService;
 	
+	@Autowired
+	ProdutoController produtoController;
+	
 	/*Função de cadastro simples.
 	 *Manda para a página "formCadastroIngrediente" um ingrediente vazio
 	 *e uma lista de tipos ingredientes da sede do usuário logado.
@@ -159,11 +162,8 @@ public class IngredienteController {
 		this.removerIngredienteTipo(ingrediente, ingrediente.getTipoIngrediente());
 		//Remove o ingrediente que será excluido da lista de ingredientes da sua sede, e atualiza  a sede.
 		this.removerIngredienteSede(ingrediente, ingrediente.getSede());
-		//Remove os produtos que possuem o ingrediente que será excluído.
-		this.removerProdutosIngrediente(ingrediente);
-		//Adiciona a Sede do ingrediente como null para não da erro de restrição de chave e salva. 
-		ingrediente.setSede(null);
-		ingredienteService.salvar(ingrediente);
+		//Exclui todos os produtos de um ingrediente.
+		this.excluirProdutosIngrediente(ingrediente);
 
 		ingredienteService.excluir(id);
 
@@ -269,6 +269,15 @@ public class IngredienteController {
 		sedeService.salvar(sede);
 	}
 	
+	//Remove um ingrediente da lista de ingredientes de um produto e salva o produto.
+	public void removerIngredienteProduto(Ingrediente ingrediente, Produto produto) {
+		List<Ingrediente> ingredientes = produto.getIngredientes();
+		
+		ingredientes.remove(ingrediente);
+		produto.setIngredientes(ingredientes);
+		produtoService.salvar(produto);
+	}
+	
 	//Remove o produto da lista de produtos da sede e salva a sede
 	public void removerProdutoSede(Produto produto, Sede sede) {
 		List<Produto> produtos = sede.getProdutos();
@@ -276,6 +285,12 @@ public class IngredienteController {
 		
 		sede.setProdutos(produtos);
 		sedeService.salvar(sede);
+	}
+	
+	//Remove uma lista de produtos da lista de produtos da sede e salva a sede
+	public void removerProdutosSede(List<Produto> produtos, Sede sede) {
+		for (Produto produto : produtos) 
+			this.removerProdutoSede(produto, sede);
 	}
 	
 	public void removerProdutosIngrediente(Ingrediente ingrediente) {
@@ -286,6 +301,34 @@ public class IngredienteController {
 		}
 		ingrediente.setProdutos(null);
 		ingredienteService.salvar(ingrediente);
+	}
+	
+	//Remove um produto da lista de produtos de um ingrediente e salva o ingrediente.
+	public void removeProdutoIngrediente(Produto produto, Ingrediente ingrediente) {
+		List<Produto> produtos = ingrediente.getProdutos();
+		
+		produtos.remove(produto);
+		ingrediente.setProdutos(produtos);
+		ingredienteService.salvar(ingrediente);
+	}
+	
+	//Exclui todos os produtos de um ingrediente.
+	public void excluirProdutosIngrediente(Ingrediente ingrediente) {
+		List<Produto> produtos = ingrediente.getProdutos();
+		Integer tamanho = produtos.size();
+		
+		for (int i = 0; i < tamanho; i++) {
+			this.excluirProduto(produtos.get(0));
+		}
+	}
+	
+	//Exclui um determinado produto.
+	public void excluirProduto(Produto produto) {
+		produtoController.removerProdutoSede(produto, produto.getSede());
+		produtoController.removerProdutoIngredientes(produto, produto.getIngredientes());
+		produtoController.removerProdutoPedidos(produto);
+		
+		produtoService.excluir(produto.getId());
 	}
 	
 	//Filtra e retorna apenas os ingredientes disponíveis
