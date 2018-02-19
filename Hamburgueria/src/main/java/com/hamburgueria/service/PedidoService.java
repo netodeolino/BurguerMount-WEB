@@ -46,6 +46,11 @@ public class PedidoService {
 		return pedidoRepository.listarEntregues(id_sede);
 	}
 	
+	//Retorna a lista de todos os pedidos que possuem um determinado produto.
+	public List<Pedido> buscarPedidosProduto(Long id_produto){
+		return pedidoRepository.buscarPedidosProduto(id_produto);
+	}
+	
 	public Integer contaIngredientes(Long id_pedido, Long id_ingrediente) {
 		return pedidoRepository.contaIngredientes(id_pedido, id_ingrediente);
 	}

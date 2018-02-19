@@ -121,22 +121,10 @@ public class ProdutoController {
 		this.removerProdutoSede(produto, produto.getSede());
 		
 		//Para cada ingrediente do produto, remove o produto da lista de produtos do ingrediente e atualiza o ingrediente.
-		List<Ingrediente> ingredientes = produto.getIngredientes();
-		for (Ingrediente ingrediente : ingredientes) {
-			this.excluirProdutoIngrediente(produto, ingrediente);
-		}
+		this.removerProdutoIngredientes(produto, produto.getIngredientes());
 		
-		List<Pedido> pedidos = pedidoService.listarTodos(usuarioService.usuarioLogado().getSede().getId());
-		for (Pedido pedido : pedidos) {
-			for (Produto produtoPedido : pedido.getProdutos()) {
-				if (produtoPedido.getId() == produto.getId()) {
-					List<Produto> produtos = pedido.getProdutos();
-					produtos.remove(produtoPedido);
-					pedido.setProdutos(produtos);
-					pedidoService.salvar(pedido);
-				}
-			}
-		}
+		//Remove o produto da lista de produtos dos pedidos que tem esse produto.
+		this.removerProdutoPedidos(produto);
 		
 		attributes.addFlashAttribute("mensagemExcluir", "Produto excluído com Sucesso!");
 		produtoService.excluir(id);
@@ -368,8 +356,15 @@ public class ProdutoController {
 		}
 	}
 	
+	//Para cada ingrediente do produto, remove o produto da lista de produtos do ingrediente e atualiza o ingrediente.
+	public void removerProdutoIngredientes(Produto produto, List<Ingrediente> ingredientes) {
+		for (Ingrediente ingrediente : ingredientes) {
+			this.removerProdutosIngrediente(produto, ingrediente);
+		}
+	}
+	
 	//Remove um produto da lista de produtos de um ingrediente e atualiza o ingrediente.
-	public void excluirProdutoIngrediente(Produto produto, Ingrediente ingrediente) {
+	public void removerProdutosIngrediente(Produto produto, Ingrediente ingrediente) {
 		List<Produto> produtos = ingrediente.getProdutos();
 		
 		if(produtos.contains(produto)) {
@@ -388,6 +383,19 @@ public class ProdutoController {
 			
 			sedeService.salvar(sede);
 		}
+	}
+	
+	//Remove o produto da lista de produtos dos pedidos que tem esse produto.
+	public void removerProdutoPedidos(Produto produto) {
+		List<Pedido> pedidos = pedidoService.buscarPedidosProduto(produto.getId());
+		for (Pedido pedido : pedidos) {
+			List<Produto> produtos = pedido.getProdutos();
+			while(produtos.contains(produto))
+				produtos.remove(produto);
+			
+			pedido.setProdutos(produtos);
+			pedidoService.salvar(pedido);
+		}		
 	}
 	
 	//Remove um produto da lista de produtos de uma sede e atualiza a sede.

@@ -19,6 +19,12 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
 		+ "WHERE id = ?1 AND sede_id = ?2", nativeQuery=true)
 	public Pedido buscar(Long id_pedido, Long id_sede);
 	
+	//Retorna a lista de todos os pedidos que possuem um determinado produto.
+	@Query(value = "SELECT * FROM PEDIDO "
+			+ "WHERE id IN ("
+			+ " SELECT pedido_id FROM PEDIDO_PRODUTOS WHERE produtos_id = ?1) ", nativeQuery=true)
+	public List<Pedido> buscarPedidosProduto(Long id_produto);
+	
 	//Lista todos pedidos de uma determinada sede
 	@Query(value = "SELECT * FROM PEDIDO "
 			+ "WHERE sede_id = ?1 "
