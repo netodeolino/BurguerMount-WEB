@@ -64,7 +64,7 @@
 					            	<span th:if="${pedido.cliente}" th:text="${pedido.cliente.nome}"></span>
 					            	<span th:unless="${pedido.cliente}">Sem usuário</span>
 					            </td>
-					            <td th:text="${pedido.data}"></td>
+					            <td th:text="${#dates.format(pedido.data, 'dd-MM-yyyy')}"></td>
 					            <td th:text="${pedido.preco}"></td>
 					            <td th:text="${pedido.status}"></td>
 					            <td>
