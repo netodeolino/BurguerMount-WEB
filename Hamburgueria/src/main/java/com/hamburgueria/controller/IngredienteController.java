@@ -55,10 +55,17 @@ public class IngredienteController {
 	 *e uma lista de tipos ingredientes da sede do usuário logado.
 	 * */
 	@GetMapping(path="/cadastrar")
-	public ModelAndView cadastrarIngrediente(HttpServletRequest request) {
-		ModelAndView model = new ModelAndView("ingrediente/formCadastroIngrediente");
-		model.addObject(new Ingrediente());
-		model.addObject("tipos", tipoIngredienteService.listar(usuarioService.usuarioLogado().getSede().getId()));
+	public ModelAndView cadastrarIngrediente() {
+		List<TipoIngrediente> tipoIngredientes = tipoIngredienteService.listar(usuarioService.usuarioLogado().getSede().getId());
+		if (tipoIngredientes.size() >= 1) {
+			ModelAndView model = new ModelAndView("ingrediente/formCadastroIngrediente");
+			model.addObject(new Ingrediente());
+			model.addObject("tipos", tipoIngredientes);
+			return model;
+		}
+		ModelAndView model = new ModelAndView("tipoIngrediente/listarTipoIngredientes");
+		model.addObject("tipoIngredientes", tipoIngredientes);
+		model.addObject("mensagemSemTipo", "Por favor, cadastre um Tipo de Ingrediente previamente!");
 		return model;
 	}
 	
@@ -120,7 +127,7 @@ public class IngredienteController {
 	 *Retorna pra página "listarIngredientes" esses ingredientes divididos em disponíveis (qtd > 0) e indisponiveis (qtd == 0).
 	 */
 	@GetMapping(path="/listar")
-	public ModelAndView listarIngredientes(){
+	public ModelAndView listarIngredientes() {
 		ModelAndView model = new ModelAndView("ingrediente/listarIngredientes");
 		List<Ingrediente> disponiveis = ingredienteService.listarDisponiveis(usuarioService.usuarioLogado().getSede().getId());
 		model.addObject("disponiveis", disponiveis);
@@ -133,7 +140,7 @@ public class IngredienteController {
 	 *Retorna pra página "listarIngredientes" esses ingredientes divididos em disponíveis (qtd > 0) e indisponiveis (qtd == 0).
 	 */
 	@GetMapping(path="/{id_tipo}/listar")
-	public ModelAndView listarIngredientesPorTipo(@PathVariable("id_tipo") Long id_tipo){
+	public ModelAndView listarIngredientesPorTipo(@PathVariable("id_tipo") Long id_tipo) {
 		TipoIngrediente tipo = tipoIngredienteService.buscar(id_tipo, usuarioService.usuarioLogado().getSede().getId());
 		//Verifica se o tipo de ingrediente informado existe, caso não exista o usuário é redirecionado para uma página de erro.
 		if(tipo == null) {
