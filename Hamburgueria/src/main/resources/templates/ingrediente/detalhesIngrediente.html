@@ -33,15 +33,24 @@
 						<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 						<div class="row">
 							<div class="form-group">
-		                        <div class="input-field col s6">
+		                        <div class="input-field col s12">
 		                        	<i class="material-icons prefix">pie_chart</i>
 		                        	<input id="nome" type="text" class="validate" th:field="*{nome}" disabled="true"/>
 		                        	<label for="nome" class="active">Nome</label>
 		                        </div>
+		                	</div>
+                    	</div>
+                    	<div class="row">
+							<div class="form-group">
 		                        <div class="input-field col s6">
 		                        	<i class="material-icons prefix">poll</i>
-		                        	<input id="quantidade" type="number" class="validate" th:field="*{qtd}" disabled="true"/>
+		                        	<input id="quantidade" type="number" min="0" class="validate" th:field="*{qtd}" disabled="true"/>
 		                        	<label for="quantidade" class="active">Quantidade</label>
+		                        </div>
+		                        <div class="input-field col s6">
+		                        	<i class="material-icons prefix">invert_colors</i>
+		                        	<input id="porcao" type="text" class="validate" th:field="*{porcao}" disabled="true"/>
+		                        	<label for="porcao" class="active">Porção</label>
 		                        </div>
 		                	</div>
                     	</div>
