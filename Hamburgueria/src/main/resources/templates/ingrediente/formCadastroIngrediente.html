@@ -34,15 +34,24 @@
 						<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 						<div class="row">
 							<div class="form-group">
-		                        <div class="input-field col s6">
+		                        <div class="input-field col s12">
 		                        	<i class="material-icons prefix">pie_chart</i>
 		                        	<input id="nome" type="text" class="validate" th:field="*{nome}"/>
 		                        	<label for="nome">Nome do Ingrediente</label>
 		                        </div>
+		                	</div>
+                    	</div>
+                    	<div class="row">
+							<div class="form-group">
 		                        <div class="input-field col s6">
 		                        	<i class="material-icons prefix">poll</i>
 		                        	<input id="quantidade" type="number" min="0" class="validate" th:field="*{qtd}"/>
 		                        	<label for="quantidade">Quantidade</label>
+		                        </div>
+		                        <div class="input-field col s6">
+		                        	<i class="material-icons prefix">invert_colors</i>
+		                        	<input id="porcao" type="text" class="validate" th:field="*{porcao}" placeholder="Ex: 10g, 20ml..."/>
+		                        	<label for="porcao">Porção</label>
 		                        </div>
 		                	</div>
                     	</div>

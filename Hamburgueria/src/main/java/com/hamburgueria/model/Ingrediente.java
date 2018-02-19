@@ -22,6 +22,7 @@ public class Ingrediente {
 	
 	private String nome;
 	private Integer qtd;
+	private String porcao;
 	private Double valorDeVenda;
 	private Double valorBruto;
 	
@@ -67,6 +68,14 @@ public class Ingrediente {
 
 	public void setQtd(Integer qtd) {
 		this.qtd = qtd;
+	}
+
+	public String getPorcao() {
+		return porcao;
+	}
+
+	public void setPorcao(String porcao) {
+		this.porcao = porcao;
 	}
 
 	public Double getValorDeVenda() {
