@@ -104,11 +104,7 @@ public class TipoIngredienteController {
 		
 		//Remove todos ingredientes do tipo ingrediente que será excluido 
 		//da lista de ingredientes da sua sede, e atualiza  a sede.
-		for (Ingrediente ingrediente : tipoIngrediente.getIngredientes()) {
-			ingredienteController.removerProdutosIngrediente(ingrediente);
-			ingredienteController.removerIngredienteSede(ingrediente, tipoIngrediente.getSede());
-		}
-		
+		this.excluirIngredientesTipoIngrediente(tipoIngrediente);
 		tipoIngredienteService.excluir(tipoIngrediente.getId());
 		
 		attributes.addFlashAttribute("mensagemExcluir", "Tipo de Ingrediente excluído com Sucesso!");
@@ -164,5 +160,32 @@ public class TipoIngredienteController {
 		sede.setTipoIngredientes(tipos);
 		
 		sedeService.salvar(sede);
+	}
+	
+	public void removerIngredientesDeTipoIngrediente(TipoIngrediente tipoIngrediente) {
+		List<Ingrediente> ingredientes = tipoIngrediente.getIngredientes();
+		for (Ingrediente ingrediente : ingredientes) {
+			ingredienteService.excluir(ingrediente.getId());
+		}
+		tipoIngrediente.setIngredientes(null);
+		tipoIngredienteService.salvar(tipoIngrediente);
+	}
+	
+	//Exclui todos os produtos de um ingrediente.
+	public void excluirIngredientesTipoIngrediente(TipoIngrediente tipoIngrediente) {
+		List<Ingrediente> ingredientes = tipoIngrediente.getIngredientes();
+		Integer tamanho = ingredientes.size();
+		
+		for (int i = 0; i < tamanho; i++) {
+			this.excluirIngrediente(ingredientes.get(0));
+		}
+	}
+	
+	//Exclui um determinado produto.
+	public void excluirIngrediente(Ingrediente ingrediente) {
+		this.ingredienteController.removerIngredienteTipo(ingrediente, ingrediente.getTipoIngrediente());
+		this.ingredienteController.removerIngredienteSede(ingrediente, ingrediente.getSede());
+		this.ingredienteController.excluirProdutosIngrediente(ingrediente);
+		ingredienteService.excluir(ingrediente.getId());
 	}
 }

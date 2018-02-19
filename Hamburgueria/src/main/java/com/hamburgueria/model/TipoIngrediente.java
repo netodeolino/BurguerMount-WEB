@@ -2,7 +2,6 @@ package com.hamburgueria.model;
 
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,7 +23,7 @@ public class TipoIngrediente {
 	@Column(columnDefinition = "text", length = Constants.TAM_MAX_IMG_64)
 	private String foto64;
 	
-	@OneToMany(cascade=CascadeType.ALL)
+	@OneToMany
 	private List<Ingrediente> ingredientes;
 	
 	@ManyToOne
