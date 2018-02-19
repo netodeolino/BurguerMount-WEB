@@ -101,6 +101,7 @@ public class SedeController {
 	public String excluirSede(@PathVariable("id") Long id) {
 		Sede sede = sedeService.buscar(id);
 		this.excluirTipoIngredientesSede(sede);
+		this.removerPedidosSede(sede);
 		this.removerSedeUsuarios(sede);
 		
 		sedeService.excluir(id);
@@ -165,11 +166,13 @@ public class SedeController {
 	//Função que remove a sede do usuário.
 	public void removerSedeUsuarios(Sede sede) {
 		//Para todos os usuário da sede, altera o papel dos mesmos para CLIENTE e remove a sua sede.
-		for (Usuario cliente : sede.getClientes()) {
-			if(!cliente.getPapel().equals(Papel.CLIENTE) || !cliente.getPapel().equals(Papel.MASTER))
+		System.out.println("AQUIIIIIIIIIIIIIIIIIII");
+		for (Usuario cliente : usuarioService.listarTodos()) {
+			if (cliente.getSede().getId() == sede.getId()) {
+				cliente.setSede(null);
 				cliente.setPapel(Papel.CLIENTE);
-			cliente.setSede(null);
-			usuarioService.atualizar(cliente);
+				usuarioService.atualizar(cliente);
+			}
 		}
 	}
 	
@@ -192,11 +195,10 @@ public class SedeController {
 	
 	//Função que remove a sede do usuário.
 	public void removerPedidosSede(Sede sede) {
-		List<Pedido> pedidos = sede.getPedidos();
-		Integer tamanho = pedidos.size();
-		for (int i = 0; i < tamanho; i++) {
-			System.out.println("ENTRA AQUI");
-			pedidoService.excluir(pedidos.get(0).getId());
+		List<Pedido> pedidos = pedidoService.listarTodos(sede.getId());
+		for (Pedido pedido : pedidos) {
+			pedido.setSede(null);
+			pedidoService.salvar(pedido);
 		}
 	}
 

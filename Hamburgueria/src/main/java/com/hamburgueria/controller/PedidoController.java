@@ -127,10 +127,9 @@ public class PedidoController {
 		pedido.setStatus(Status.EM_ABERTO);
 		pedido.setSede(usuarioService.usuarioLogado().getSede());
 		
+		Pedido pedidoSalvo = pedidoService.salvar(pedido);
 		//Adicionao o pedido a lista de pedidos da sede do usuário logado.
-		this.adicionarPedidoSede(pedido, usuarioService.usuarioLogado().getSede());
-		
-		pedidoService.salvar(pedido);
+		this.adicionarPedidoSede(pedidoSalvo, usuarioService.usuarioLogado().getSede());
 		
 		return "redirect:/pedido/listar/todos";
 	}
@@ -512,10 +511,11 @@ public class PedidoController {
 	//Adiciona o pedido a lista de pedidos de uma sede.
 	public void adicionarPedidoSede(Pedido pedido, Sede sede) {
 		List<Pedido> pedidos =  sede.getPedidos();
-		
-		pedidos.add(pedido);
-		sede.setPedidos(pedidos);
-		sedeService.salvar(sede);
+			if(!pedidos.contains(pedido)) {
+			pedidos.add(pedido);
+			sede.setPedidos(pedidos);
+			sedeService.salvar(sede);
+		}
 	}
 	
 	//Conta a quantidade de um ingrediente em um produto.
