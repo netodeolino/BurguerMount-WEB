@@ -43,17 +43,27 @@
 						</div>
 						<div class="row">
 							<div class="form-group">
-		                        <div class="input-field col s6">
+		                        <div class="input-field col s12">
 		                        	<i class="material-icons prefix">pie_chart</i>
 		                        	<input id="nome" type="text" class="validate" th:field="*{nome}"
 		                        		value="th:text=${ingrediente.nome}"/>
 		                        	<label for="nome" class="active">Nome do Ingrediente</label>
 		                        </div>
+		                    </div>
+                    	</div>
+                    	<div class="row">
+							<div class="form-group">
 		                        <div class="input-field col s6">
 		                        	<i class="material-icons prefix">poll</i>
 		                        	<input id="quantidade" type="number" class="validate" th:field="*{qtd}"
 		                        		value="th:text=${ingrediente.qtd}" min="0"/>
 		                        	<label for="quantidade" class="active">Quantidade</label>
+		                        </div>
+		                        <div class="input-field col s6">
+		                        	<i class="material-icons prefix">invert_colors</i>
+		                        	<input id="porcao" type="text" class="validate" th:field="*{porcao}"
+		                        		value="th:text=${ingrediente.porcao}"/>
+		                        	<label for="porcao" class="active">Porção</label>
 		                        </div>
 		                	</div>
                     	</div>
