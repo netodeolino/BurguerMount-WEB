@@ -50,9 +50,6 @@ public class IngredienteController {
 	@Autowired
 	SedeService sedeService;
 	
-	@Autowired
-	TipoIngredienteController tipoIngredienteController;
-	
 	/*Função de cadastro simples.
 	 *Manda para a página "formCadastroIngrediente" um ingrediente vazio
 	 *e uma lista de tipos ingredientes da sede do usuário logado.
