@@ -100,11 +100,14 @@ public class SedeController {
 	@GetMapping(path="/excluir/{id}")
 	public String excluirSede(@PathVariable("id") Long id) {
 		Sede sede = sedeService.buscar(id);
-		this.excluirTipoIngredientesSede(sede);
-		this.removerPedidosSede(sede);
-		this.removerSedeUsuarios(sede);
 		
-		sedeService.excluir(id);
+		if(sede != null) {
+			this.excluirTipoIngredientesSede(sede);
+			this.removerPedidosSede(sede);
+			this.removerSedeUsuarios(sede);
+			
+			sedeService.excluir(id);
+		}
 		
 		return "redirect:/sede/listar";
 	}
@@ -115,6 +118,14 @@ public class SedeController {
 	@GetMapping(path="/editar/{id}")
 	public ModelAndView editarSede(@PathVariable("id") Long id) {
 		Sede sede = sedeService.buscar(id);
+		
+		//Verifica se a sede informada existe, caso não exista o usuário é redirecionado para uma página de erro.
+		if(sede == null) {
+			ModelAndView model = new ModelAndView("erros/erro");
+			model.addObject("mensagem", "Sede não encontrada");
+			return model;
+		}
+		
 		ModelAndView model = new ModelAndView("sede/formEditarSede");
 		model.addObject("sede", sede);
 		return model;
@@ -166,7 +177,6 @@ public class SedeController {
 	//Função que remove a sede do usuário.
 	public void removerSedeUsuarios(Sede sede) {
 		//Para todos os usuário da sede, altera o papel dos mesmos para CLIENTE e remove a sua sede.
-		System.out.println("AQUIIIIIIIIIIIIIIIIIII");
 		for (Usuario cliente : usuarioService.listarTodos()) {
 			if (cliente.getSede().getId() == sede.getId()) {
 				cliente.setSede(null);
