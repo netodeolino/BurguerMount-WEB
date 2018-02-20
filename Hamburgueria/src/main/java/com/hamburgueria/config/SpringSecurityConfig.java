@@ -34,7 +34,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
             		"/usuario/alterarsenha/**", "/usuario/novasenha").permitAll()
             .antMatchers("/sede/**").hasRole("MASTER")
             .antMatchers("/usuario/listar_usuarios", "/usuario/perfil_usuario/**", "/usuario/editar_papel/**",
-            		"/usuario/consumo/**", "/usuario/listar_produtos/**").hasAnyRole("MASTER", "ADMINISTRADOR")
+            		"/usuario/consumo/**", "/usuario/listar_produtos/**", 
+            		"/codigo/cadastrar", "/codigo/editar/**", "/codigo/excluir/**").hasAnyRole("MASTER", "ADMINISTRADOR")
             .anyRequest().authenticated()
             .and()
         .exceptionHandling()
