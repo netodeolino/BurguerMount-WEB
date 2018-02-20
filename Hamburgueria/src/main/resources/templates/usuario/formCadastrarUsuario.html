@@ -69,9 +69,27 @@
                     	<div class="row">
                     		<div class="form-group">
 		                        <div class="input-field col s12">
+		                        	<i class="material-icons prefix">email</i>
+		                        	<input id="confirm_email" type="email" class="validate" required="true"/>
+		                        	<label for="confirm_email" data-error="Os emails não conferem!">Confirmar Email</label>
+		                        </div>
+		                	</div>
+                    	</div>
+                    	<div class="row">
+                    		<div class="form-group">
+		                        <div class="input-field col s12">
 		                        	<i class="material-icons prefix">lock</i>
 		                        	<input id="senha" type="password" class="validate" th:field="*{senha}" required="true"/>
 		                        	<label for="senha">Senha</label>
+		                        </div>
+		                	</div>
+                    	</div>
+                    	<div class="row">
+                    		<div class="form-group">
+		                        <div class="input-field col s12">
+		                        	<i class="material-icons prefix">lock</i>
+		                        	<input id="confirm_senha" type="password" class="validate" required="true"/>
+		                        	<label for="confirm_senha" data-error="As senhas não conferem!">Confirmar Senha</label>
 		                        </div>
 		                	</div>
                     	</div>
@@ -128,5 +146,7 @@
 		</div>		
 	</div>
 	<script type="text/javascript" src="/js/hamburgueria.js"></script>
+	<div th:replace="fragments/confirmar :: confirmarSenha"></div>
+	<div th:replace="fragments/confirmar :: confirmarEmail"></div>
 </body>
 </html>

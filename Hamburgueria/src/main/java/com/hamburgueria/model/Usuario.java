@@ -52,8 +52,12 @@ public class Usuario implements UserDetails {
 	@Enumerated(EnumType.STRING)
 	private Papel papel;
 	
+	private int creditos;
+	
+	private Usuario padrinho;
+	
 	public Usuario() {
-		
+		this.creditos = 0;
 	}
 	
 	public Long getId() {
@@ -134,6 +138,22 @@ public class Usuario implements UserDetails {
 
 	public void setPapel(Papel papel) {
 		this.papel = papel;
+	}
+
+	public int getCreditos() {
+		return creditos;
+	}
+
+	public void setCreditos(int creditos) {
+		this.creditos = creditos;
+	}
+
+	public Usuario getPadrinho() {
+		return padrinho;
+	}
+
+	public void setPadrinho(Usuario padrinho) {
+		this.padrinho = padrinho;
 	}
 
 	@Override
