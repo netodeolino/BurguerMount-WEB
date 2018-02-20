@@ -10,6 +10,10 @@
 			<li th:if="${#authentication.getPrincipal().getPapel() == T(com.hamburgueria.model.Papel).MASTER}" >
 				<a th:href="@{/sede/cadastrar}">Sede</a>
 			</li>
+			<li th:if="${#authentication.getPrincipal().getPapel() == T(com.hamburgueria.model.Papel).MASTER ||
+						 #authentication.getPrincipal().getPapel() == T(com.hamburgueria.model.Papel).ADMINISTRADOR}">
+				<a th:href="@{/codigo/cadastrar}">Codigo</a>
+			</li>
 			<li><a th:href="@{/ingrediente/cadastrar}">Ingrediente</a></li>
 			<li><a th:href="@{/produto/cadastrar}">Produto</a></li>
 			<li><a th:href="@{/tipo_ingrediente/cadastrar}">Tipo Ingrediente</a></li>
@@ -21,6 +25,7 @@
 				#authentication.getPrincipal().getPapel() == T(com.hamburgueria.model.Papel).ADMINISTRADOR}">
 				<a th:href="@{/usuario/listar_usuarios}">Usuarios</a>
 			</li>
+			<li><a th:href="@{/codigo/listar}">Codigos</a></li>
 			<li th:if="${#authentication.getPrincipal().getPapel() == T(com.hamburgueria.model.Papel).MASTER}">
 				<a th:href="@{/sede/listar}">Sedes</a>
 			</li>
@@ -28,6 +33,7 @@
 			<li><a th:href="@{/tipo_ingrediente/listar}">Ingredientes</a></li>
 			<li><a th:href="@{/produto/listar}">Produtos</a></li>
 		</ul>
+		
 		<ul id="dropdownPedidos" class="dropdown-content">
 			<li><a th:href="@{/pedido/listar/todos}">Todos</a></li>
 			<li><a th:href="@{/pedido/listar/em_aberto}">Em Aberto</a></li>
