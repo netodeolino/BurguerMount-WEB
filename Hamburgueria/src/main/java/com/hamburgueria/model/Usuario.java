@@ -54,7 +54,7 @@ public class Usuario implements UserDetails {
 	
 	private int creditos;
 	
-	private Usuario padrinho;
+	private Long idPadrinho;
 	
 	public Usuario() {
 		this.creditos = 0;
@@ -148,12 +148,12 @@ public class Usuario implements UserDetails {
 		this.creditos = creditos;
 	}
 
-	public Usuario getPadrinho() {
-		return padrinho;
+	public Long getIdPadrinho() {
+		return idPadrinho;
 	}
 
-	public void setPadrinho(Usuario padrinho) {
-		this.padrinho = padrinho;
+	public void setIdPadrinho(Long idPadrinho) {
+		this.idPadrinho = idPadrinho;
 	}
 
 	@Override
