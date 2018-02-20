@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<body>
+	<div th:fragment="confirmarSenha">
+		<script type="text/javascript">
+			var senha = document.getElementById("senha"),
+				confirm_senha = document.getElementById("confirm_senha");
+		
+			function validatePassword() {
+			 	if(senha.value != confirm_senha.value) {
+					confirm_senha.setCustomValidity("As senhas são diferentes!");
+				} else {
+					confirm_senha.setCustomValidity('');
+				}
+			}
+		
+			senha.onchange = validatePassword;
+			confirm_senha.onkeyup = validatePassword;
+		</script>
+	</div>
+	
+	<div th:fragment="confirmarEmail">
+		<script type="text/javascript">
+			var email = document.getElementById("email"),
+				confirm_email = document.getElementById("confirm_email");
+		
+			function validateEmail() {
+			 	if(email.value != confirm_email.value) {
+					confirm_email.setCustomValidity("Os emails são diferentes!");
+				} else {
+					confirm_email.setCustomValidity('');
+				}
+			}
+		
+			email.onchange = validateEmail;
+			confirm_email.onkeyup = validateEmail;
+		</script>
+	</div>
+</body>
+</html>
+

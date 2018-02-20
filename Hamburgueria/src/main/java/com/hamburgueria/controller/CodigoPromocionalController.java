@@ -17,7 +17,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.hamburgueria.model.CodigoPromocional;
-import com.hamburgueria.model.Produto;
 import com.hamburgueria.service.CodigoPromocionalService;
 
 @Controller
